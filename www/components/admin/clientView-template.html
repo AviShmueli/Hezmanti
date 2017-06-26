@@ -1,0 +1,16 @@
+<md-whiteframe class="md-whiteframe-3dp client-view-wrap" layout="row" flex>
+    <div layout="row" flex>
+        <div id="client-fileds" layout="column" flex layout-align="center start">
+            <div class="margin-8">IP: <span>{{::vm.client.IP}}</span></div>
+            <div>OS: <span>{{::vm.client.OS}}</span></div>
+            <div>Browser: <span>{{::vm.client.browser}}</span></div>
+            <div>Time Zone: <span>{{::vm.client.timeZone}}</span></div>
+        </div>
+        <div layout="column" flex layout-align="center center">
+            <span> 
+                <img class="status-img" ng-if="vm.client.isConnected" ng-src="assets/images/globe_connected.png" aria-label="connected"></img>
+                <img class="status-img" ng-if="!vm.client.isConnected" ng-src="assets/images/globe_disconnected.png" aria-label="disconnected"></img>
+            </span>
+        </div>
+    </div>
+</md-whiteframe>

@@ -1,0 +1,21 @@
+<md-content layout-padding md-scroll-y style="height: 100%">
+
+    <div layout-align="center center" layout="column">
+        <div layout-align="center center">
+            <img class="login-img" ng-src="{{::vm.imagesPath + '/assets/images/logo.gif'}}" />
+        </div>
+    </div>
+
+    <div >
+        <div layout="column" style="margin-bottom: 10px;">
+            <md-button class="md-raised md-primary entry-btn" ng-click="vm.navigateTo('newOrder')">
+                הזמנת סחורה
+            </md-button>
+        </div>
+        <div layout="column" style="margin-bottom: 10px;">
+            <md-button class="md-raised md-primary entry-btn" ng-click="vm.navigateTo('stocktaking')">
+                ספירת מלאי
+            </md-button>
+        </div>
+    </div>
+</md-content>

@@ -1,0 +1,18 @@
+<md-toolbar flex>
+  <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+    <md-button class="md-warn md-raised md-hue-1" ng-click="vm.navigateTo('entry')">
+      שלח הזמנה
+    </md-button>
+    <span flex></span>
+    <p>הזמנת סחורה</p>
+    <md-button class="md-icon-button" ng-click="vm.navigateTo('entry')" aria-label="Menu">
+      <ng-md-icon icon="arrow_forward" style="fill: white"></ng-md-icon>
+    </md-button>
+  </div>
+</md-toolbar>
+
+<md-content layout-padding md-scroll-y style="height: 100%">
+  <div layout="column" layout-align="center center" flex>
+      <items-list style="width: 100%"></items-list>
+  </div>
+</md-content>
