@@ -44,10 +44,33 @@
             return $http(req);
         }
 
+        var getCatalog = function () {
+            var req = {
+                method: 'GET',
+                url: '/getCatalog'
+            };
+
+            return $http(req);
+        }
+
+        var searchItems = function (searchString) {
+            var req = {
+                method: 'GET',
+                url: '/searchItems',
+                params: {
+                    searchString:  searchString
+                }
+            };
+
+            return $http(req);
+        }
+
         var service = {
             registerNewClient: registerNewClient,
             keepMeAlive: keepMeAlive,
-            getAllBranches: getAllBranches
+             getCatalog: getCatalog,
+            getAllBranches: getAllBranches,
+            searchItems: searchItems
         };
 
         return service;

@@ -5,40 +5,31 @@
         .module('app')
         .component('itemsList', {
             bindings: {
-                client: '=',
+                items: '=',
+                departmentName: '=',
+                defultOpen: '='
             },
             controller: itemsListController,
             controllerAs: 'vm',
             templateUrl: 'components/items/itemsList-template.html'
         });
 
-    function itemsListController() {
+    function itemsListController(server, $q) {
 
         var vm = this;
 
+        vm.showList = vm.defultOpen || false;
         vm.expand_icon = vm.showTasksFilter ? 'expand_less' : 'expand_more';
         vm.toggleFilterSection = function () {
             //var svgMorpheus = new SVGMorpheus('#expand_more_icon svg');
-            if (vm.showTasksFilter === true) {
-                vm.showTasksFilter = false;
+            if (vm.showList === true) {
+                vm.showList = false;
                 vm.expand_icon = 'expand_more';
             } else {
-                vm.showTasksFilter = true;
+                vm.showList = true;
                 vm.expand_icon = 'expand_less';
             }
         }
-
-        vm.items = [{
-            name: 'בשר הודו אדום טרי מחפוד תפז',
-            serialNumber: '2225041',
-        }, {
-            name: 'כרעיים',
-            serialNumber: '0002',
-        }, {
-            name: 'צלעות כבש',
-            serialNumber: '0003',
-        }];
-
     }
 
 }());

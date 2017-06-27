@@ -4,6 +4,9 @@
 
     DAL.insertNewBranches = insertNewBranches;
     DAL.getAllBranches = getAllBranches;
+    DAL.getCatalog = getCatalog;
+    DAL.insertToCatalog = insertToCatalog;
+    DAL.searchItems = searchItems;
 
 
     var deferred = require('deferred');
@@ -68,7 +71,33 @@
         return d.promise;
     }
 
-     function getAllBranches(){
+    function insertToCatalog(catalog) {
+
+        var d = deferred();
+
+        getCollection('gorme-catalog').then(function (mongo) {
+
+            mongo.collection.insert(catalog, function (err, results) {
+
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to add new Task to DB",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(results);
+
+            });
+        });
+
+        return d.promise;
+    }
+
+    function getAllBranches() {
         var d = deferred();
 
         getCollection('gorme-branches').then(function (mongo) {
@@ -78,6 +107,63 @@
                     if (err) {
                         var errorObj = {
                             message: "error while trying to get all Branches: ",
+                            error: err
+                        };
+                        mongo.db.close();
+                        d.reject(errorObj);
+                    }
+
+                    mongo.db.close();
+                    d.resolve(result);
+                });
+        });
+
+        return d.promise;
+    }
+
+    function getCatalog() {
+        var d = deferred();
+
+        getCollection('gorme-catalog').then(function (mongo) {
+
+            mongo.collection.find({
+                priority: {
+                    $lte: 20
+                }
+            }).toArray(
+                function (err, result) {
+                    if (err) {
+                        var errorObj = {
+                            message: "error while trying to get Catalog: ",
+                            error: err
+                        };
+                        mongo.db.close();
+                        d.reject(errorObj);
+                    }
+
+                    mongo.db.close();
+                    d.resolve(result);
+                });
+        });
+
+        return d.promise;
+    }
+
+    function searchItems(searchString) {
+        var d = deferred();
+
+        getCollection('gorme-catalog').then(function (mongo) {
+
+            mongo.collection.find({
+                'name': {
+                    "$regex": searchString,
+                    "$options": "i"
+                }
+            }).toArray(
+                function (err, result) {
+                    if (err) {
+                        var errorObj = {
+                            message: "error while trying to search Items: ",
                             error: err
                         };
                         mongo.db.close();

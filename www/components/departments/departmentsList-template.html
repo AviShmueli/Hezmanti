@@ -1,0 +1,11 @@
+<md-content flex md-scroll-y class="background-color-transparent" dir="rtl">
+    <main flex>
+        <ui-view layout="column" layout-fill>
+
+            <search-item></search-item>
+
+            <items-list ng-repeat="(key, value) in vm.departmentsMap" items="value" department-name="value[0].departmentName"></items-list>
+
+        </ui-view>
+    </main>
+</md-content>

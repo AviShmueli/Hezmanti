@@ -39,6 +39,27 @@ app.get('/getAllBranches', function (req, res) {
     });
 });
 
+app.get('/getCatalog', function (req, res) {
+    BL.getCatalog().then(function(result){
+        res.send(result);
+    }, function(error){
+        winston.log('error', error.message , error.error);
+        res.status(500).send(error); 
+    });
+});
+
+app.get('/searchItems', function (req, res) {
+    BL.searchItems(req.query.searchString).then(function(result){
+        res.send(result);
+    }, function(error){
+        winston.log('error', error.message , error.error);
+        res.status(500).send(error); 
+    });
+});
+
+//var catalog = 
+
+//DAL.insertToCatalog(catalog);
 //DAL.insertNewBranches(newBranches);
 
 /*app.post('/registerNewClient', function (req, res) {

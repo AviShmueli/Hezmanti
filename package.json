@@ -2,7 +2,7 @@
   "name": "Hezmanti",
   "version": "1.0.0",
   "scripts": {
-    "start": "node Hezmanti/server/app.js"
+    "start": "node server/app.js"
   },
   "private": true,
   "dependencies": {
