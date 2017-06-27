@@ -32,6 +32,13 @@
             controllerAs: "vm"
         });
 
+        $stateProvider.state("viewOrder", {
+            url: "/viewOrder",
+            templateUrl: "components/order/viewOrder.html",
+            controller: "viewOrderController",
+            controllerAs: "vm"
+        });
+
         $stateProvider.state("stocktaking", {
             url: "/stocktaking",
             templateUrl: "components/stocktaking/stocktaking.html",

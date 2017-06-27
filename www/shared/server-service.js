@@ -11,24 +11,12 @@
 
         var self = this;
 
-        var registerNewClient = function (client) {
+        var addOrder = function (order) {
             var req = {
                 method: 'POST',
-                url: '/api/registerNewClient',
+                url: '/api/addOrder',
                 data: {
-                    client: client
-                }
-            };
-
-            return $http(req);
-        }
-
-        var keepMeAlive = function (clientId) {
-            var req = {
-                method: 'POST',
-                url: '/api/keepMeAlive',
-                data: {
-                    clientId: clientId
+                    order: order
                 }
             };
 
@@ -65,12 +53,21 @@
             return $http(req);
         }
 
+        var getAllOrders = function () {
+            var req = {
+                method: 'GET',
+                url: '/api/getAllOrders'
+            };
+
+            return $http(req);
+        }
+
         var service = {
-            registerNewClient: registerNewClient,
-            keepMeAlive: keepMeAlive,
-             getCatalog: getCatalog,
+            addOrder: addOrder,
+            getCatalog: getCatalog,
             getAllBranches: getAllBranches,
-            searchItems: searchItems
+            searchItems: searchItems,
+            getAllOrders: getAllOrders
         };
 
         return service;

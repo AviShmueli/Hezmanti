@@ -7,6 +7,8 @@
     DAL.getCatalog = getCatalog;
     DAL.insertToCatalog = insertToCatalog;
     DAL.searchItems = searchItems;
+    DAL.addOrder = addOrder;
+    DAL.getAllOrders = getAllOrders;
 
 
     var deferred = require('deferred');
@@ -173,6 +175,52 @@
                     mongo.db.close();
                     d.resolve(result);
                 });
+        });
+
+        return d.promise;
+    }
+
+    function addOrder(order) {
+        var d = deferred();
+
+        getCollection('gorme-orders').then(function (mongo) {
+
+            mongo.collection.insert(order, function (err, result) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to add Order: ",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(result);
+            });
+        });
+
+        return d.promise;
+    }
+
+    function getAllOrders(order) {
+        var d = deferred();
+
+        getCollection('gorme-orders').then(function (mongo) {
+
+            mongo.collection.find({}).toArray(function (err, result) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to get all Orders: ",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(result);
+            });
         });
 
         return d.promise;

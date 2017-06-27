@@ -22,7 +22,7 @@
                     <td md-cell style="padding: 0 6px; font-size: 15px; width: 80%">{{::item.name}}</td>
                     <!--<td md-cell mdNumeric>{{item.serialNumber}}</td>-->
                     <td md-cell style="padding: 0 0px 0px 20px;">
-                        <input type="number" ng-model="item.count" min="1" max="9999">
+                        <input type="number" ng-model="item.count" min="1" max="9999" ng-change="vm.itemCountInputBlur(item)">
                     </td>
                 </tr>
             </tbody>

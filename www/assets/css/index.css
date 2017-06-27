@@ -170,3 +170,16 @@ table.md-table td.md-cell, table.md-table th.md-column{
 .list-item-active{
     background-color: lightgrey;
 }
+
+md-badge{
+  background-color: rgb(250,250,250);
+  color: rgb(121,85,72);
+  padding: 1px 6px;
+  border-radius: 99%;
+}
+
+.message-icon{
+    top: 10px;
+    position: relative;
+    padding-left: 2px;
+}

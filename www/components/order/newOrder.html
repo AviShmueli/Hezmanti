@@ -1,7 +1,8 @@
 <md-toolbar flex>
   <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
-    <md-button class="md-warn md-raised md-hue-1" ng-click="vm.navigateTo('entry')">
+    <md-button class="md-warn md-raised md-hue-1" ng-click="vm.navigateTo('viewOrder')">
       הצג הזמנה
+      <md-badge ng-if="vm.cardCount() > 0">{{vm.cardCount()}}</md-badge>
     </md-button>
     <span flex></span>
     <p>הזמנת סחורה</p>
@@ -11,7 +12,7 @@
   </div>
 </md-toolbar>
 
-<md-content layout-padding md-scroll-y style="height: 90%">
+<md-content layout-padding md-scroll-y style="height: 90%" dir="rtl">
   <div layout="column" layout-align="center center" flex>
       <departments-list style="width: 100%"></departments-list>
   </div>

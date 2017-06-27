@@ -12,55 +12,50 @@
         var self = this;
         self.$storage = $localStorage;
 
-        var getClients = function () {
-            return self.clientsList !== undefined ? self.clientsList : [];
+        if (self.$storage.card === undefined) {
+            self.$storage.card = {};
         }
 
-        var setClients = function (clients) {
-            self.clientsList = clients;
+        var getCard = function(){
+            return self.$storage.card || {};
         }
 
-        var updateClientsStatus = function (clients, status) {
-      
-            var matchs = getClients().filter(function (obj) {
-                return clients.indexOf(obj.id) !== -1;
-            });
+        var updateCard = function(item){
+            //var card = getCard();
+            // if (card.hasOwnProperty(item._id)) {
+            //     card[item._id] = item;
+            // }
+            // else{
+                self.$storage.card[item._id] = item;
+            // }
+        }
 
-            for (var index = 0; index < matchs.length; index++) {
-                matchs[index].isConnected = status;
+        var removeItemFromCard = function (item) {
+            var card = self.$storage.card;
+            if (card.hasOwnProperty(item._id)) {
+                delete card[item._id];
             }
-
-            $rootScope.$apply()
         }
 
-        var addClient = function (client) {
-            var clients = getClients();
-
-            var matchs = clients.filter(function (obj) {
-                return obj.id === client.id;
-            });
-
-            if (matchs.length < 1) {
-                clients.push(client);
-                $rootScope.$apply();
-            }     
+        var getCartCount = function(){
+            return Object.keys(self.$storage.card).length;
         }
 
-        var setClientId = function(clientId){
-            self.$storage.clientId = clientId;
+        var getCardItemsList = function(){
+            return Object.values(self.$storage.card);
         }
 
-        var getClientId = function(clientId){
-            return self.$storage.clientId || null;
+        var cleanCard = function(){
+            self.$storage.card = {};
         }
+        
 
         var service = {
-            getClients: getClients,
-            setClients: setClients,
-            updateClientsStatus: updateClientsStatus,
-            addClient: addClient,
-            setClientId: setClientId,
-            getClientId: getClientId
+            removeItemFromCard: removeItemFromCard,
+            updateCard: updateCard,
+            getCartCount: getCartCount,
+            getCardItemsList: getCardItemsList,
+            cleanCard: cleanCard
         };
 
         return service;

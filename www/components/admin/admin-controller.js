@@ -8,17 +8,17 @@
     AdminController.$inject = [
         '$rootScope', '$scope', 'server', '$state',
         '$mdSidenav', '$mdComponentRegistry', '$log',
-        'dataContext', '$timeout', 'socket', 'device'
+        'dataContext', '$timeout', 'device'
     ];
 
     function AdminController(
         $rootScope, $scope, server, $state,
         $mdSidenav, $mdComponentRegistry, $log,
-        dataContext, $timeout, socket, device) {
+        dataContext, $timeout, device) {
 
         var vm = this;
         vm.imagesPath = device.getImagesPath();
-        vm.viewMode = 'usersManager';
+        vm.viewMode = 'ordersManager';
         
         vm.toggleSidenav = function (menuId) {
             $mdSidenav(menuId).toggle();

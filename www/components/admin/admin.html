@@ -11,7 +11,7 @@
     </md-button>
     <span flex></span>
     <div>ניהול מלאי והזמנות</div>
-    <img class="login-img width-48 margin-left-15" ng-src="{{::vm.imagesPath + '/assets/images/logo.gif'}}" />
+    <img title="Algoretail" class="login-img width-48 margin-left-15" ng-src="{{::vm.imagesPath + '/assets/images/algologo.gif'}}" />
     <md-button class="md-icon-button" aria-label="Menu" ng-click="vm.toggleSidenav('left')" hide-gt-sm>
       <md-icon>menu</md-icon>
     </md-button>
@@ -28,7 +28,7 @@
     <span flex></span>
     <div layout="column" layout-align="end start" class="md-toolbar-tools-bottom inset">
       <md-card-avatar>
-        <img class="md-user-avatar user-avatar-med" ng-src="{{vm.imagesPath + '/assets/images/avatar.png'}}">
+        <img class="md-user-avatar user-avatar-med" ng-src="{{::vm.imagesPath + '/assets/images/gorme-logo.png'}}">
       </md-card-avatar>
       <div class="width-100p">
         <div layout="row">
@@ -41,7 +41,7 @@
 
   <div>
     <md-list layout="column" layout-fill flex>
-      <md-list-item ng-href="#/admin">
+      <md-list-item ng-click="vm.viewMode = 'ordersManager'" ng-class="{'list-item-active': vm.viewMode === 'ordersManager'}">
         <md-icon style="padding-right: 16px; color: #000000">view_quilt</md-icon>
         <p>דוחות הזמנות</p>
       </md-list-item>
@@ -65,6 +65,7 @@
 
 
       <users-manager ng-if="vm.viewMode === 'usersManager'"></users-manager>
+      <orders-manager ng-if="vm.viewMode === 'ordersManager'"></orders-manager>
 
 
 </md-content>

@@ -57,6 +57,24 @@ app.get('/api/searchItems', function (req, res) {
     });
 });
 
+app.get('/api/getAllOrders', function (req, res) {
+    BL.getAllOrders().then(function(result){
+        res.send(result);
+    }, function(error){
+        winston.log('error', error.message , error.error);
+        res.status(500).send(error); 
+    });
+});
+
+app.post('/api/addOrder', function (req, res) {
+    BL.addOrder(req.body.order).then(function(result){
+        res.send(result);
+    }, function(error){
+        winston.log('error', error.message , error.error);
+        res.status(500).send(error); 
+    });
+});
+
 //var catalog = 
 
 //DAL.insertToCatalog(catalog);

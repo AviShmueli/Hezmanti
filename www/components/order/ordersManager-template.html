@@ -1,0 +1,72 @@
+<md-content flex md-scroll-y class="background-color-transparent" dir="rtl">
+    <main flex>
+        <ui-view layout="column" layout-fill>
+
+            <md-card layout="column">
+                <md-card-title class="management-filter-card-title">
+                    <md-card-title-text>
+                        <h3>סינון</h3>
+                    </md-card-title-text>
+                    <md-button class="md-icon-button" ng-click="vm.toggleFilterSection()" aria-label="toggle">
+                        <ng-md-icon id="expand_more_icon" icon="{{vm.expand_icon}}" options='{"rotation": "counterclock"}'></ng-md-icon>
+                    </md-button>
+                </md-card-title>
+                <div layout-gt-xs="column" flex layout-padding ng-show="vm.showTasksFilter">
+                    <div layout-gt-xs="row" layout="column">
+
+                        <md-input-container class="md-block" flex>
+                            <label>רשת</label>
+                            <md-select md-no-asterisk ng-model="vm.tasksFilter.userId" name="user" ng-disabled="vm.users.length < 1">
+                                <md-option ng-repeat="(key, value) in vm.users" value="{{value._id}}" dir="rtl">
+                                    {{value.name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+
+                        <md-input-container class="md-block" flex>
+                            <label>חיפוש</label>
+                            <input ng-model="vm.tasksFilterFreeText" name="name">
+                        </md-input-container>
+
+                        <div class="md-secondary md-block" flex layout="row" layout-align="end center">
+                            <md-button ng-click="vm.getTasks()" class="md-warn md-raised md-hue-1">סנן</md-button>
+                        </div>
+                    </div>
+                </div>
+            </md-card>
+
+            <md-card layout-margin>
+                <md-table-container>
+                    <table md-table md-row-select multiple ng-model="selected" md-progress="vm.promise"> <!--md-progress="vm.promise"-->
+                        <thead md-head md-order="vm.query.order">    <!-- md-order="vm.query.order" md-on-reorder="vm.getTasks"-->
+                            <tr md-row>
+                                <th md-column md-order-by="createdDate">תאריך</th>
+                                <th md-column md-order-by="branchName"><span>שם סניף</span></th>
+                                <th md-column md-order-by="brachId">מזהה סניף</th>
+                                <th md-column>כמות מוצרים</th>
+                                <th md-column></th>
+                            </tr>
+                        </thead>
+                        <tbody md-body>
+                            <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="order in vm.orders | orderBy: vm.query.order">
+                                <td md-cell mdNumeric>{{order.createdDate | date: 'dd/MM'}}</td>
+                                <td md-cell>{{order.branchName}}</td>
+                                <td md-cell>{{order.branchId}}</td>
+                                <td md-cell>{{order.items.length}}</td>
+                                <td md-cell>
+                                    <ng-md-icon ="excel" style="fill: green" size="40"></ng-md-icon>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+                <!--</md-card>
+                    <md-card>-->
+                <!--<md-table-pagination md-label="{'of': ' מתוך ', 'page': 'עמוד מספר', 'rowsPerPage': 'מספר שורות בעמוד' }" md-limit="vm.query.limit"
+                    md-limit-options="[5, 10, 15, 20]" md-page="vm.query.page" md-total="{{vm.totalTaskCount}}" md-on-paginate="vm.getTasks"
+                    md-page-select></md-table-pagination>-->
+            </md-card>
+
+        </ui-view>
+    </main>
+</md-content>

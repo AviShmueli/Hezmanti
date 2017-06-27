@@ -2,6 +2,7 @@
 <html ng-app="app">
 
   <head>
+    <link rel="icon" href="assets/images/algologo.gif">
     <meta charset="utf-8"/>
     <meta http-equiv="Content-Security-Policy">
     <meta name="format-detection" content="telephone=no">
@@ -45,11 +46,12 @@
     <script type="text/javascript" src="shared/server-service.js"></script>
     <script type="text/javascript" src="shared/device-service.js"></script>
     <script type="text/javascript" src="shared/dataContext-service.js"></script>
-    <script type="text/javascript" src="shared/socketIO-service.js"></script>
+    <!--<script type="text/javascript" src="shared/socketIO-service.js"></script>-->
 
     <!-- Controllers -->
     <script type="text/javascript" src="components/admin/admin-controller.js"></script>
     <script type="text/javascript" src="components/order/newOrder-controller.js"></script>
+    <script type="text/javascript" src="components/order/viewOrder-controller.js"></script>
     <script type="text/javascript" src="components/entry/entryScreen-controller.js"></script>
     <script type="text/javascript" src="components/stocktaking/stocktaking-controller.js"></script>
 
@@ -58,13 +60,14 @@
     <script type="text/javascript" src="components/items/itemsList-component.js"></script>
     <script type="text/javascript" src="components/items/searchItem-component.js"></script>
     <script type="text/javascript" src="components/admin/usersManager-component.js"></script>
+    <script type="text/javascript" src="components/order/ordersManager-component.js"></script>
     <script type="text/javascript" src="components/departments/departmentsList-component.js"></script>
 
     <!-- socket.io -->
-    <script src="/socket.io/socket.io.js"></script>
+    <!--<script src="/socket.io/socket.io.js"></script>-->
 
 
-    <title>TA9-exercise</title>
+    <title>Hezmanti - ניהול</title>
   </head>
 
   <body style="position: fixed;" ng-cloak>

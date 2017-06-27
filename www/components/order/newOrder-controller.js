@@ -19,7 +19,9 @@
             $location.path('/' + to);
         }
 
-
+        vm.cardCount = function(){
+            return dataContext.getCartCount();
+        }
          /*var currTime = new Date();
         var client = {
             timeZone: (currTime.getTimezoneOffset() / 60) + ' hours',
