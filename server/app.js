@@ -10,7 +10,7 @@ var http = require('http');
 
 var server = http.createServer(app);
 
-var socket = require('./socketIO')(server);
+//var socket = require('./socketIO')(server);
 
 var bodyParser = require('body-parser');
 

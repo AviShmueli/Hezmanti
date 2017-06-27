@@ -1,5 +1,5 @@
-            <!--<md-card layout="column">-->
-                <!--<md-card-title class="management-filter-card-title">
+<!--<md-card layout="column">-->
+<!--<md-card-title class="management-filter-card-title">
                     <md-card-title-text>
                         <h3>חיפוש מוצר</h3>
                     </md-card-title-text>
@@ -7,10 +7,10 @@
                         <ng-md-icon id="expand_more_icon" icon="{{vm.expand_icon}}" options='{"rotation": "counterclock"}'></ng-md-icon>
                     </md-button>
                 </md-card-title>-->
-                <!--<div layout-gt-xs="column" flex layout-padding >-->
-                    <!--<div layout-gt-xs="row" layout="column">-->
+<!--<div layout-gt-xs="column" flex layout-padding >-->
+<!--<div layout-gt-xs="row" layout="column">-->
 
-                        <!--<md-input-container class="md-block" flex>
+<!--<md-input-container class="md-block" flex>
                             <label>מחלקה</label>
                             <md-select md-no-asterisk ng-model="vm.itemsFilter.departmenId" name="departmen">
                                 <md-option ng-repeat="value in vm.departmentsList" value="{{value.id}}" dir="rtl">
@@ -19,26 +19,29 @@
                             </md-select>
                         </md-input-container>-->
 
-                        <md-input-container class="md-block" flex style="margin: 0 14px;">                                    
-                            <md-progress-circular ng-if="vm.showProgress" class="md-accent" md-diameter="20"></md-progress-circular>
-                            <input md-no-asterisk ng-model="vm.searchString" name="name" placeholder="חפש פריט" ng-keyup="vm.searchInputKeyUp()">
-                            <md-icon ng-md-icon icon="{{vm.searchIcon}}" options='{"rotation": "counterclock"}' ng-click="vm.cleanSearch()"></md-icon>
-                            
-                        </md-input-container>
+<md-input-container class="md-block" flex style="margin: 0 14px;">
+    <md-progress-circular ng-if="vm.showProgress" class="md-accent" md-diameter="20"></md-progress-circular>
+    <input md-no-asterisk ng-model="vm.searchString" name="name" placeholder="חפש פריט" ng-keyup="vm.searchInputKeyUp()">
+    <md-icon ng-md-icon icon="{{vm.searchIcon}}" options='{"rotation": "counterclock"}' ng-click="vm.cleanSearch()"></md-icon>
+    <div ng-if="vm.minimumRequiered" style="color:maroon" role="alert">
+        <div ng-message="minlength">החיפוש מוגבל למינימום 3 תווים</div>
+    </div>
+</md-input-container>
 
-                        <items-list ng-if="vm.searchString !== '' && vm.searchResults !== null && vm.searchResults.length > 0" items="vm.searchResults" department-name="'תוצאות חיפוש'" defult-open="true"></items-list>
-                        <div ng-if="vm.searchString !== '' && vm.searchResults !== null" style="margin: 0 14px;">
-                            <h4>אין תוצאות עבור "{{vm.searchString}}"                          </h4>
-                        </div>
-                        <!--<div layout="row" layout-gt-xs="column">
+<items-list ng-if="vm.searchString !== '' && vm.searchResults !== null && vm.searchResults.length > 0" items="vm.searchResults"
+    department-name="'תוצאות חיפוש'" defult-open="true"></items-list>
+<div ng-if="vm.searchString !== '' && vm.searchResults !== null && vm.searchResults.length < 1" style="margin: 0 14px;">
+    <h4>אין תוצאות עבור "{{vm.searchString}}"</h4>
+</div>
+<!--<div layout="row" layout-gt-xs="column">
                             <md-checkbox ng-model="vm.tasksFilterStatusInProgress">בתהליך</md-checkbox>
                             <md-checkbox ng-model="vm.tasksFilterStatusDone">בוצע</md-checkbox>
                             <md-checkbox ng-model="vm.tasksFilterStatusClosed">נסגר</md-checkbox>
                         </div>-->
 
-                        <!--<div class="md-secondary md-block" flex layout="row" layout-align="end center">
+<!--<div class="md-secondary md-block" flex layout="row" layout-align="end center">
                             <md-button ng-click="vm.getTasks()" class="md-warn md-raised md-hue-1">סנן</md-button>
                         </div>-->
-                    <!--</div>-->
-                <!--</div>
+<!--</div>-->
+<!--</div>
             </md-card>-->

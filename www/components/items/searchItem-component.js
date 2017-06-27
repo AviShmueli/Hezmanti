@@ -20,20 +20,24 @@
         vm.showProgress = false;
         vm.searchString = '';
         vm.searchResults = null;
+        vm.minimumRequiered = false;
         
         var timer;
         vm.searchInputKeyUp = function () {
             vm.searchIcon = 'close';
             $timeout.cancel(timer);
             timer = $timeout(function () {
-                if (vm.searchString.length > 4) {
+                if (vm.searchString.length > 2) {
                     vm.showProgress = true;
+                    vm.minimumRequiered = false;
                     search(vm.searchString);
+                }
+                else{
+                    vm.minimumRequiered = true;
                 }
             }, 600);
             if (vm.searchString === '') {
-                vm.searchResults = null;
-                vm.searchIcon = 'search';
+                vm.cleanSearch();
             }
         }
 
@@ -50,6 +54,7 @@
             vm.searchString = '';
             vm.searchResults = null;
             vm.searchIcon = 'search';
+            vm.minimumRequiered = false;
         }
     }
 
