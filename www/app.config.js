@@ -3,11 +3,14 @@
 
     angular
         .module('app')
-        .config(config);
+        .config(config)
+        .constant('SERVER_URL', 'https://hezmanti-prod.herokuapp.com');
 
-    config.$inject = ['$stateProvider', '$urlRouterProvider', '$mdThemingProvider'];
+    config.$inject = ['$stateProvider', '$urlRouterProvider', '$mdThemingProvider', '$httpProvider'];
 
-    function config($stateProvider, $urlRouterProvider, $mdThemingProvider) {
+    function config($stateProvider, $urlRouterProvider, $mdThemingProvider, $httpProvider) {
+
+        $httpProvider.interceptors.push('appInterceptor');
 
         $mdThemingProvider.theme('default')
             .primaryPalette('brown')

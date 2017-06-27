@@ -30,7 +30,7 @@ server.listen(process.env.PORT || 5007, function (err) {
 });
 
 
-app.get('/getAllBranches', function (req, res) {
+app.get('/api/getAllBranches', function (req, res) {
     BL.getAllBranches().then(function(result){
         res.send(result);
     }, function(error){
@@ -39,7 +39,7 @@ app.get('/getAllBranches', function (req, res) {
     });
 });
 
-app.get('/getCatalog', function (req, res) {
+app.get('/api/getCatalog', function (req, res) {
     BL.getCatalog().then(function(result){
         res.send(result);
     }, function(error){
@@ -48,7 +48,7 @@ app.get('/getCatalog', function (req, res) {
     });
 });
 
-app.get('/searchItems', function (req, res) {
+app.get('/api/searchItems', function (req, res) {
     BL.searchItems(req.query.searchString).then(function(result){
         res.send(result);
     }, function(error){

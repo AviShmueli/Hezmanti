@@ -14,7 +14,7 @@
         var registerNewClient = function (client) {
             var req = {
                 method: 'POST',
-                url: '/registerNewClient',
+                url: '/api/registerNewClient',
                 data: {
                     client: client
                 }
@@ -26,7 +26,7 @@
         var keepMeAlive = function (clientId) {
             var req = {
                 method: 'POST',
-                url: '/keepMeAlive',
+                url: '/api/keepMeAlive',
                 data: {
                     clientId: clientId
                 }
@@ -38,7 +38,7 @@
         var getAllBranches = function () {
             var req = {
                 method: 'GET',
-                url: '/getAllBranches'
+                url: '/api/getAllBranches'
             };
 
             return $http(req);
@@ -47,7 +47,7 @@
         var getCatalog = function () {
             var req = {
                 method: 'GET',
-                url: '/getCatalog'
+                url: '/api/getCatalog'
             };
 
             return $http(req);
@@ -56,7 +56,7 @@
         var searchItems = function (searchString) {
             var req = {
                 method: 'GET',
-                url: '/searchItems',
+                url: '/api/searchItems',
                 params: {
                     searchString:  searchString
                 }
