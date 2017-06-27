@@ -1,0 +1,1 @@
+xcopy /y  C:\dev\Hezmanti\platforms\android\build\outputs\apk\android-debug.apk "C:\Users\avi\Dropbox\Algoretail Team Folder\Hezmanti"
