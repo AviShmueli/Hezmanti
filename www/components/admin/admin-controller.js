@@ -5,15 +5,15 @@
         .module('app')
         .controller('AdminController', AdminController);
 
-    AdminController.$inject = ['$scope', '$mdSidenav', 'device', '$routeParams' ];
+    AdminController.$inject = ['$scope', '$mdSidenav', 'device' ];
 
-    function AdminController($scope,  $mdSidenav, device, $routeParams) {
+    function AdminController($scope,  $mdSidenav, device) {
 
         var vm = this;
         vm.imagesPath = device.getImagesPath();
         vm.viewMode = 'ordersStatus';
         
-        vm.showSideNav = $routeParams.s;
+        //vm.showSideNav = $routeParams.s;
 
         vm.toggleSidenav = function (menuId) {
             $mdSidenav(menuId).toggle();
