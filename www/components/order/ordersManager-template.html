@@ -49,12 +49,16 @@
                         </thead>
                         <tbody md-body>
                             <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="order in vm.orders | orderBy: vm.query.order">
-                                <td md-cell mdNumeric>{{order.createdDate | date: 'dd/MM'}}</td>
-                                <td md-cell>{{order.branchName}}</td>
-                                <td md-cell>{{order.branchId}}</td>
-                                <td md-cell>{{order.items.length}}</td>
+                                <td md-cell mdNumeric ng-click="vm.openOrderDialog(order, $event)">{{::order.createdDate | date: 'dd/MM'}}</td>
+                                <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::order.branchName}}</td>
+                                <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::order.branchId}}</td>
+                                <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::order.items.length}}</td>
                                 <td md-cell>
-                                    <ng-md-icon ="excel" style="fill: green" size="40"></ng-md-icon>
+                                    <md-button ng-click="vm.downloadExel(order._id)">
+                                        <md-icon style="width:28px;height:28px;"
+                                                md-svg-src="/assets/images/Exel_download.svg">
+                                        </md-icon>
+                                    </md-button>
                                 </td>
                             </tr>
                         </tbody>

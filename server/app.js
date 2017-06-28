@@ -31,34 +31,43 @@ server.listen(process.env.PORT || 5007, function (err) {
 
 
 app.get('/api/getAllBranches', function (req, res) {
-    BL.getAllBranches().then(function(result){
+    BL.getAllBranches().then(function (result) {
         res.send(result);
-    }, function(error){
-        winston.log('error', error.message , error.error);
-        res.status(500).send(error); 
+    }, function (error) {
+        winston.log('error', error.message, error.error);
+        res.status(500).send(error);
     });
 });
 
 app.get('/api/getCatalog', function (req, res) {
-    BL.getCatalog().then(function(result){
+    BL.getCatalog().then(function (result) {
         res.send(result);
-    }, function(error){
-        winston.log('error', error.message , error.error);
-        res.status(500).send(error); 
+    }, function (error) {
+        winston.log('error', error.message, error.error);
+        res.status(500).send(error);
     });
 });
 
 app.get('/api/searchItems', function (req, res) {
-    BL.searchItems(req.query.searchString).then(function(result){
+    BL.searchItems(req.query.searchString).then(function (result) {
         res.send(result);
-    }, function(error){
-        winston.log('error', error.message , error.error);
-        res.status(500).send(error); 
+    }, function (error) {
+        winston.log('error', error.message, error.error);
+        res.status(500).send(error);
     });
 });
 
 app.get('/api/getAllOrders', function (req, res) {
-    BL.getAllOrders().then(function(result){
+    BL.getAllOrders().then(function (result) {
+        res.send(result);
+    }, function (error) {
+        winston.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
+});
+
+app.get('/api/getOrder', function (req, res) {
+    BL.getOrder(req.query.orderId).then(function(result){
         res.send(result);
     }, function(error){
         winston.log('error', error.message , error.error);
@@ -67,11 +76,11 @@ app.get('/api/getAllOrders', function (req, res) {
 });
 
 app.post('/api/addOrder', function (req, res) {
-    BL.addOrder(req.body.order).then(function(result){
+    BL.addOrder(req.body.order).then(function (result) {
         res.send(result);
-    }, function(error){
-        winston.log('error', error.message , error.error);
-        res.status(500).send(error); 
+    }, function (error) {
+        winston.log('error', error.message, error.error);
+        res.status(500).send(error);
     });
 });
 
@@ -109,6 +118,3 @@ app.get('/getClients', function (req, res) {
     var clients = BL.getClients()
     res.send(clients);
 });*/
-
-
-

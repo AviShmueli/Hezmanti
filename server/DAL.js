@@ -9,6 +9,7 @@
     DAL.searchItems = searchItems;
     DAL.addOrder = addOrder;
     DAL.getAllOrders = getAllOrders;
+    DAL.getOrder = getOrder;
 
 
     var deferred = require('deferred');
@@ -203,7 +204,7 @@
         return d.promise;
     }
 
-    function getAllOrders(order) {
+    function getAllOrders() {
         var d = deferred();
 
         getCollection('gorme-orders').then(function (mongo) {
@@ -212,6 +213,29 @@
                 if (err) {
                     var errorObj = {
                         message: "error while trying to get all Orders: ",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(result);
+            });
+        });
+
+        return d.promise;
+    }
+
+    function getOrder(orderId) {
+        var d = deferred();
+
+        getCollection('gorme-orders').then(function (mongo) {
+
+            mongo.collection.findOne({_id: new ObjectID(orderId)}, function (err, result) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to get Order: ",
                         error: err
                     };
                     mongo.db.close();

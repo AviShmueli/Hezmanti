@@ -5,21 +5,16 @@
         .module('app')
         .controller('AdminController', AdminController);
 
-    AdminController.$inject = [
-        '$rootScope', '$scope', 'server', '$state',
-        '$mdSidenav', '$mdComponentRegistry', '$log',
-        'dataContext', '$timeout', 'device'
-    ];
+    AdminController.$inject = ['$scope', '$mdSidenav', 'device', '$routeParams' ];
 
-    function AdminController(
-        $rootScope, $scope, server, $state,
-        $mdSidenav, $mdComponentRegistry, $log,
-        dataContext, $timeout, device) {
+    function AdminController($scope,  $mdSidenav, device, $routeParams) {
 
         var vm = this;
         vm.imagesPath = device.getImagesPath();
-        vm.viewMode = 'ordersManager';
+        vm.viewMode = 'ordersStatus';
         
+        vm.showSideNav = $routeParams.s;
+
         vm.toggleSidenav = function (menuId) {
             $mdSidenav(menuId).toggle();
         };

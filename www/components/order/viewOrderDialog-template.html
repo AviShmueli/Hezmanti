@@ -1,0 +1,21 @@
+<md-dialog aria-label="order dialog" dir="rtl">
+
+    <md-toolbar flex>
+        <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+            
+            <p>הזמנה</p>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="hide()" aria-label="Menu">
+                <ng-md-icon icon="close" style="fill: white"></ng-md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+
+    <md-content layout-padding md-scroll-y style="height: 90%" dir="rtl">
+            <items-list items="order.items" department-name="'סניף ' + order.branchName + ' ' + (order.createdDate | date:'dd/MM')" defult-open="true" 
+                        can-shrink="false"
+                        style="width: 100%"></items-list>
+    </md-content>
+
+
+</md-dialog>

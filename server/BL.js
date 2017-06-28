@@ -7,6 +7,7 @@
     BL.searchItems = searchItems;
     BL.addOrder = addOrder;
     BL.getAllOrders = getAllOrders;
+    BL.getOrder = getOrder;
 
     var deferred = require('deferred');
     var DAL = require('./DAL');
@@ -75,5 +76,20 @@
 
         return d.promise;
     }
+
+     function getOrder(orderId) {
+        
+        var d = deferred();
+
+        DAL.getOrder(orderId).then(function (result) {
+            d.resolve(result);
+        }, function (error) {
+            d.deferred(error);
+        });
+
+        return d.promise;
+    }
+
+    
 
 })(module.exports);

@@ -11,6 +11,18 @@
 
         var self = this;
 
+        var getOrder = function (orderId) {
+            var req = {
+                method: 'GET',
+                url: '/api/getOrder',
+                params: {
+                    orderId: orderId
+                }
+            };
+
+            return $http(req);
+        }
+
         var addOrder = function (order) {
             var req = {
                 method: 'POST',
@@ -67,7 +79,8 @@
             getCatalog: getCatalog,
             getAllBranches: getAllBranches,
             searchItems: searchItems,
-            getAllOrders: getAllOrders
+            getAllOrders: getAllOrders,
+            getOrder: getOrder
         };
 
         return service;

@@ -7,7 +7,8 @@
             bindings: {
                 items: '=',
                 departmentName: '=',
-                defultOpen: '='
+                defultOpen: '=',
+                canShrink: '='
             },
             controller: itemsListController,
             controllerAs: 'vm',
@@ -18,6 +19,7 @@
 
         var vm = this;
 
+        vm.showArrow = vm.canShrink !== undefined ? vm.canShrink : true;
         vm.showList = vm.defultOpen || false;
         vm.expand_icon = vm.showTasksFilter ? 'expand_less' : 'expand_more';
         vm.toggleFilterSection = function () {

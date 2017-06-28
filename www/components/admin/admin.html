@@ -41,20 +41,21 @@
 
   <div>
     <md-list layout="column" layout-fill flex>
+      <md-list-item ng-click="vm.viewMode = 'ordersStatus'" ng-class="{'list-item-active': vm.viewMode === 'ordersStatus'}">
+        <!--<md-icon style="padding-right: 16px; color: #000000">timeline</md-icon>-->
+        <p>מצב הזמנות</p>
+      </md-list-item>
       <md-list-item ng-click="vm.viewMode = 'ordersManager'" ng-class="{'list-item-active': vm.viewMode === 'ordersManager'}">
-        <md-icon style="padding-right: 16px; color: #000000">view_quilt</md-icon>
-        <p>דוחות הזמנות</p>
+        <!--<md-icon style="padding-right: 16px; color: #000000">view_quilt</md-icon>-->
+        <p>ניהול הזמנות</p>
       </md-list-item>
       <md-list-item ng-href="#/admin">
-        <md-icon style="padding-right: 16px; color: #000000">pie_chart</md-icon>
+        <!--<md-icon style="padding-right: 16px; color: #000000">pie_chart</md-icon>-->
         <p>דוחות מלאי</p>
       </md-list-item>
       <md-list-item ng-click="vm.viewMode = 'usersManager'" ng-class="{'list-item-active': vm.viewMode === 'usersManager'}">
-        <md-icon style="padding-right: 16px; color: #000000">people_outline</md-icon>
+        <!--<md-icon style="padding-right: 16px; color: #000000">people_outline</md-icon>-->
         <p>ניהול סניפים</p>
-      </md-list-item>
-      <md-list-item>
-
       </md-list-item>
     </md-list>
   </div>
@@ -63,7 +64,7 @@
 
 <md-content layout-padding md-scroll-y style="height: 90%">
 
-
+      <dashboard ng-if="vm.viewMode === 'ordersStatus'"></dashboard>
       <users-manager ng-if="vm.viewMode === 'usersManager'"></users-manager>
       <orders-manager ng-if="vm.viewMode === 'ordersManager'"></orders-manager>
 

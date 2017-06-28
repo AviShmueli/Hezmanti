@@ -3,7 +3,7 @@
         <md-card-title-text>
             <h3>{{vm.departmentName}}</h3>
         </md-card-title-text>
-        <md-button class="md-icon-button" ng-click="vm.toggleFilterSection()" aria-label="toggle">
+        <md-button class="md-icon-button" ng-click="vm.toggleFilterSection()" aria-label="toggle" ng-if="vm.showArrow">
             <ng-md-icon id="expand_more_icon" icon="{{vm.expand_icon}}" options='{"rotation": "counterclock"}'></ng-md-icon>
         </md-button>
     </md-card-title>
@@ -19,7 +19,8 @@
             </thead>-->
             <tbody md-body>
                 <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="item in vm.items">
-                    <td md-cell style="padding: 0 6px; font-size: 15px; width: 80%">{{::item.name}}</td>
+                    <td md-cell style="padding: 0 6px; font-size: 15px; width: 80%" ng-if="item.name !== undefined">{{::item.name}}</td>
+                    <td md-cell style="padding: 0 6px; font-size: 15px; width: 80%" ng-if="item.itemName !== undefined">{{::item.itemName}}</td>
                     <!--<td md-cell mdNumeric>{{item.serialNumber}}</td>-->
                     <td md-cell style="padding: 0 0px 0px 20px;">
                         <input type="number" ng-model="item.count" min="1" max="9999" ng-change="vm.itemCountInputBlur(item)">

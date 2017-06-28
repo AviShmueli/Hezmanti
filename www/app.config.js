@@ -36,7 +36,10 @@
             url: "/viewOrder",
             templateUrl: "components/order/viewOrder.html",
             controller: "viewOrderController",
-            controllerAs: "vm"
+            controllerAs: "vm",
+            locals: {
+                order: null
+            }
         });
 
         $stateProvider.state("stocktaking", {

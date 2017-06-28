@@ -7,7 +7,8 @@
             'ngMaterial',
             'ngStorage',
             'ngMdIcons',
-            'md.data.table'
+            'md.data.table',
+            'ngFileSaver'
         ]);
 
 })();
