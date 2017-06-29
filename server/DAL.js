@@ -10,6 +10,8 @@
     DAL.addOrder = addOrder;
     DAL.getAllOrders = getAllOrders;
     DAL.getOrder = getOrder;
+    DAL.updateOrder = updateOrder;
+    DAL.getAllOrdersCount = getAllOrdersCount;
 
 
     var deferred = require('deferred');
@@ -204,12 +206,53 @@
         return d.promise;
     }
 
-    function getAllOrders() {
+    function updateOrder(order) {
+        var d = deferred();
+
+        var orderId = order._id;
+
+        delete order._id;
+
+        getCollection('gorme-orders').then(function (mongo) {
+
+
+
+            mongo.collection.findAndModify({
+                    _id: new ObjectID(orderId)
+                }, [
+                    ['_id', 'asc']
+                ], {
+                    $set: order
+                }, {
+                    new: true
+                },
+                function (err, results) {
+
+                    if (err) {
+                        var errorObj = {
+                            message: "error while trying to update Order :",
+                            error: err
+                        };
+                        mongo.db.close();
+                        d.reject(errorObj);
+                    }
+
+                    mongo.db.close();
+                    d.resolve(results);
+                });
+        });
+
+        return d.promise;
+    }
+
+    function getAllOrders(filter, options) {
         var d = deferred();
 
         getCollection('gorme-orders').then(function (mongo) {
 
-            mongo.collection.find({}).toArray(function (err, result) {
+            mongo.collection.find(filter, options).sort({
+                createdTime: -1
+            }).toArray(function (err, result) {
                 if (err) {
                     var errorObj = {
                         message: "error while trying to get all Orders: ",
@@ -232,10 +275,36 @@
 
         getCollection('gorme-orders').then(function (mongo) {
 
-            mongo.collection.findOne({_id: new ObjectID(orderId)}, function (err, result) {
+            mongo.collection.findOne({
+                _id: new ObjectID(orderId)
+            }, function (err, result) {
                 if (err) {
                     var errorObj = {
                         message: "error while trying to get Order: ",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(result);
+            });
+        });
+
+        return d.promise;
+    }
+
+    function getAllOrdersCount(filter) {
+
+        var d = deferred();
+
+        getCollection('gorme-orders').then(function (mongo) {
+
+            mongo.collection.count(filter, function (err, result) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to get All orders count: ",
                         error: err
                     };
                     mongo.db.close();

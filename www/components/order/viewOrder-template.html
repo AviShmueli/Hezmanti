@@ -1,0 +1,24 @@
+<div layout="column" layout-align="center center" flex>
+  
+    <search-item ng-if="vm.editMode" style="width: 100%; min-width: 360px;" item-count-changed="vm.itemCountChanged"></search-item>
+
+    <div style="width: 100%; min-width: 360px;">
+        <div class="edit-button" ng-if="vm.items.length > 0">
+            <md-button aria-labe="edit" class="md-fab md-mini md-hue-1 md-icon-button" ng-click="vm.switchMode()">
+                <ng-md-icon icon="{{vm.buttonIcon}}" options='{"rotation": "counterclock"}'></ng-md-icon>
+            </md-button>
+        </div>
+
+        <items-list ng-if="vm.items.length > 0" items="vm.items" list-title="vm.orderTitle" defult-open="true" can-shrink="false"
+            style="width: 100%" edit-mode="vm.editMode" item-count-changed="vm.itemCountChanged"></items-list>
+    </div>
+    <md-card style="width: 100%" layout-margin ng-if="vm.items.length < 1">
+        <md-card-title class="management-filter-card-title">
+            <ng-md-icon icon="info_outline" class="message-icon" style="fill: brown" size="40"></ng-md-icon>
+            <md-card-title-text>
+                <h3> לא נבחרו פריטים ! </h3>
+                <h4>אנא בחר פריטים</h4>
+            </md-card-title-text>
+        </md-card-title>
+    </md-card>
+</div>

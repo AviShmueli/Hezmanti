@@ -21,31 +21,21 @@
         $stateProvider.state("/", {
             url: "/",
             templateUrl: "components/entry/entryScreen.html",
-            controller: "entryScreenController",
+            controller: "EntryScreenController",
             controllerAs: "vm"
         });
 
-        $stateProvider.state("newOrder", {
-            url: "/newOrder",
-            templateUrl: "components/order/newOrder.html",
-            controller: "newOrderController",
+        $stateProvider.state("order", {
+            url: "/order",
+            templateUrl: "components/order/order.html",
+            controller: "OrderController",
             controllerAs: "vm"
-        });
-
-        $stateProvider.state("viewOrder", {
-            url: "/viewOrder",
-            templateUrl: "components/order/viewOrder.html",
-            controller: "viewOrderController",
-            controllerAs: "vm",
-            locals: {
-                order: null
-            }
         });
 
         $stateProvider.state("stocktaking", {
             url: "/stocktaking",
             templateUrl: "components/stocktaking/stocktaking.html",
-            controller: "stocktakingController",
+            controller: "StocktakingController",
             controllerAs: "vm"
         });
 

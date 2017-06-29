@@ -3,14 +3,14 @@
 
     angular
         .module('app')
-        .controller('entryScreenController', entryScreenController);
+        .controller('EntryScreenController', EntryScreenController);
 
-    entryScreenController.$inject = [
+    EntryScreenController.$inject = [
         '$rootScope', '$scope', 'server', '$state', '$interval',
         '$log', 'device', 'dataContext', '$location'
     ];
 
-    function entryScreenController($rootScope, $scope, server, $state, $interval,
+    function EntryScreenController($rootScope, $scope, server, $state, $interval,
         $log, device, dataContext, $location) {
 
         var vm = this;

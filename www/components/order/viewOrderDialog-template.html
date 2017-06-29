@@ -1,6 +1,6 @@
 <md-dialog aria-label="order dialog" dir="rtl">
 
-    <md-toolbar flex>
+    <md-toolbar>
         <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
             
             <p>הזמנה</p>
@@ -12,9 +12,8 @@
     </md-toolbar>
 
     <md-content layout-padding md-scroll-y style="height: 90%" dir="rtl">
-            <items-list items="order.items" department-name="'סניף ' + order.branchName + ' ' + (order.createdDate | date:'dd/MM')" defult-open="true" 
-                        can-shrink="false"
-                        style="width: 100%"></items-list>
+            <view-order items="order.items" order-title="'סניף ' + order.branchName + ' ' + (order.createdDate | date:'dd/MM')" 
+                        order-changed="orderChanged" update-order="updateOrder"></view-order>
     </md-content>
 
 

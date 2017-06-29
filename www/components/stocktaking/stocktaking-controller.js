@@ -3,14 +3,14 @@
 
     angular
         .module('app')
-        .controller('stocktakingController', stocktakingController);
+        .controller('StocktakingController', StocktakingController);
 
-    stocktakingController.$inject = [
+    StocktakingController.$inject = [
         '$rootScope', '$scope', 'server', '$state', '$interval',
         '$log', 'device', 'dataContext', '$location'
     ];
 
-    function stocktakingController($rootScope, $scope, server, $state, $interval,
+    function StocktakingController($rootScope, $scope, server, $state, $interval,
         $log, device, dataContext, $location) {
 
         var vm = this;

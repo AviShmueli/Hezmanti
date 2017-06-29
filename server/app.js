@@ -58,7 +58,7 @@ app.get('/api/searchItems', function (req, res) {
 });
 
 app.get('/api/getAllOrders', function (req, res) {
-    BL.getAllOrders().then(function (result) {
+    BL.getAllOrders(req.query).then(function (result) {
         res.send(result);
     }, function (error) {
         winston.log('error', error.message, error.error);
@@ -82,6 +82,28 @@ app.post('/api/addOrder', function (req, res) {
         winston.log('error', error.message, error.error);
         res.status(500).send(error);
     });
+});
+
+app.post('/api/updateOrder', function (req, res) {
+    BL.updateOrder(req.body.order).then(function (result) {
+        res.send(result);
+    }, function (error) {
+        winston.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
+});
+
+app.get('/api/getAllOrdersCount', function (req, res) {
+
+    var filter = JSON.parse(req.query.filter);
+
+    BL.getAllOrdersCount(filter).then(function(result) {
+        res.send(result.toString()); 
+    }, function(error) {
+        winston.log('error', error.message , error.error);
+        res.status(500).send(error); 
+    });
+
 });
 
 //var catalog = 

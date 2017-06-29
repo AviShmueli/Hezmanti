@@ -8,6 +8,8 @@
     BL.addOrder = addOrder;
     BL.getAllOrders = getAllOrders;
     BL.getOrder = getOrder;
+    BL.updateOrder = updateOrder;
+    BL.getAllOrdersCount = getAllOrdersCount;
 
     var deferred = require('deferred');
     var DAL = require('./DAL');
@@ -64,11 +66,34 @@
         return d.promise;
     }
 
-    function getAllOrders() {
+    function updateOrder(order) {
         
         var d = deferred();
 
-        DAL.getAllOrders().then(function (result) {
+        DAL.updateOrder(order).then(function (result) {
+            d.resolve(result);
+        }, function (error) {
+            d.deferred(error);
+        });
+
+        return d.promise;
+    }
+
+    function getAllOrders(query) {
+        
+        var d = deferred();
+
+        var order = query.order,
+            limit = parseInt(query.limit),
+            page = query.page,
+            filter = JSON.parse(query.filter);
+
+        var options = {
+            "limit": limit,
+            "skip": (page - 1) * limit
+        };
+
+        DAL.getAllOrders(filter, options).then(function (result) {
             d.resolve(result);
         }, function (error) {
             d.deferred(error);
@@ -82,6 +107,19 @@
         var d = deferred();
 
         DAL.getOrder(orderId).then(function (result) {
+            d.resolve(result);
+        }, function (error) {
+            d.deferred(error);
+        });
+
+        return d.promise;
+    }
+
+    function getAllOrdersCount(filter) {
+
+        var d = deferred();
+
+        DAL.getAllOrdersCount(filter).then(function (result) {
             d.resolve(result);
         }, function (error) {
             d.deferred(error);

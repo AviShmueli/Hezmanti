@@ -187,3 +187,18 @@ md-badge{
 .brunch-good{
         background-color: #8bc34a !important;
 }
+
+.edit-button{
+    position: relative;
+    top: 65px;
+    left: 20px;
+    direction: ltr;
+}
+
+md-content{
+    background-color: antiquewhite;
+}
+
+md-toast{
+    direction: rtl;
+}

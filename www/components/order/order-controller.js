@@ -3,14 +3,14 @@
 
     angular
         .module('app')
-        .controller('viewOrderController', viewOrderController);
+        .controller('OrderController', OrderController);
 
-    viewOrderController.$inject = [
+    OrderController.$inject = [
         '$rootScope', '$scope', 'server', '$state', '$interval',
         '$log', 'device', 'dataContext', '$location', '$filter'
     ];
 
-    function viewOrderController($rootScope, $scope, server, $state, $interval,
+    function OrderController($rootScope, $scope, server, $state, $interval,
         $log, device, dataContext, $location, $filter) {
 
         var vm = this;
@@ -23,6 +23,27 @@
         vm.currDate = $filter('date')(new Date(), 'dd/MM');
         vm.showSucseesMessage = false;
         vm.showErrorMessage = false;
+
+        vm.viewMode = 'newOrder';
+
+        vm.cardCount = function () {
+            return dataContext.getCartCount();
+        }
+
+        vm.switchMode = function(toMode){
+            if (toMode === 'new') {
+                vm.viewMode = 'newOrder';
+                vm.showSucseesMessage = false;
+                vm.showErrorMessage = false;
+            }
+
+            if (toMode === 'view') {
+                vm.viewMode = 'viewOrder';
+                vm.showSucseesMessage = false;
+                vm.showErrorMessage = false;
+                vm.cardItems = dataContext.getCardItemsList();
+            }
+        }
 
         vm.sendOrder = function(){
             if (vm.cardItems.length > 0) {

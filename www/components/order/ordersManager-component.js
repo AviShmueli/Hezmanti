@@ -12,7 +12,7 @@
             templateUrl: 'components/order/ordersManager-template.html'
         });
 
-    function ordersManagerController(server, $q, filesHandler, $filter, $mdDialog) {
+    function ordersManagerController(server, $q, filesHandler, $filter, $mdDialog, $timeout, dataContext) {
 
         var vm = this;
 
@@ -26,14 +26,6 @@
                 vm.expand_icon = 'expand_less';
             }
         }
-
-        var deferred = $q.defer();
-        vm.promise = deferred.promise;
-
-        server.getAllOrders().then(function (response) {
-            vm.orders = response.data;
-            deferred.resolve();
-        })
 
         vm.downloadExel = function (orderId) {
             server.getOrder(orderId).then(function (response) {
@@ -68,19 +60,16 @@
 
         vm.openOrderDialog = function (order, ev) {
             $mdDialog.show({
-                    controller: function ($scope, $mdDialog) {
-
-                        $scope.hide = function () {
-                            $mdDialog.hide();
-                        }
-                        $scope.avi = 'avi';
-                        $scope.order = order;
-                    },
+                    controller: 'ViewOrderDialogController',
                     templateUrl: '/components/order/viewOrderDialog-template.html',
                     controllerAs: vm,
                     parent: angular.element(document.body),
                     targetEvent: ev,
-                    clickOutsideToClose: true
+                    clickOutsideToClose: true,
+                    fullscreen: true,
+                    locals: {
+                        order: order
+                    }
                 })
                 .then(function (answer) {
                     //$scope.status = 'You said the information was "' + answer + '".';
@@ -88,6 +77,83 @@
                     //$scope.status = 'You cancelled the dialog.';
                 });
         }
+
+        vm.ordersFilter = {};
+        vm.totalOrderCount = 0;
+        vm.query = {
+            order: 'createdTime',
+            limit: 10,
+            page: 1
+        };
+
+
+
+        vm.getOrders = function () {
+
+            vm.query.order = 'createdTime';
+
+            /*if (vm.tasksFilterFreeText !== undefined && vm.tasksFilterFreeText !== '') {
+                vm.tasksFilter.description = {
+                    "$regex": vm.tasksFilterFreeText,
+                    "$options": "i"
+                };
+            } else {
+                vm.tasksFilter['description'] = '';
+            }
+
+            for (var property in vm.tasksFilter) {
+                if (vm.tasksFilter.hasOwnProperty(property)) {
+                    if (property === 'cliqaId' &&
+                        typeof vm.tasksFilter[property] !== 'object' &&
+                        vm.tasksFilter[property].indexOf('$in') !== -1) {
+                        vm.tasksFilter[property] = JSON.parse(vm.tasksFilter[property]);
+                    }
+                    if (vm.tasksFilter[property] === '') {
+                        delete vm.tasksFilter[property];
+                    }
+                }
+            }*/
+
+
+            server.getAllOrdersCount(vm.ordersFilter).then(function (response) {
+                vm.totalOrderCount = response.data;
+            });
+
+            var deferred = $q.defer();
+            vm.promise = deferred.promise;
+
+            server.getAllOrders(vm.query, vm.ordersFilter).then(function (response) {
+                vm.orders = response.data;
+                deferred.resolve();
+            })
+        };
+
+        vm.branches = dataContext.getBranches();
+        vm.networks = dataContext.getNetworks();
+
+        if (!vm.branches || !vm.networks) {
+            server.getAllBranches().then(function (response) {
+                var branchesMap = {};
+                var networksList = [];
+                for (var index = 0; index < response.data.length; index++) {
+                    var b = response.data[index];
+                    if (!branchesMap.hasOwnProperty(b.serialNumber)) {
+                        branchesMap[b.serialNumber] = {name: b.name, id: b.serialNumber};
+                    }
+                    if (networksList.indexOf(b.network) === -1) {
+                        networksList.push(b.network);
+                    }
+                }
+                vm.branches = Object.values(branchesMap);
+                vm.networks = networksList;
+                dataContext.setBranches(vm.branches);
+                dataContext.setNetworks(networksList);
+            })
+        }
+        
+        $timeout(function () {
+            vm.getOrders();
+        }, 0);
 
     }
 

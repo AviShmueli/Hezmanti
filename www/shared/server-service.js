@@ -35,6 +35,19 @@
             return $http(req);
         }
 
+        var updateOrder = function (order, items) {
+            var req = {
+                method: 'POST',
+                url: '/api/updateOrder',
+                data: {
+                    order: order,
+                    items: items
+                }
+            };
+
+            return $http(req);
+        }
+
         var getAllBranches = function () {
             var req = {
                 method: 'GET',
@@ -65,10 +78,28 @@
             return $http(req);
         }
 
-        var getAllOrders = function () {
+        var getAllOrders = function (query, filter) {
             var req = {
                 method: 'GET',
-                url: '/api/getAllOrders'
+                url: '/api/getAllOrders',
+                params: {
+                    order: query.order,
+                    limit: query.limit,
+                    page: query.page,
+                    filter: filter
+                }
+            };
+
+            return $http(req);
+        }
+
+        var getAllOrdersCount = function (filter) {
+            var req = {
+                method: 'GET',
+                url: '/api/getAllOrdersCount',
+                params: {
+                    filter: filter
+                }
             };
 
             return $http(req);
@@ -80,7 +111,9 @@
             getAllBranches: getAllBranches,
             searchItems: searchItems,
             getAllOrders: getAllOrders,
-            getOrder: getOrder
+            getOrder: getOrder,
+            updateOrder: updateOrder,
+            getAllOrdersCount: getAllOrdersCount
         };
 
         return service;

@@ -5,7 +5,7 @@
         .module('app')
         .component('searchItem', {
             bindings: {
-
+                itemCountChanged: '='
             },
             controller: searchItemController,
             controllerAs: 'vm',
@@ -55,6 +55,12 @@
             vm.searchResults = null;
             vm.searchIcon = 'search';
             vm.minimumRequiered = false;
+        }
+
+        vm.countChanged = function(item){
+            if (vm.itemCountChanged) {
+                vm.itemCountChanged(item);                        
+            }
         }
     }
 

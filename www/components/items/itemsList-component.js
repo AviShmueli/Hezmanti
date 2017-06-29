@@ -6,22 +6,29 @@
         .component('itemsList', {
             bindings: {
                 items: '=',
-                departmentName: '=',
+                listTitle: '=',
                 defultOpen: '=',
-                canShrink: '='
+                canShrink: '=',
+                departmentId: '=',
+                editMode: '=',
+                itemCountChanged: '='
             },
             controller: itemsListController,
             controllerAs: 'vm',
             templateUrl: 'components/items/itemsList-template.html'
         });
 
-    function itemsListController(server, $q, dataContext) {
+    function itemsListController(server, $q, dataContext, device) {
 
         var vm = this;
 
+        vm.showAvatar = vm.departmentId !== undefined ? true : false;
         vm.showArrow = vm.canShrink !== undefined ? vm.canShrink : true;
         vm.showList = vm.defultOpen || false;
         vm.expand_icon = vm.showTasksFilter ? 'expand_less' : 'expand_more';
+        
+        vm.imagesPath = device.getImagesPath();
+        
         vm.toggleFilterSection = function () {
             if (vm.showList === true) {
                 vm.showList = false;
@@ -33,11 +40,8 @@
         }
 
         vm.itemCountInputBlur = function(item){
-            if (item.count !== undefined && item.count !== '' && item.count > 0) {
-                dataContext.updateCard(item);
-            }
-            else{
-                dataContext.removeItemFromCard(item);
+            if (vm.itemCountChanged) {
+                vm.itemCountChanged(item);                        
             }
         }
     }

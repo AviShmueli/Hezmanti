@@ -1,12 +1,26 @@
 <md-card layout-margin>
-    <md-card-title class="management-filter-card-title">
+    <md-card-header style="margin: 24px 10px 2px 5px; padding: 0">
+        <md-card-avatar ng-if="vm.showAvatar">
+            <img class="md-user-avatar" style="width:  32px;" ng-src="{{::vm.imagesPath + '/assets/images/departments/' + vm.departmentId + '.png'}}">
+        </md-card-avatar>
+        <md-card-header-text>
+            <span class="md-title" style="font-size: x-large;">{{::vm.listTitle}}</span>
+        </md-card-header-text>
+        <md-card-actions>
+            <md-card-icon-actions>
+                <md-button style="bottom: 12px;" class="md-icon-button" ng-click="vm.toggleFilterSection()" aria-label="toggle" ng-if="vm.showArrow">
+                    <ng-md-icon id="expand_more_icon" icon="{{vm.expand_icon}}" options='{"rotation": "counterclock"}'></ng-md-icon>
+                </md-button>
+            </md-card-icon-actions>
+        </md-card-actions>
+    </md-card-header>
+
+    <!--<md-card-title class="management-filter-card-title">
         <md-card-title-text>
-            <h3>{{vm.departmentName}}</h3>
+            <h3></h3>
         </md-card-title-text>
-        <md-button class="md-icon-button" ng-click="vm.toggleFilterSection()" aria-label="toggle" ng-if="vm.showArrow">
-            <ng-md-icon id="expand_more_icon" icon="{{vm.expand_icon}}" options='{"rotation": "counterclock"}'></ng-md-icon>
-        </md-button>
-    </md-card-title>
+        
+    </md-card-title>-->
     <md-table-container ng-if="vm.showList">
         <table id="items-table" md-table md-row-select multiple ng-model="selected" md-progress="vm.promise">
             <!--<thead md-head>
@@ -23,7 +37,8 @@
                     <td md-cell style="padding: 0 6px; font-size: 15px; width: 80%" ng-if="item.itemName !== undefined">{{::item.itemName}}</td>
                     <!--<td md-cell mdNumeric>{{item.serialNumber}}</td>-->
                     <td md-cell style="padding: 0 0px 0px 20px;">
-                        <input type="number" ng-model="item.count" min="1" max="9999" ng-change="vm.itemCountInputBlur(item)">
+                        <input ng-if="vm.editMode" type="number" ng-model="item.count" min="1" max="9999" ng-change="vm.itemCountInputBlur(item)">
+                        <span ng-if="!vm.editMode" > {{::item.count}} </span>
                     </td>
                 </tr>
             </tbody>

@@ -11,7 +11,7 @@
 
         var vm = this;
         vm.imagesPath = device.getImagesPath();
-        vm.viewMode = 'ordersStatus';
+        vm.viewMode = 'ordersManager';
         
         vm.showSideNav = $location.search().s !== undefined ? false : true; 
 
