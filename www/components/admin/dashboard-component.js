@@ -12,10 +12,11 @@
             templateUrl: 'components/admin/dashboard-template.html'
         });
 
-    function dashboardController(server, $q, $interval) {
+    function dashboardController(server, $q, $interval, $location) {
 
         var vm = this;
         vm.allBranches = [];
+        vm.showLaunchBtn = $location.search().s !== undefined ? false : true;
 
         server.getAllBranches().then(function(response){
             vm.allBranches = response.data;

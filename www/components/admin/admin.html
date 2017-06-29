@@ -18,7 +18,7 @@
   </div>
 </md-toolbar>
 
-<md-sidenav class="md-sidenav-right float-right height-100P" md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')" dir="rtl">
+<md-sidenav class="md-sidenav-right float-right height-100P" md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')" dir="rtl" ng-if="vm.showSideNav">
   <md-toolbar class="md-tall toolBar" dir="rtl">
     <div class="text-align-left" hide-gt-sm>
       <md-button aria-label="Open phone interactions menu" class="md-icon-button" ng-click="vm.closeSidenav()">
