@@ -42,7 +42,7 @@
                             <tr md-row>
                                 <th md-column md-order-by="serialNumber">מספר סניף</th>
                                 <th md-column md-order-by="name"><span>שם סניף</span></th>
-                                <th md-column md-order-by="network">רשת</th>
+                                <th md-column md-order-by="networkName">רשת</th>
                                 <th md-column>קוד זיהוי</th>
                             </tr>
                         </thead>
@@ -50,7 +50,7 @@
                             <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="branch in vm.branches | orderBy: vm.query.order">
                                 <td md-cell mdNumeric>{{branch.serialNumber}}</td>
                                 <td md-cell>{{branch.name}}</td>
-                                <td md-cell>{{branch.network}}</td>
+                                <td md-cell>{{branch.networkName}}</td>
                                 <td md-cell>{{branch.verifyCode}}</td>
                             </tr>
                         </tbody>

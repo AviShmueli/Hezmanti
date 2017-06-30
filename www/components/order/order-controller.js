@@ -19,7 +19,7 @@
             $location.path('/' + to);
         }
 
-        vm.cardItems = dataContext.getCardItemsList();
+        vm.cardItems = dataContext.getCartItemsList();
         vm.currDate = $filter('date')(new Date(), 'dd/MM');
         vm.showSucseesMessage = false;
         vm.showErrorMessage = false;
@@ -41,7 +41,7 @@
                 vm.viewMode = 'viewOrder';
                 vm.showSucseesMessage = false;
                 vm.showErrorMessage = false;
-                vm.cardItems = dataContext.getCardItemsList();
+                vm.cardItems = dataContext.getCartItemsList();
             }
         }
 
@@ -55,6 +55,7 @@
 
                 var order = {
                     branchName: 'רעננה',
+                    networkId: '0',
                     branchId: '1',
                     createdDate: new Date(),
                     items:  itemsOrderList

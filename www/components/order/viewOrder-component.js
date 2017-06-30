@@ -29,7 +29,7 @@
         vm.switchMode = function () {
             if (vm.editMode) {
                 updateOrder();
-                //vm.items =  dataContext.getCardItemsList();
+                //vm.items =  dataContext.getCartItemsList();
                 vm.editMode = false;
                 vm.buttonIcon = 'edit';
             } else {
@@ -51,12 +51,12 @@
             } 
             else {
                 if (item.count !== undefined && item.count !== '' && item.count > 0) {
-                    var isNew = dataContext.updateCard(item);
+                    var isNew = dataContext.updateCart(item);
                     if (isNew) {
                         vm.items.push(item);
                     }
                 } else {
-                    dataContext.removeItemFromCard(item);
+                    dataContext.removeItemFromCart(item);
                 }
             }
         }

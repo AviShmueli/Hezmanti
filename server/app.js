@@ -106,7 +106,7 @@ app.get('/api/getAllOrdersCount', function (req, res) {
 
 });
 
-//var catalog = 
+//var newBranches = 
 
 //DAL.insertToCatalog(catalog);
 //DAL.insertNewBranches(newBranches);

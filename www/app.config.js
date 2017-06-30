@@ -6,10 +6,14 @@
         .config(config)
         .constant('SERVER_URL', 'https://hezmanti-prod.herokuapp.com');
 
-    config.$inject = ['$stateProvider', '$urlRouterProvider', '$mdThemingProvider', '$httpProvider'];
+    config.$inject = ['$stateProvider', '$urlRouterProvider', '$mdThemingProvider', '$httpProvider',
+                      '$mdDateLocaleProvider', 'moment'];
 
-    function config($stateProvider, $urlRouterProvider, $mdThemingProvider, $httpProvider) {
-
+    function config($stateProvider, $urlRouterProvider, $mdThemingProvider, $httpProvider,
+                    $mdDateLocaleProvider, moment) {
+        $mdDateLocaleProvider.formatDate = function(date) {
+            return moment(date).format('DD/MM/YYYY');
+        };
         $httpProvider.interceptors.push('appInterceptor');
 
         $mdThemingProvider.theme('default')

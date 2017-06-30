@@ -92,27 +92,22 @@
 
             vm.query.order = 'createdTime';
 
-            /*if (vm.tasksFilterFreeText !== undefined && vm.tasksFilterFreeText !== '') {
-                vm.tasksFilter.description = {
-                    "$regex": vm.tasksFilterFreeText,
-                    "$options": "i"
-                };
-            } else {
-                vm.tasksFilter['description'] = '';
-            }
+            // if (vm.ordersFilterFreeText !== undefined && vm.ordersFilterFreeText !== '') {
+            //     vm.tasksFilter.description = {
+            //         "$regex": vm.ordersFilterFreeText,
+            //         "$options": "i"
+            //     };
+            // } else {
+            //     vm.ordersFilter['description'] = '';
+            // }
 
-            for (var property in vm.tasksFilter) {
-                if (vm.tasksFilter.hasOwnProperty(property)) {
-                    if (property === 'cliqaId' &&
-                        typeof vm.tasksFilter[property] !== 'object' &&
-                        vm.tasksFilter[property].indexOf('$in') !== -1) {
-                        vm.tasksFilter[property] = JSON.parse(vm.tasksFilter[property]);
-                    }
-                    if (vm.tasksFilter[property] === '') {
-                        delete vm.tasksFilter[property];
+            for (var property in vm.ordersFilter) {
+                if (vm.ordersFilter.hasOwnProperty(property)) {
+                    if (vm.ordersFilter[property] === '') {
+                        delete vm.ordersFilter[property];
                     }
                 }
-            }*/
+            }
 
 
             server.getAllOrdersCount(vm.ordersFilter).then(function (response) {
@@ -130,24 +125,33 @@
 
         vm.branches = dataContext.getBranches();
         vm.networks = dataContext.getNetworks();
+        vm.networksBranchesMap = dataContext.getNetworksBranchesMap();
 
-        if (!vm.branches || !vm.networks) {
+        if (!vm.branches || !vm.networks || !vm.networksBranchesMap) {
             server.getAllBranches().then(function (response) {
                 var branchesMap = {};
-                var networksList = [];
+                var networksMap = {};
+                var networksBranchesMap = {};
                 for (var index = 0; index < response.data.length; index++) {
                     var b = response.data[index];
                     if (!branchesMap.hasOwnProperty(b.serialNumber)) {
                         branchesMap[b.serialNumber] = {name: b.name, id: b.serialNumber};
                     }
-                    if (networksList.indexOf(b.network) === -1) {
-                        networksList.push(b.network);
+                    if (!networksMap.hasOwnProperty(b.networkId)) {
+                        networksMap[b.networkId] = {name: b.networkName, id: b.networkId};
                     }
+                    if (!networksBranchesMap.hasOwnProperty(b.networkId)) {
+                        networksBranchesMap[b.networkId] = [];
+                    }
+                    networksBranchesMap[b.networkId].push({name: b.name, id: b.serialNumber});
                 }
                 vm.branches = Object.values(branchesMap);
-                vm.networks = networksList;
+                vm.networks = Object.values(networksMap);
+                vm.networksBranchesMap = networksBranchesMap;
+
                 dataContext.setBranches(vm.branches);
-                dataContext.setNetworks(networksList);
+                dataContext.setNetworks(vm.networks);
+                dataContext.setNetworksBranchesMap(networksBranchesMap);
             })
         }
         

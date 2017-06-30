@@ -8,7 +8,8 @@
             'ngStorage',
             'ngMdIcons',
             'md.data.table',
-            'ngFileSaver'
+            'ngFileSaver',
+            'angularMoment',
         ]);
 
 })();

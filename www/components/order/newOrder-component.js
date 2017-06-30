@@ -39,13 +39,10 @@
 
         vm.itemCountChanged = function (item) {
             if (item.count !== undefined && item.count !== '' && item.count > 0) {
-                var isNew = dataContext.updateCard(item);
-                 if (isNew) {
-                 //    vm.items.push(item);
-                 }
+                dataContext.updateCart(item);
             }
             else{
-                dataContext.removeItemFromCard(item);
+                dataContext.removeItemFromCart(item);
             }
         }
 

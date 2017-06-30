@@ -15,21 +15,37 @@
                     <div layout-gt-xs="row" layout="column">
 
                         <md-input-container class="md-block" flex>
-                            <label>סניף</label>
-                            <md-select md-no-asterisk ng-model="vm.ordersFilter.branchId" name="user">
-                                <md-option ng-repeat="(key, value) in vm.branches" value="{{value.id}}" dir="rtl">
+                            <label>רשת</label>
+                            <md-select md-no-asterisk ng-model="vm.ordersFilter.networkId" name="user">
+                                <md-option value="" dir="rtl">
+                                    הכל
+                                </md-option>
+                                <md-option ng-repeat="(key, value) in vm.networks" value="{{value.id}}" dir="rtl">
                                     {{value.name}}
                                 </md-option>
                             </md-select>
                         </md-input-container>
 
                         <md-input-container class="md-block" flex>
-                            <label>רשת</label>
+                            <label>סניף</label>
                             <md-select md-no-asterisk ng-model="vm.ordersFilter.branchId" name="user">
-                                <md-option ng-repeat="network in vm.networks" value="{{network}}" dir="rtl">
-                                    {{network}}
+                                <md-option value="" dir="rtl">
+                                    הכל
+                                </md-option>
+                                <md-option ng-if="vm.ordersFilter.networkId === undefined || vm.ordersFilter.networkId === ''" ng-repeat="(key, value) in vm.branches"
+                                    value="{{value.id}}" dir="rtl">
+                                    {{value.name}}
+                                </md-option>
+                                <md-option ng-if="vm.ordersFilter.networkId !== undefined && vm.ordersFilter.networkId !== ''" ng-repeat="(key, value) in vm.networksBranchesMap[vm.ordersFilter.networkId]"
+                                    value="{{value.id}}" dir="rtl">
+                                    {{value.name}}
                                 </md-option>
                             </md-select>
+                        </md-input-container>
+
+                        <md-input-container>
+                            <label>תאריך הזמנה</label>
+                            <md-datepicker ng-model="vm.ordersFilter.createdDate"></md-datepicker>
                         </md-input-container>
 
                         <md-input-container class="md-block" flex>
@@ -37,16 +53,17 @@
                             <input ng-model="vm.ordersFilterFreeText" name="name">
                         </md-input-container>
 
-                        <!--<div class="md-secondary md-block" flex layout="row" layout-align="end center">
-                            <md-button ng-click="vm.getTasks()" class="md-warn md-raised md-hue-1">סנן</md-button>
-                        </div>-->
+                        <div class="md-secondary md-block" flex layout="row" layout-align="end center">
+                            <md-button ng-click="vm.getOrders()" class="md-warn md-raised md-hue-1">סנן</md-button>
+                        </div>
                     </div>
                 </div>
             </md-card>
 
             <md-card layout-margin>
                 <md-table-container>
-                    <table md-table md-row-select multiple ng-model="selected" md-progress="vm.promise"> <!--md-progress="vm.promise"-->
+                    <table md-table md-row-select multiple ng-model="selected" md-progress="vm.promise">
+                        <!--md-progress="vm.promise"-->
                         <thead md-head md-order="vm.query.order" md-order="vm.query.order" md-on-reorder="vm.getOrders">
                             <tr md-row>
                                 <th md-column md-order-by="createdDate">תאריך</th>
@@ -64,8 +81,7 @@
                                 <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{order.items.length}}</td>
                                 <td md-cell>
                                     <md-button ng-click="vm.downloadExel(order._id)" aria-label="download">
-                                        <md-icon style="width:28px;height:28px;"
-                                                md-svg-src="/assets/images/Exel_download.svg">
+                                        <md-icon style="width:28px;height:28px;" md-svg-src="/assets/images/Exel_download.svg">
                                         </md-icon>
                                     </md-button>
                                 </td>

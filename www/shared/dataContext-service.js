@@ -28,12 +28,16 @@
             self.$storage.networks = null;
         }
 
+        if (self.$storage.networksBranchesMap === undefined) {
+            self.$storage.networksBranchesMap = null;
+        }
+
         var getCart = function(){
             return self.$storage.cart || {};
         }
 
         var updateCart = function(item){
-            var card = getCard();
+            var card = getCart();
             if (card.hasOwnProperty(item._id)) {
                 card[item._id].count += item.count;
                 return false;
@@ -55,7 +59,7 @@
             return Object.keys(self.$storage.cart).length;
         }
 
-        var getCardItemsList = function(){
+        var getCartItemsList = function(){
             return Object.values(self.$storage.cart);
         }
 
@@ -87,18 +91,28 @@
             self.$storage.networks = networks;
         }
 
+        var getNetworksBranchesMap = function(){
+            return self.$storage.networksBranchesMap;
+        }
+
+        var setNetworksBranchesMap = function(networksBranchesMap){
+            self.$storage.networksBranchesMap = networksBranchesMap;
+        }
+
         var service = {
             removeItemFromCart: removeItemFromCart,
             updateCart: updateCart,
             getCartCount: getCartCount,
-            getCardItemsList: getCardItemsList,
+            getCartItemsList: getCartItemsList,
             cleanCart: cleanCart,
             setCatalog: setCatalog,
             getCatalog: getCatalog,
             getBranches: getBranches,
             setBranches: setBranches,
             getNetworks: getNetworks,
-            setNetworks: setNetworks
+            setNetworks: setNetworks,
+            getNetworksBranchesMap: getNetworksBranchesMap,
+            setNetworksBranchesMap: setNetworksBranchesMap
         };
 
         return service;

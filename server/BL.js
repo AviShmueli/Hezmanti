@@ -56,6 +56,8 @@
     function addOrder(order) {
         
         var d = deferred();
+        
+        order.createdDate = new Date(order.createdDate);
 
         DAL.addOrder(order).then(function (result) {
             d.resolve(result);
