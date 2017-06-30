@@ -63,7 +63,7 @@
 
                 server.addOrder(order).then(function(response){
                     vm.showSucseesMessage = true;
-                    dataContext.cleanCard();
+                    dataContext.cleanCart();
                 }, function (error) {
                     vm.showErrorMessage = true;
                 });
