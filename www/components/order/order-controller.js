@@ -53,10 +53,20 @@
                     itemsOrderList.push({itemName: item.name, itemSerialNumber: item.serialNumber, count: item.count});
                 }
 
-                var order = {
+                /*var order = {
                     branchName: 'רעננה',
                     networkId: '0',
+                    networkName: 'ח.י.ע.מ',
                     branchId: '1',
+                    createdDate: new Date(),
+                    items:  itemsOrderList
+                }*/
+
+                var order = {
+                    branchName: 'רמלה',
+                    networkId: '1',
+                    networkName: 'יוחננוף',
+                    branchId: '100',
                     createdDate: new Date(),
                     items:  itemsOrderList
                 }

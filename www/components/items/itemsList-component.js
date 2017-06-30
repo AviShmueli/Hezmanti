@@ -18,7 +18,7 @@
             templateUrl: 'components/items/itemsList-template.html'
         });
 
-    function itemsListController(server, $q, dataContext, device) {
+    function itemsListController(server, $q, dataContext, device, $timeout) {
 
         var vm = this;
 
@@ -26,9 +26,9 @@
         vm.showArrow = vm.canShrink !== undefined ? vm.canShrink : true;
         vm.showList = vm.defultOpen || false;
         vm.expand_icon = vm.showTasksFilter ? 'expand_less' : 'expand_more';
-        
+
         vm.imagesPath = device.getImagesPath();
-        
+
         vm.toggleFilterSection = function () {
             if (vm.showList === true) {
                 vm.showList = false;
@@ -39,10 +39,14 @@
             }
         }
 
-        vm.itemCountInputBlur = function(item){
-            if (vm.itemCountChanged) {
-                vm.itemCountChanged(item);                        
-            }
+        var timer;
+        vm.itemCountInputBlur = function (item) {
+            $timeout.cancel(timer);
+            timer = $timeout(function () {
+                if (vm.itemCountChanged) {
+                    vm.itemCountChanged(item);
+                }
+            }, 1000);
         }
     }
 

@@ -57,15 +57,6 @@ app.get('/api/searchItems', function (req, res) {
     });
 });
 
-app.get('/api/getAllOrders', function (req, res) {
-    BL.getAllOrders(req.query).then(function (result) {
-        res.send(result);
-    }, function (error) {
-        winston.log('error', error.message, error.error);
-        res.status(500).send(error);
-    });
-});
-
 app.get('/api/getOrder', function (req, res) {
     BL.getOrder(req.query.orderId).then(function(result){
         res.send(result);
@@ -104,6 +95,15 @@ app.get('/api/getAllOrdersCount', function (req, res) {
         res.status(500).send(error); 
     });
 
+});
+
+app.get('/api/getAllOrders', function (req, res) {
+    BL.getAllOrders(req.query).then(function (result) {
+        res.send(result);
+    }, function (error) {
+        winston.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
 });
 
 //var newBranches = 

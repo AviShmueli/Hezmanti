@@ -109,6 +109,10 @@
                 }
             }
 
+            if(vm.ordersFilterCreatedDate !== undefined && vm.ordersFilterCreatedDate !== ''){
+                vm.ordersFilter.createdDate = vm.ordersFilterCreatedDate.toLocaleDateString()
+            }
+
 
             server.getAllOrdersCount(vm.ordersFilter).then(function (response) {
                 vm.totalOrderCount = response.data;

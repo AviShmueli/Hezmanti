@@ -39,7 +39,7 @@
         var updateCart = function(item){
             var card = getCart();
             if (card.hasOwnProperty(item._id)) {
-                card[item._id].count += item.count;
+                card[item._id].count = item.count;
                 return false;
             }
             else{

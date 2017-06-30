@@ -21,9 +21,10 @@
         </md-card-title-text>
         
     </md-card-title>-->
-    <md-table-container ng-if="vm.showList">
-        <table id="items-table" md-table md-row-select multiple ng-model="selected" md-progress="vm.promise">
-            <!--<thead md-head>
+    <form name="itemsForm">
+        <md-table-container ng-if="vm.showList">
+            <table id="items-table" md-table md-row-select multiple ng-model="selected" md-progress="vm.promise">
+                <!--<thead md-head>
                 md-order="vm.query.order" md-on-reorder="vm.getTasks"
                 <tr md-row>
                     <th md-column><span>שם</span></th>
@@ -31,19 +32,28 @@
                     <th md-column>כמות</th>
                 </tr>
             </thead>-->
-            <tbody md-body>
-                <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="item in vm.items">
-                    <td md-cell style="padding: 0 6px; font-size: 15px; width: 80%" ng-if="item.name !== undefined">{{::item.name}}</td>
-                    <td md-cell style="padding: 0 6px; font-size: 15px; width: 80%" ng-if="item.itemName !== undefined">{{::item.itemName}}</td>
-                    <!--<td md-cell mdNumeric>{{item.serialNumber}}</td>-->
-                    <td md-cell style="padding: 0 0px 0px 20px;">
-                        <input ng-if="vm.editMode" type="number" ng-model="item.count" min="1" max="9999" ng-change="vm.itemCountInputBlur(item)">
-                        <span ng-if="!vm.editMode" > {{::item.count}} </span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </md-table-container>
+                <tbody md-body>
+                    <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="item in vm.items">
+                        <td md-cell style="padding: 0 6px; font-size: 15px; width: 80%" ng-if="item.name !== undefined">{{::item.name}}</td>
+                        <td md-cell style="padding: 0 6px; font-size: 15px; width: 80%" ng-if="item.itemName !== undefined">{{::item.itemName}}</td>
+                        <!--<td md-cell mdNumeric>{{item.serialNumber}}</td>-->
+                        <td md-cell style="padding: 0 0px 0px 20px;">
+                            <md-input-container style="margin: 0">
+                                <input ng-if="vm.editMode" style="width: 40px;" type="number" name="name{{$index}}" ng-model="item.count" min="0" max="999"
+                                    ng-change="vm.itemCountInputBlur(item)">
+                                <div ng-if="itemsForm['name'+$index].$error.max" ng-messages="itemsForm['name'+$index].$error">
+                                    <div ng-message="max" class="error">
+                                        כמות גדולה מידי
+                                    </div>
+                                </div>
+                            </md-input-container>
+                            <span ng-if="!vm.editMode"> {{::item.count}} </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+    </form>
     <!--</md-card>
                     <md-card>-->
     <!--<md-table-pagination md-label="{'of': ' מתוך ', 'page': 'עמוד מספר', 'rowsPerPage': 'מספר שורות בעמוד' }" md-limit="vm.query.limit"
