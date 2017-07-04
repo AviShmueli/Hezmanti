@@ -10,6 +10,7 @@
             'md.data.table',
             'ngFileSaver',
             'angularMoment',
+            'logglyLogger',
         ]);
 
 })();

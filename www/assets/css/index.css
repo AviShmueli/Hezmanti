@@ -190,8 +190,6 @@ md-badge{
 
 .edit-button{
     position: relative;
-    top: 65px;
-    left: 20px;
     direction: ltr;
 }
 
@@ -201,4 +199,16 @@ md-content{
 
 md-toast{
     direction: rtl;
+}
+
+.btn-circular{
+    bottom: 10px;right: 13%;height: 20px;width: 20px;"
+}
+
+md-dialog.md-dialog-fullscreen {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
 }

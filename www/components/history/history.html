@@ -1,0 +1,42 @@
+<md-toolbar flex>
+    <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+        <span flex></span>
+        <p>היסטוריה</p>
+        <md-button class="md-icon-button" ng-click="vm.navigateTo('entry')" aria-label="Menu">
+            <ng-md-icon icon="arrow_forward" style="fill: white"></ng-md-icon>
+        </md-button>
+    </div>
+</md-toolbar>
+
+
+<md-content layout-padding md-scroll-y style="height: 90%" dir="rtl">
+    <main flex>
+        <ui-view layout="column" layout-fill>
+            <div layout="column" layout-align="center center" flex>
+                <md-card layout-margin style="width: 100%">
+                    <md-table-container>
+                        <table md-table md-row-select multiple ng-model="selected" md-progress="vm.promise">
+                            <thead md-head>
+                                <tr md-row>
+                                    <th md-column md-order-by="createdDate">תאריך</th>
+                                    <th md-column md-order-by="orderId">מספר הזמנה</th>
+                                </tr>
+                            </thead>
+                            <tbody md-body>
+                                <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="order in vm.orders">
+                                    <td md-cell mdNumeric ng-click="vm.openOrderDialog(order, $event)">{{::order.createdDate | date: 'dd/MM'}}</td>
+                                    <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::order.orderId}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </md-table-container>
+                    <!--</md-card>
+                    <md-card>-->
+                    <md-table-pagination md-label="{'of': ' מתוך ', 'page': 'עמוד מספר', 'rowsPerPage': 'מספר שורות בעמוד' }" md-limit="vm.query.limit"
+                        md-limit-options="[5, 10, 15, 20]" md-page="vm.query.page" md-total="{{vm.totalOrderCount}}" md-on-paginate="vm.getOrders"
+                        md-page-select></md-table-pagination>
+                </md-card>
+            </div>
+        </ui-view>
+    </main>
+</md-content>

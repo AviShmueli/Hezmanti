@@ -46,7 +46,7 @@
                 if (vm.itemCountChanged) {
                     vm.itemCountChanged(item);
                 }
-            }, 1000);
+            }, 500);
         }
     }
 

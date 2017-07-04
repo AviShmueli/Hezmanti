@@ -57,6 +57,15 @@
             return $http(req);
         }
 
+        var getDepartments = function () {
+            var req = {
+                method: 'GET',
+                url: '/api/getDepartments'
+            };
+
+            return $http(req);
+        }
+
         var getCatalog = function () {
             var req = {
                 method: 'GET',
@@ -105,6 +114,18 @@
             return $http(req);
         }
 
+        var checkBranchCode = function (code) {
+            var req = {
+                method: 'GET',
+                url: '/api/checkBranchCode',
+                params: {
+                    code: code
+                }
+            };
+
+            return $http(req);
+        }
+
         var service = {
             addOrder: addOrder,
             getCatalog: getCatalog,
@@ -113,7 +134,9 @@
             getAllOrders: getAllOrders,
             getOrder: getOrder,
             updateOrder: updateOrder,
-            getAllOrdersCount: getAllOrdersCount
+            getAllOrdersCount: getAllOrdersCount,
+            checkBranchCode: checkBranchCode,
+            getDepartments: getDepartments
         };
 
         return service;

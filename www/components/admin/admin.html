@@ -11,14 +11,16 @@
     </md-button>
     <span flex></span>
     <div>ניהול מלאי והזמנות</div>
-    <img title="Algoretail" class="login-img width-48 margin-left-15" ng-src="{{::vm.imagesPath + '/assets/images/algologo.gif'}}" />
+    <img title="Algoretail" class="login-img width-48 margin-left-15" ng-src="{{::vm.imagesPath + '/assets/images/algologo.gif'}}"
+    />
     <md-button class="md-icon-button" aria-label="Menu" ng-click="vm.toggleSidenav('left')" hide-gt-sm>
       <md-icon>menu</md-icon>
     </md-button>
   </div>
 </md-toolbar>
 
-<md-sidenav class="md-sidenav-right float-right height-100P" md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')" dir="rtl" ng-if="vm.showSideNav">
+<md-sidenav class="md-sidenav-right float-right height-100P" md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')"
+  dir="rtl" ng-if="vm.showSideNav">
   <md-toolbar class="md-tall toolBar" dir="rtl">
     <div class="text-align-left" hide-gt-sm>
       <md-button aria-label="Open phone interactions menu" class="md-icon-button" ng-click="vm.closeSidenav()">
@@ -39,34 +41,22 @@
     </div>
   </md-toolbar>
 
-  <div>
+  <md-content flex md-scroll-y layout-fill>
     <md-list layout="column" layout-fill flex>
-      <md-list-item ng-click="vm.viewMode = 'ordersStatus'" ng-class="{'list-item-active': vm.viewMode === 'ordersStatus'}">
-        <!--<md-icon style="padding-right: 16px; color: #000000">timeline</md-icon>-->
-        <p>מצב הזמנות</p>
-      </md-list-item>
-      <md-list-item ng-click="vm.viewMode = 'ordersManager'" ng-class="{'list-item-active': vm.viewMode === 'ordersManager'}">
-        <!--<md-icon style="padding-right: 16px; color: #000000">view_quilt</md-icon>-->
-        <p>ניהול הזמנות</p>
-      </md-list-item>
-      <md-list-item ng-href="#/admin">
-        <!--<md-icon style="padding-right: 16px; color: #000000">pie_chart</md-icon>-->
-        <p>דוחות מלאי</p>
-      </md-list-item>
-      <md-list-item ng-click="vm.viewMode = 'usersManager'" ng-class="{'list-item-active': vm.viewMode === 'usersManager'}">
-        <!--<md-icon style="padding-right: 16px; color: #000000">people_outline</md-icon>-->
-        <p>ניהול סניפים</p>
-      </md-list-item>
+      <menu-group ng-repeat="menuItem in vm.menu" 
+                  view-mode="vm.viewMode" 
+                  header-text="menuItem.headerText" 
+                  buttons="menuItem.buttons" 
+                  defult-open="menuItem.defultOpen"></menu-group>
     </md-list>
-  </div>
+  </md-content>
 </md-sidenav>
 
 
 <md-content layout-padding md-scroll-y style="height: 90%">
 
-      <dashboard ng-if="vm.viewMode === 'ordersStatus'"></dashboard>
-      <users-manager ng-if="vm.viewMode === 'usersManager'"></users-manager>
-      <orders-manager ng-if="vm.viewMode === 'ordersManager'"></orders-manager>
-
+  <dashboard ng-if="vm.viewMode === 'ordersStatus'"></dashboard>
+  <users-manager ng-if="vm.viewMode === 'usersManager'"></users-manager>
+  <orders-manager ng-if="vm.viewMode === 'ordersManager'"></orders-manager>
 
 </md-content>

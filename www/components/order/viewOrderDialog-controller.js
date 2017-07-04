@@ -5,13 +5,14 @@
         .module('app')
         .controller('ViewOrderDialogController', ViewOrderDialogController);
 
-    function ViewOrderDialogController($scope, $mdDialog, $mdToast, server, order) {
+    function ViewOrderDialogController($scope, $mdDialog, $mdToast, server, order, showEditBtn) {
 
         $scope.hide = function () {
             $mdDialog.hide();
         }
 
         $scope.order = order;
+        $scope.showEditBtn = showEditBtn;
 
         $scope.orderChanged = function (newOrder) {
             for (var index = 0; index < this.items.length; index++) {

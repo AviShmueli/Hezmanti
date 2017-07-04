@@ -2,6 +2,7 @@
 
 (function (DAL) {
 
+    DAL.getNextSequence = getNextSequence;
     DAL.insertNewBranches = insertNewBranches;
     DAL.getAllBranches = getAllBranches;
     DAL.getCatalog = getCatalog;
@@ -12,6 +13,8 @@
     DAL.getOrder = getOrder;
     DAL.updateOrder = updateOrder;
     DAL.getAllOrdersCount = getAllOrdersCount;
+    DAL.checkBranchCode = checkBranchCode;
+    DAL.changeBranchCode = changeBranchCode;
 
 
     var deferred = require('deferred');
@@ -46,6 +49,43 @@
         } catch (error) {
             d.reject(error);
         }
+
+        return d.promise;
+    }
+
+    function getNextSequence(orderId) {
+
+        var d = deferred();
+
+        getCollection('counters').then(function (mongo) {
+
+            mongo.collection.findAndModify({
+                    _id: orderId
+                }, [
+                    ['_id', 'asc']
+                ], {
+                    $inc: {
+                        seq: 1
+                    }
+                }, {
+                    new: true
+                },
+                function (err, results) {
+
+                    if (err) {
+                        var errorObj = {
+                            message: "error while trying to add new Task to DB",
+                            error: err
+                        };
+                        mongo.db.close();
+                        d.reject(errorObj);
+                    }
+
+                    mongo.db.close();
+                    d.resolve(results.value.seq);
+
+                });
+        });
 
         return d.promise;
     }
@@ -249,10 +289,8 @@
         var d = deferred();
 
         getCollection('gorme-orders').then(function (mongo) {
-
-            mongo.collection.find(filter, options).sort({
-                createdTime: -1
-            }).toArray(function (err, result) {
+            
+            mongo.collection.find(filter, options).toArray(function (err, result) {
                 if (err) {
                     var errorObj = {
                         message: "error while trying to get all Orders: ",
@@ -305,6 +343,62 @@
                 if (err) {
                     var errorObj = {
                         message: "error while trying to get All orders count: ",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(result);
+            });
+        });
+
+        return d.promise;
+    }
+
+    function checkBranchCode(code) {
+
+        var d = deferred();
+
+        getCollection('gorme-branches').then(function (mongo) {
+
+            mongo.collection.findOne({
+                'accessCode': code
+            }, function (err, result) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to check if branch code is valid: ",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(result);
+            });
+        });
+
+        return d.promise;
+    }
+
+    function changeBranchCode(branchId, newCode) {
+
+        var d = deferred();
+
+        getCollection('gorme-branches').then(function (mongo) {
+
+            mongo.collection.update({
+                '_id': new ObjectID(branchId)
+            }, {
+                $set: {
+                    'accessCode': newCode
+                }
+            }, function (err, result) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to update branch code: ",
                         error: err
                     };
                     mongo.db.close();

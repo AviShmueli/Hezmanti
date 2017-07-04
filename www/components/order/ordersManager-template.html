@@ -3,59 +3,77 @@
         <ui-view layout="column" layout-fill>
 
             <md-card layout="column">
-                <md-card-title class="management-filter-card-title">
-                    <md-card-title-text>
-                        <h3>סינון</h3>
-                    </md-card-title-text>
-                    <md-button class="md-icon-button" ng-click="vm.toggleFilterSection()" aria-label="toggle">
-                        <ng-md-icon id="expand_more_icon" icon="{{vm.expand_icon}}" options='{"rotation": "counterclock"}'></ng-md-icon>
-                    </md-button>
-                </md-card-title>
-                <div layout-gt-xs="column" flex layout-padding ng-show="vm.showTasksFilter">
-                    <div layout-gt-xs="row" layout="column">
+                <a ng-click="vm.toggleFilterSection()" style="margin: 0; cursor: pointer">
+                    <md-card-title class="management-filter-card-title">
+                        <md-card-title-text>
+                            <h3>סינון</h3>
+                        </md-card-title-text>
+                        <md-button class="md-icon-button" aria-label="toggle">
+                            <ng-md-icon id="expand_more_icon" icon="{{vm.expand_icon}}" options='{"rotation": "counterclock"}'></ng-md-icon>
+                        </md-button>
+                    </md-card-title>
+                </a>
+                <div layout-gt-xs="row" flex layout-padding ng-show="vm.showTasksFilter">
+                    <div layout-gt-xs="column" flex="90" layout="column">
+                        <div layout-gt-xs="row" layout="column">
+                            <md-input-container class="md-block" flex>
+                                <label>רשת</label>
+                                <md-select md-no-asterisk ng-model="vm.ordersFilter.networkId" name="user" multiple>
+                                    <md-option ng-repeat="(key, value) in vm.networks" value="{{value.id}}" dir="rtl">
+                                        {{value.name}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
 
-                        <md-input-container class="md-block" flex>
-                            <label>רשת</label>
-                            <md-select md-no-asterisk ng-model="vm.ordersFilter.networkId" name="user">
-                                <md-option value="" dir="rtl">
-                                    הכל
-                                </md-option>
-                                <md-option ng-repeat="(key, value) in vm.networks" value="{{value.id}}" dir="rtl">
-                                    {{value.name}}
-                                </md-option>
-                            </md-select>
-                        </md-input-container>
+                            <md-input-container class="md-block" flex>
+                                <label>סניף</label>
+                                <md-select md-no-asterisk ng-model="vm.ordersFilter.branchId" name="user" multiple>
+                                    <md-option ng-if="vm.ordersFilter.networkId === undefined || vm.ordersFilter.networkId === ''" ng-repeat="(key, value) in vm.branches"
+                                        value="{{value.id}}" dir="rtl">
+                                        {{value.name}}
+                                    </md-option>
+                                    <md-option ng-if="vm.ordersFilter.networkId !== undefined && vm.ordersFilter.networkId !== ''" ng-repeat="(key, value) in vm.networksBranchesMap[vm.ordersFilter.networkId]"
+                                        value="{{value.id}}" dir="rtl">
+                                        {{value.name}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
 
-                        <md-input-container class="md-block" flex>
-                            <label>סניף</label>
-                            <md-select md-no-asterisk ng-model="vm.ordersFilter.branchId" name="user">
-                                <md-option value="" dir="rtl">
-                                    הכל
-                                </md-option>
-                                <md-option ng-if="vm.ordersFilter.networkId === undefined || vm.ordersFilter.networkId === ''" ng-repeat="(key, value) in vm.branches"
-                                    value="{{value.id}}" dir="rtl">
-                                    {{value.name}}
-                                </md-option>
-                                <md-option ng-if="vm.ordersFilter.networkId !== undefined && vm.ordersFilter.networkId !== ''" ng-repeat="(key, value) in vm.networksBranchesMap[vm.ordersFilter.networkId]"
-                                    value="{{value.id}}" dir="rtl">
-                                    {{value.name}}
-                                </md-option>
-                            </md-select>
-                        </md-input-container>
+                            <md-input-container>
+                                <label>תאריך הזמנה</label>
+                                <md-datepicker md-open-on-focus ng-model="vm.ordersFilterCreatedDate" md-hide-icons="calendar"></md-datepicker>
+                            </md-input-container>
 
-                        <md-input-container>
-                            <label>תאריך הזמנה</label>
-                            <md-datepicker md-open-on-focus ng-model="vm.ordersFilterCreatedDate"></md-datepicker>
-                        </md-input-container>
+                            <md-input-container class="md-block" flex>
+                                <label>מספר הזמנה</label>
+                                <input ng-model="vm.ordersFilter.orderId" name="name" type="number">
+                            </md-input-container>
 
-                        <md-input-container class="md-block" flex>
-                            <label>חיפוש</label>
-                            <input ng-model="vm.ordersFilterFreeText" name="name">
-                        </md-input-container>
-
-                        <div class="md-secondary md-block" flex layout="row" layout-align="end center">
-                            <md-button ng-click="vm.getOrders()" class="md-warn md-raised md-hue-1">סנן</md-button>
                         </div>
+
+                        <div layout-gt-xs="row" layout="column">
+                            <md-input-container class="md-block" flex>
+                                <label>מחלקה</label>
+                                <md-select md-no-asterisk ng-model="vm.ordersFilter.departmentId" name="user" multiple>
+                                    <md-option ng-repeat="d in vm.departments" value="{{d.id}}" dir="rtl">
+                                        {{d.name}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+
+                            <md-input-container class="md-block" flex>
+                                <label>פריט בהזמנה</label>
+                                <input ng-model="vm.ordersFilterFreeText" name="name">
+                            </md-input-container>
+                        </div>
+                    </div>
+                    <div class="md-secondary md-block" flex="10" layout="column" layout-align="center center">
+                        <md-button aria-label="filter" ng-click="vm.getOrders()" class="md-warn md-raised md-hue-1">סנן</md-button>
+                        <md-button ng-if="vm.orders.length > 0" aria-label="download" ng-click="vm.downloadFilterdTable()" class=" md-raised ">
+                            <md-icon ng-hide="vm.downloading" style="width:22px;height:22px;" md-svg-src="/assets/images/Exel_download.svg">
+                            </md-icon>
+                            <md-progress-circular ng-show="vm.downloading" class="md-hue-2 btn-circular" md-diameter="20px"></md-progress-circular>
+                        </md-button>
                     </div>
                 </div>
             </md-card>
@@ -66,6 +84,7 @@
                         <!--md-progress="vm.promise"-->
                         <thead md-head md-order="vm.query.order" md-order="vm.query.order" md-on-reorder="vm.getOrders">
                             <tr md-row>
+                                <th md-column md-order-by="orderId">מספר הזמנה</th>
                                 <th md-column md-order-by="createdDate">תאריך</th>
                                 <th md-column md-order-by="branchName"><span>שם סניף</span></th>
                                 <th md-column md-order-by="brachId">מזהה סניף</th>
@@ -75,6 +94,7 @@
                         </thead>
                         <tbody md-body>
                             <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="order in vm.orders | orderBy: vm.query.order">
+                                <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::order.orderId}}</td>
                                 <td md-cell mdNumeric ng-click="vm.openOrderDialog(order, $event)">{{::order.createdDate | date: 'dd/MM'}}</td>
                                 <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::order.branchName}}</td>
                                 <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::order.branchId}}</td>

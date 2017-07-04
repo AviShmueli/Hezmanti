@@ -1,12 +1,26 @@
 <md-content layout-padding md-scroll-y style="height: 100%">
 
-    <div layout-align="center center" layout="column">
+    <div layout-align="end start" layout="row">
         <div layout-align="center center">
+            <span>
+                שלום{{' ' + vm.user.name}}
+            </span>
+        </div>
+    </div>
+
+    <div layout-align="center center" layout="column">
+        <div layout-align="center center" style="width: 85%;">
             <img class="login-img" ng-src="{{::vm.imagesPath + '/assets/images/gorme-logo.png'}}" />
         </div>
     </div>
 
-    <div >
+    <div layout-align="center center" layout="column">
+        <div layout-align="center center">
+            <span>מחובר כסניף {{' ' + vm.user.branch.name}}</span>
+        </div>
+    </div>
+
+    <div>
         <div layout="column" style="margin-bottom: 10px;">
             <md-button class="md-raised md-primary entry-btn" ng-click="vm.navigateTo('order')">
                 הזמנת סחורה
@@ -15,6 +29,16 @@
         <div layout="column" style="margin-bottom: 10px;">
             <md-button class="md-raised md-primary entry-btn" ng-click="vm.navigateTo('stocktaking')">
                 ספירת מלאי
+            </md-button>
+        </div>
+        <div layout="column" style="margin-bottom: 10px;">
+            <md-button class="md-raised md-primary entry-btn" ng-click="vm.navigateTo('history')">
+                הסטוריה
+            </md-button>
+        </div>
+        <div layout="column" style="margin-bottom: 10px;">
+            <md-button class="md-raised md-primary entry-btn" ng-click="vm.openBranchCodeAlert()">
+                החלף סניף
             </md-button>
         </div>
     </div>

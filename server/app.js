@@ -3,7 +3,7 @@
 var express = require('express');
 var BL = require('./BL');
 var DAL = require('./DAL');
-
+var logger = require('./logger');
 var app = express();
 
 var http = require('http');
@@ -34,7 +34,7 @@ app.get('/api/getAllBranches', function (req, res) {
     BL.getAllBranches().then(function (result) {
         res.send(result);
     }, function (error) {
-        winston.log('error', error.message, error.error);
+        logger.log('error', error.message, error.error);
         res.status(500).send(error);
     });
 });
@@ -43,7 +43,7 @@ app.get('/api/getCatalog', function (req, res) {
     BL.getCatalog().then(function (result) {
         res.send(result);
     }, function (error) {
-        winston.log('error', error.message, error.error);
+        logger.log('error', error.message, error.error);
         res.status(500).send(error);
     });
 });
@@ -52,7 +52,7 @@ app.get('/api/searchItems', function (req, res) {
     BL.searchItems(req.query.searchString).then(function (result) {
         res.send(result);
     }, function (error) {
-        winston.log('error', error.message, error.error);
+        logger.log('error', error.message, error.error);
         res.status(500).send(error);
     });
 });
@@ -61,7 +61,7 @@ app.get('/api/getOrder', function (req, res) {
     BL.getOrder(req.query.orderId).then(function(result){
         res.send(result);
     }, function(error){
-        winston.log('error', error.message , error.error);
+        logger.log('error', error.message , error.error);
         res.status(500).send(error); 
     });
 });
@@ -70,7 +70,7 @@ app.post('/api/addOrder', function (req, res) {
     BL.addOrder(req.body.order).then(function (result) {
         res.send(result);
     }, function (error) {
-        winston.log('error', error.message, error.error);
+        logger.log('error', error.message, error.error);
         res.status(500).send(error);
     });
 });
@@ -79,7 +79,7 @@ app.post('/api/updateOrder', function (req, res) {
     BL.updateOrder(req.body.order).then(function (result) {
         res.send(result);
     }, function (error) {
-        winston.log('error', error.message, error.error);
+        logger.log('error', error.message, error.error);
         res.status(500).send(error);
     });
 });
@@ -91,7 +91,7 @@ app.get('/api/getAllOrdersCount', function (req, res) {
     BL.getAllOrdersCount(filter).then(function(result) {
         res.send(result.toString()); 
     }, function(error) {
-        winston.log('error', error.message , error.error);
+        logger.log('error', error.message , error.error);
         res.status(500).send(error); 
     });
 
@@ -101,14 +101,23 @@ app.get('/api/getAllOrders', function (req, res) {
     BL.getAllOrders(req.query).then(function (result) {
         res.send(result);
     }, function (error) {
-        winston.log('error', error.message, error.error);
+        logger.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
+});
+
+app.get('/api/checkBranchCode', function (req, res) {
+    BL.checkBranchCode(req.query.code).then(function (result) {
+        res.send(result);
+    }, function (error) {
+        logger.log('error', error.message, error.error);
         res.status(500).send(error);
     });
 });
 
 //var newBranches = 
 
-//DAL.insertToCatalog(catalog);
+//DAL.insertToCatalog(newBranches);
 //DAL.insertNewBranches(newBranches);
 
 /*app.post('/registerNewClient', function (req, res) {

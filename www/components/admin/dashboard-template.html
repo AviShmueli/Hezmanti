@@ -1,15 +1,15 @@
 <md-content md-scroll-y dir="rtl" >
-    <md-button ng-if="vm.showLaunchBtn" aria-label="button-label" style="margin: 0; line-height: 0; min-width: auto;" ng-click="vm.openInNewTabb()"> 
+    <md-button ng-if="vm.showLaunchBtn" aria-label="button-label" style="margin: 0; line-height: 0; min-width: auto;" ng-click="vm.openInNewTab()"> 
         <ng-md-icon icon="launch"></ng-md-icon>
     </md-button>
     <div ng-if="vm.allBranches !== undefined && vm.allBranches.length > 0">
     <md-grid-list md-cols-gt-md="6" md-cols-gt-lg="8" md-cols-xl="10" md-cols="4" md-cols-md="4" md-cols-xs="4" 
                   md-row-height="140px" 
                   md-gutter-gt-md="1px" md-gutter-md="1px" md-gutter="2px">
-        <md-grid-tile ng-repeat="branch in vm.allBranches" md-colspan-gt-sm="1" md-rowspan-gt-sm="1">
+        <md-grid-tile ng-repeat="branch in vm.allBranches | orderBy:'priority'" md-colspan-gt-sm="1" md-rowspan-gt-sm="1">
             <div class="md-item-text md-whiteframe-z3" flex style="padding: 0 10px;margin: 20px; background-color:  #F44336; text-align: center;" ng-class="{'brunch-good' : branch.sendOrder === true}">
                 <h3>{{branch.name}}</h3>
-                <p>{{branch.network}}</p>
+                <p>{{branch.networkName}}</p>
             </div>
         </md-grid-tile>
     </md-grid-list>

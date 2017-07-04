@@ -10,12 +10,13 @@
     BL.getOrder = getOrder;
     BL.updateOrder = updateOrder;
     BL.getAllOrdersCount = getAllOrdersCount;
+    BL.checkBranchCode = checkBranchCode;
 
     var deferred = require('deferred');
     var DAL = require('./DAL');
 
     function getAllBranches() {
-        
+
         var d = deferred();
 
         DAL.getAllBranches().then(function (result) {
@@ -28,7 +29,7 @@
     }
 
     function getCatalog() {
-        
+
         var d = deferred();
 
         DAL.getCatalog().then(function (result) {
@@ -41,7 +42,7 @@
     }
 
     function searchItems(searchString) {
-        
+
         var d = deferred();
 
         DAL.searchItems(searchString).then(function (result) {
@@ -54,22 +55,27 @@
     }
 
     function addOrder(order) {
-        
+
         var d = deferred();
-        
+
         order.createdDate = new Date(order.createdDate);
 
-        DAL.addOrder(order).then(function (result) {
-            d.resolve(result);
-        }, function (error) {
-            d.deferred(error);
+        DAL.getNextSequence('orderId').then(function (result) {
+            order['orderId'] = result;
+            DAL.addOrder(order).then(function (result) {
+                d.resolve(result);
+            }, function (error) {
+                d.deferred(error);
+            });
         });
+
+
 
         return d.promise;
     }
 
     function updateOrder(order) {
-        
+
         var d = deferred();
 
         DAL.updateOrder(order).then(function (result) {
@@ -82,7 +88,7 @@
     }
 
     function getAllOrders(query) {
-        
+
         var d = deferred();
 
         var order = query.order,
@@ -90,9 +96,29 @@
             page = query.page,
             filter = JSON.parse(query.filter);
 
+        if (filter.hasOwnProperty('createdDate')) {
+            var date = filter.createdDate.split('/');
+            var dayEnd = new Date(Date.UTC(date[2], date[0] - 1, date[1] , 23, 59, 59, 999));
+            var dayStart = new Date(Date.UTC(date[2], date[0] - 1, date[1], 0, 0, 0));
+            filter.createdDate = {
+                "$gt": dayStart,
+                "$lt": dayEnd
+            };
+        }
+
+        if (filter.hasOwnProperty('orderId')) {
+            filter.orderId = parseInt(filter.orderId);
+        }
+
+        var sortField = (query.order.indexOf('-') === -1) ? query.order : query.order.substr(1);
+        var sortOrder = (query.order.indexOf('-') === -1) ? 'asc' : 'desc'
+
         var options = {
             "limit": limit,
-            "skip": (page - 1) * limit
+            "skip": (page - 1) * limit,
+            "sort": [
+                [sortField, sortOrder]
+            ]
         };
 
         DAL.getAllOrders(filter, options).then(function (result) {
@@ -104,8 +130,8 @@
         return d.promise;
     }
 
-     function getOrder(orderId) {
-        
+    function getOrder(orderId) {
+
         var d = deferred();
 
         DAL.getOrder(orderId).then(function (result) {
@@ -121,6 +147,20 @@
 
         var d = deferred();
 
+        if (filter.hasOwnProperty('createdDate')) {
+            var date = filter.createdDate.split('/');
+            var dayEnd = new Date(Date.UTC(date[2], date[0] - 1, date[1] , 23, 59, 59, 999));
+            var dayStart = new Date(Date.UTC(date[2], date[0] - 1, date[1], 0, 0, 0));
+            filter.createdDate = {
+                "$gt": dayStart,
+                "$lt": dayEnd
+            };
+        }
+
+        if (filter.hasOwnProperty('orderId')) {
+            filter.orderId = parseInt(filter.orderId);
+        }
+
         DAL.getAllOrdersCount(filter).then(function (result) {
             d.resolve(result);
         }, function (error) {
@@ -130,6 +170,31 @@
         return d.promise;
     }
 
-    
+    function checkBranchCode(code) {
+
+        var d = deferred();
+
+        DAL.checkBranchCode(code).then(function (branch) {
+            if (branch) {
+
+                // if not test user
+                if (branch.serialNumber !== 3333) {
+                    // create random code, 5 digits length, the first digits allways be the branch serial code
+                    var branchSerial = branch.serialNumber.toString();
+                    var newCode = branchSerial + Math.random().toString().slice(2, 2 + 5 - branchSerial.length);
+                    DAL.changeBranchCode(branch._id, newCode);
+                }
+                d.resolve(branch);
+            } else {
+                d.resolve('not-found');
+            }
+        }, function (error) {
+            d.deferred(error);
+        });
+
+        return d.promise;
+    }
+
+
 
 })(module.exports);

@@ -8,7 +8,10 @@
                 items: '=',
                 orderTitle: '=',
                 orderChanged: '=',
-                updateOrder: '='
+                updateOrder: '=',
+                showDeleteBtn: '=',
+                switchToNewOrderMode: '=',
+                showEditBtn: '='
             },
             controller: viewOrderController,
             controllerAs: 'vm',
@@ -16,11 +19,13 @@
         });
 
     function viewOrderController($rootScope, $scope, server, $state, $interval,
-        $log, device, dataContext, $location, $filter) {
+        $log, device, dataContext, $location, $filter, $mdDialog) {
 
         var vm = this;
         vm.editMode = false;
         vm.buttonIcon = 'edit';
+
+        vm.showEditBtn = vm.showEditBtn === undefined ? true : vm.showEditBtn;
 
         vm.navigateTo = function (to) {
             $location.path('/' + to);
@@ -48,8 +53,7 @@
         vm.itemCountChanged = function (item) {
             if (vm.orderChanged) {
                 vm.orderChanged(item);
-            } 
-            else {
+            } else {
                 if (item.count !== undefined && item.count !== '' && item.count > 0) {
                     var isNew = dataContext.updateCart(item);
                     if (isNew) {
@@ -59,6 +63,21 @@
                     dataContext.removeItemFromCart(item);
                 }
             }
+        }
+
+        vm.cleanCart = function (ev) {
+            var confirm = $mdDialog.confirm()
+                .title('האם את/ה בטוח שברצונך למחוק את כל הפריטים?')
+                .parent(angular.element(document.querySelector('#dialogsWraper')))
+                .ariaLabel('Lucky day')
+                .targetEvent(ev)
+                .ok('מחק')
+                .cancel('ביטול');
+
+            $mdDialog.show(confirm).then(function () {
+                dataContext.cleanCart();
+                vm.switchToNewOrderMode('new');
+            }, function () { });
         }
     }
 

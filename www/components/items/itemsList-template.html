@@ -1,45 +1,31 @@
-<md-card layout-margin>
-    <md-card-header style="margin: 24px 10px 2px 5px; padding: 0">
-        <md-card-avatar ng-if="vm.showAvatar">
-            <img class="md-user-avatar" style="width:  32px;" ng-src="{{::vm.imagesPath + '/assets/images/departments/' + vm.departmentId + '.png'}}">
-        </md-card-avatar>
-        <md-card-header-text>
-            <span class="md-title" style="font-size: x-large;">{{::vm.listTitle}}</span>
-        </md-card-header-text>
-        <md-card-actions>
-            <md-card-icon-actions>
-                <md-button style="bottom: 12px;" class="md-icon-button" ng-click="vm.toggleFilterSection()" aria-label="toggle" ng-if="vm.showArrow">
-                    <ng-md-icon id="expand_more_icon" icon="{{vm.expand_icon}}" options='{"rotation": "counterclock"}'></ng-md-icon>
-                </md-button>
-            </md-card-icon-actions>
-        </md-card-actions>
-    </md-card-header>
-
-    <!--<md-card-title class="management-filter-card-title">
-        <md-card-title-text>
-            <h3></h3>
-        </md-card-title-text>
-        
-    </md-card-title>-->
+<md-card >
+    <a ng-click="vm.toggleFilterSection()" style="margin: 0;">
+        <md-card-header style="margin: 24px 10px 2px 5px; padding: 0">
+            <md-card-avatar ng-if="vm.showAvatar">
+                <img class="md-user-avatar" style="width:  32px;" ng-src="{{::vm.imagesPath + '/assets/images/departments/' + vm.departmentId + '.png'}}">
+            </md-card-avatar>
+            <md-card-header-text>
+                <span class="md-title" style="font-size: x-large;">{{::vm.listTitle}}</span>
+            </md-card-header-text>
+            <md-card-actions>
+                <md-card-icon-actions>
+                    <md-button style="bottom: 12px;" class="md-icon-button" aria-label="toggle" ng-if="vm.showArrow">
+                        <ng-md-icon id="expand_more_icon" icon="{{vm.expand_icon}}" options='{"rotation": "counterclock"}'></ng-md-icon>
+                    </md-button>
+                </md-card-icon-actions>
+            </md-card-actions>
+        </md-card-header>
+    </a>
     <form name="itemsForm">
-        <md-table-container ng-if="vm.showList">
+        <md-table-container ng-if="vm.showList" layout-margin>
             <table id="items-table" md-table md-row-select multiple ng-model="selected" md-progress="vm.promise">
-                <!--<thead md-head>
-                md-order="vm.query.order" md-on-reorder="vm.getTasks"
-                <tr md-row>
-                    <th md-column><span>שם</span></th>
-                    <th md-column>מקט</th>
-                    <th md-column>כמות</th>
-                </tr>
-            </thead>-->
-                <tbody md-body>
+                <tbody md-body >
                     <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="item in vm.items">
                         <td md-cell style="padding: 0 6px; font-size: 15px; width: 80%" ng-if="item.name !== undefined">{{::item.name}}</td>
                         <td md-cell style="padding: 0 6px; font-size: 15px; width: 80%" ng-if="item.itemName !== undefined">{{::item.itemName}}</td>
-                        <!--<td md-cell mdNumeric>{{item.serialNumber}}</td>-->
-                        <td md-cell style="padding: 0 0px 0px 20px;">
+                        <td md-cell style="padding: 0 0px 0px 20px;" ng-if="vm.editMode">
                             <md-input-container style="margin: 0">
-                                <input ng-if="vm.editMode" style="width: 40px;" type="number" name="name{{$index}}" ng-model="item.count" min="0" max="999"
+                                <input aria-label="input" style="width: 40px;" type="number" name="name{{$index}}" ng-model="item.count" min="0" max="999"
                                     ng-change="vm.itemCountInputBlur(item)">
                                 <div ng-if="itemsForm['name'+$index].$error.max" ng-messages="itemsForm['name'+$index].$error">
                                     <div ng-message="max" class="error">
@@ -47,16 +33,14 @@
                                     </div>
                                 </div>
                             </md-input-container>
-                            <span ng-if="!vm.editMode"> {{::item.count}} </span>
                         </td>
+                        <td md-cell ng-if="!vm.editMode" style="padding: 0 6px; font-size: 12px;">
+                            <span > {{::item.count}} </span>
+                        </td>
+                        <td md-cell style="padding: 0 6px; font-size: 12px;">{{item.unit}}</td>
                     </tr>
                 </tbody>
             </table>
         </md-table-container>
     </form>
-    <!--</md-card>
-                    <md-card>-->
-    <!--<md-table-pagination md-label="{'of': ' מתוך ', 'page': 'עמוד מספר', 'rowsPerPage': 'מספר שורות בעמוד' }" md-limit="vm.query.limit"
-                    md-limit-options="[5, 10, 15, 20]" md-page="vm.query.page" md-total="{{vm.totalTaskCount}}" md-on-paginate="vm.getTasks"
-                    md-page-select></md-table-pagination>-->
 </md-card>

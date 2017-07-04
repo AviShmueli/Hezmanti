@@ -7,10 +7,14 @@
         .constant('SERVER_URL', 'https://hezmanti-prod.herokuapp.com');
 
     config.$inject = ['$stateProvider', '$urlRouterProvider', '$mdThemingProvider', '$httpProvider',
-                      '$mdDateLocaleProvider', 'moment'];
+                      '$mdDateLocaleProvider', 'moment', 'LogglyLoggerProvider'];
 
     function config($stateProvider, $urlRouterProvider, $mdThemingProvider, $httpProvider,
-                    $mdDateLocaleProvider, moment) {
+                    $mdDateLocaleProvider, moment, LogglyLoggerProvider) {
+
+        LogglyLoggerProvider.inputToken('77e961f4-4296-4ee1-9521-2961b83aed0a').sendConsoleErrors(true).includeUserAgent(true);
+
+
         $mdDateLocaleProvider.formatDate = function(date) {
             return moment(date).format('DD/MM/YYYY');
         };
@@ -40,6 +44,13 @@
             url: "/stocktaking",
             templateUrl: "components/stocktaking/stocktaking.html",
             controller: "StocktakingController",
+            controllerAs: "vm"
+        });
+
+        $stateProvider.state("history", {
+            url: "/history",
+            templateUrl: "components/history/history.html",
+            controller: "HistoryController",
             controllerAs: "vm"
         });
 

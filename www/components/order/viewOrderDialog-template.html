@@ -3,7 +3,7 @@
     <md-toolbar>
         <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
             
-            <p>הזמנה</p>
+            <p>הזמנה {{order.orderId}}</p>
             <span flex></span>
             <md-button class="md-icon-button" ng-click="hide()" aria-label="Menu">
                 <ng-md-icon icon="close" style="fill: white"></ng-md-icon>
@@ -13,7 +13,7 @@
 
     <md-content layout-padding md-scroll-y style="height: 90%" dir="rtl">
             <view-order items="order.items" order-title="'סניף ' + order.branchName + ' ' + (order.createdDate | date:'dd/MM')" 
-                        order-changed="orderChanged" update-order="updateOrder"></view-order>
+                        order-changed="orderChanged" update-order="updateOrder" show-edit-btn="showEditBtn"></view-order>
     </md-content>
 
 

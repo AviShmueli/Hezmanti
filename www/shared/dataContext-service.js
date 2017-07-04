@@ -32,17 +32,24 @@
             self.$storage.networksBranchesMap = null;
         }
 
-        var getCart = function(){
+        if (self.$storage.user === undefined) {
+            self.$storage.user = {};
+        }
+
+        if (self.$storage.departments === undefined) {
+            self.$storage.departments = null;
+        }
+
+        var getCart = function () {
             return self.$storage.cart || {};
         }
 
-        var updateCart = function(item){
+        var updateCart = function (item) {
             var card = getCart();
             if (card.hasOwnProperty(item._id)) {
                 card[item._id].count = item.count;
                 return false;
-            }
-            else{
+            } else {
                 self.$storage.cart[item._id] = item;
                 return true;
             }
@@ -55,48 +62,92 @@
             }
         }
 
-        var getCartCount = function(){
+        var getCartCount = function () {
             return Object.keys(self.$storage.cart).length;
         }
 
-        var getCartItemsList = function(){
+        var getCartItemsList = function () {
             return Object.values(self.$storage.cart);
         }
 
-        var cleanCart = function(){
+        var cleanCart = function () {
             self.$storage.cart = {};
+            var catalog = self.$storage.catalog;
+            for (var department in catalog) {
+                if (catalog.hasOwnProperty(department)) {
+                    for (var index = 0; index < catalog[department].length; index++) {
+                        var item = catalog[department][index];
+                        item.count = '';
+                    }
+                }
+            }
         }
-        
-        var setCatalog = function(ctalog){
+
+        var setCatalog = function (ctalog) {
             self.$storage.catalog = ctalog;
         }
 
-        var getCatalog = function(){
+        var getCatalog = function () {
             return self.$storage.catalog;
         }
 
-        var getBranches = function(){
+        var getBranches = function () {
             return self.$storage.branches;
         }
 
-        var setBranches = function(branches){
+        var setBranches = function (branches) {
             self.$storage.branches = branches;
         }
 
-        var getNetworks = function(){
+        var getNetworks = function () {
             return self.$storage.networks;
         }
 
-        var setNetworks = function(networks){
+        var setNetworks = function (networks) {
             self.$storage.networks = networks;
         }
 
-        var getNetworksBranchesMap = function(){
+        var getNetworksBranchesMap = function () {
             return self.$storage.networksBranchesMap;
         }
 
-        var setNetworksBranchesMap = function(networksBranchesMap){
+        var setNetworksBranchesMap = function (networksBranchesMap) {
             self.$storage.networksBranchesMap = networksBranchesMap;
+        }
+
+        var getUser = function () {
+            return self.$storage.user;
+        }
+
+        var setUserName = function (userName) {
+            self.$storage.user.name = userName;
+        }
+
+        var setUserBranch = function (branch) {
+            self.$storage.user.branch = branch;
+        }
+
+        var getDepartments = function () {
+            var departments = self.$storage.departments;
+            if (!departments) {
+                var catalog = getCatalog();              
+                var allCatalogList = Object.values(catalog);
+                var departmentsList = [];
+                for (var index = 0; index < allCatalogList.length; index++) {
+                    var elements = allCatalogList[index];
+                    departmentsList.push({
+                        id: elements[0].departmentId,
+                        name: elements[0].departmentName
+                    });
+                }
+
+                self.$storage.departments = departmentsList;
+            }
+            return self.$storage.departments;
+        }
+
+        var setDepartments = function (departments) {
+            self.$storage.departments = departments;
         }
 
         var service = {
@@ -112,7 +163,12 @@
             getNetworks: getNetworks,
             setNetworks: setNetworks,
             getNetworksBranchesMap: getNetworksBranchesMap,
-            setNetworksBranchesMap: setNetworksBranchesMap
+            setNetworksBranchesMap: setNetworksBranchesMap,
+            getUser: getUser,
+            setUserName: setUserName,
+            setUserBranch: setUserBranch,
+            getDepartments: getDepartments,
+            setDepartments: setDepartments
         };
 
         return service;

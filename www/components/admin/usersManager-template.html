@@ -43,7 +43,7 @@
                                 <th md-column md-order-by="serialNumber">מספר סניף</th>
                                 <th md-column md-order-by="name"><span>שם סניף</span></th>
                                 <th md-column md-order-by="networkName">רשת</th>
-                                <th md-column>קוד זיהוי</th>
+                                <th md-column>קוד גישה</th>
                             </tr>
                         </thead>
                         <tbody md-body>
@@ -51,7 +51,7 @@
                                 <td md-cell mdNumeric>{{branch.serialNumber}}</td>
                                 <td md-cell>{{branch.name}}</td>
                                 <td md-cell>{{branch.networkName}}</td>
-                                <td md-cell>{{branch.verifyCode}}</td>
+                                <td md-cell>{{branch.accessCode}}</td>
                             </tr>
                         </tbody>
                     </table>

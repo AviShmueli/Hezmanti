@@ -4,10 +4,14 @@
 
     <div style="width: 100%; min-width: 360px;">
         <div class="edit-button" ng-if="vm.items.length > 0">
-            <md-button aria-labe="edit" class="md-fab md-mini md-hue-1 md-icon-button" ng-click="vm.switchMode()">
-                <ng-md-icon icon="{{vm.buttonIcon}}" options='{"rotation": "counterclock"}'></ng-md-icon>
+            <md-button ng-if="vm.showDeleteBtn" aria-label="delete" class="md-fab md-mini md-hue-1 md-icon-button" ng-click="vm.cleanCart($event)">
+                <ng-md-icon icon="delete"></ng-md-icon>
             </md-button>
+            <md-button ng-if="vm.showEditBtn" aria-label="edit" class="md-fab md-mini md-hue-1 md-icon-button" ng-click="vm.switchMode()">
+                <ng-md-icon icon="{{vm.buttonIcon}}" options='{"rotation": "counterclock"}'></ng-md-icon>
+            </md-button> 
         </div>
+
 
         <items-list ng-if="vm.items.length > 0" items="vm.items" list-title="vm.orderTitle" defult-open="true" can-shrink="false"
             style="width: 100%" edit-mode="vm.editMode" item-count-changed="vm.itemCountChanged"></items-list>

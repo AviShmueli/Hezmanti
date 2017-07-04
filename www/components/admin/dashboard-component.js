@@ -28,7 +28,7 @@
             vm.allBranches[index]['sendOrder'] = true;
         },1000);
 
-        vm.openInNewTabb = function () {
+        vm.openInNewTab = function () {
             window.open(window.location.href + '?s=0' ,'_blank');
         }
 

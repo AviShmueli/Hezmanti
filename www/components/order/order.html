@@ -1,8 +1,9 @@
 <md-toolbar flex>
     <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
         <md-button ng-if="vm.viewMode === 'viewOrder'" ng-hide="vm.showSucseesMessage === true || vm.cardItems.length < 1" class="md-warn md-raised md-hue-1"
-            ng-click="vm.sendOrder()">
-            שלח הזמנה
+            ng-disabled="vm.sendingOrder" ng-click="vm.sendOrder()">
+            <span ng-hide="vm.sendingOrder">שלח הזמנה</span>
+            <md-progress-circular ng-hide="!vm.sendingOrder" class="md-hue-2 btn-circular" md-diameter="20px"></md-progress-circular>
         </md-button>
         <md-button ng-if="vm.viewMode === 'newOrder'" class="md-warn md-raised md-hue-1" ng-click="vm.switchMode('view')">
             הצג הזמנה
@@ -22,11 +23,13 @@
 
 <md-content layout-padding md-scroll-y style="height: 90%" dir="rtl">
 
-    <view-order items="vm.cardItems" order-title="'הזמנה לתאריך ' + vm.currDate" ng-if="vm.viewMode === 'viewOrder' && vm.showErrorMessage === false && vm.showSucseesMessage === false"></view-order>
+    <view-order items="vm.cardItems" order-title="'הזמנה לתאריך ' + vm.currDate" show-delete-btn="true" switch-to-new-order-mode="vm.switchMode"
+                ng-if="vm.viewMode === 'viewOrder' && vm.showErrorMessage === false && vm.showSucseesMessage === false"
+                show-edit-btn="true"></view-order>
     
     <new-order ng-if="vm.viewMode === 'newOrder'"></new-order>
     
-    <md-card style="width: 100%" layout-margin ng-if="vm.showSucseesMessage === true && vm.viewMode === 'viewOrder'">
+    <md-card style="width: 100%; margin: 0px;" layout-margin ng-if="vm.showSucseesMessage === true && vm.viewMode === 'viewOrder'">
         <md-card-title class="management-filter-card-title">
             <ng-md-icon icon="assignment_turned_in" class="message-icon" style="fill: green" size="40"></ng-md-icon>
             <md-card-title-text>
@@ -35,7 +38,7 @@
         </md-card-title>
     </md-card>
     
-    <md-card style="width: 100%" layout-margin ng-if="vm.showErrorMessage === true && vm.viewMode === 'viewOrder'">
+    <md-card style="width: 100%; margin: 0px;" layout-margin ng-if="vm.showErrorMessage === true && vm.viewMode === 'viewOrder'">
         <md-card-title class="management-filter-card-title">
             <ng-md-icon icon="error" class="message-icon" style="fill: brown" size="40"></ng-md-icon>
             <md-card-title-text>
