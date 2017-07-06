@@ -90,7 +90,7 @@
         vm.openOrderDialog = function (order, ev) {
             $mdDialog.show({
                     controller: 'ViewOrderDialogController',
-                    templateUrl: '/components/order/viewOrderDialog-template.html',
+                    templateUrl: './components/order/viewOrderDialog-template.html',
                     controllerAs: vm,
                     parent: angular.element(document.body),
                     targetEvent: ev,

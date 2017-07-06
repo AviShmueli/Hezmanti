@@ -18,9 +18,10 @@
         vm.imagesPath = device.getImagesPath();
         vm.user = dataContext.getUser();
         vm.userAutorized = false;
+        vm.processing = false;
 
         vm.navigateTo = function (to) {
-            $location.path('/' + to);
+            $state.go(to);
         }
 
         document.addEventListener("deviceready", function () {
@@ -38,33 +39,31 @@
                 .ariaLabel('fullName')
                 .ok('אישור');
 
-            $mdDialog.show(confirm).then(function (result) {
-                dataContext.setUserName(result);
-                vm.user.name = result;
-                vm.openBranchCodeAler();
-            }, function () {});
-
+            return $mdDialog.show(confirm);
         }
 
         vm.openBranchCodeAlert = function () {
+
             vm.user.branch = undefined;
             // Appending dialog to document.body to cover sidenav in docs app
             var confirm = $mdDialog.prompt()
                 .parent(angular.element(document.querySelector('#dialogsWraper')))
                 .title('קישור לסניף')
-                .textContent('בכדי לקשר אותך לסניף, פנה למנהל במשרד על מנת לקבל את קוד הגישה לסינף שלך.')
+                .textContent('בכדי לקשר אותך לסניף, פנה למנהל במשרד על מנת לקבל את קוד הגישה לסניף שלך.')
                 .placeholder('קוד גישה')
                 .ariaLabel('code')
                 .ok('אישור');
 
             $mdDialog.show(confirm).then(function (code) {
+                vm.processing = true;
                 server.checkBranchCode(code).then(function (result) {
                     if (result.data !== 'not-found') {
                         dataContext.setUserBranch(result.data);
                         vm.user.branch = result.data;
-                        vm.userAutorized = true;
+                        vm.processing = false;
                     } else {
                         showBranchNotFoundAlert();
+                        vm.processing = false;
                     }
                 }, function (error) {
 
@@ -86,18 +85,15 @@
         }
 
 
-        if (vm.user !== undefined){
+        if (vm.user !== undefined) {
             if (vm.user.name === undefined) {
-                 openUserNameAlert();
+                openUserNameAlert().then(function (result) {
+                    dataContext.setUserName(result);
+                    vm.user.name = result;
+                    vm.openBranchCodeAlert();
+                });
             }
-            if (vm.user.branch === undefined) {
-                vm.openBranchCodeAlert();
-            }
-            if (vm.user.name !== undefined && vm.user.branch && undefined) {
-                vm.userAutorized = true;
-            }
-        }            
-        else {
+        } else {
             openUserNameAlert();
         }
 

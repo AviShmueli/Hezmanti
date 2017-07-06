@@ -22,23 +22,24 @@
 
     <div>
         <div layout="column" style="margin-bottom: 10px;">
-            <md-button class="md-raised md-primary entry-btn" ng-click="vm.navigateTo('order')">
+            <md-button ng-disabled="vm.user === undefined || vm.user.branch === undefined" class="md-raised md-primary entry-btn" ng-click="vm.navigateTo('order')">
                 הזמנת סחורה
             </md-button>
         </div>
         <div layout="column" style="margin-bottom: 10px;">
-            <md-button class="md-raised md-primary entry-btn" ng-click="vm.navigateTo('stocktaking')">
+            <md-button ng-disabled="vm.user === undefined || vm.user.branch === undefined" class="md-raised md-primary entry-btn" ng-click="vm.navigateTo('stocktaking')">
                 ספירת מלאי
             </md-button>
         </div>
         <div layout="column" style="margin-bottom: 10px;">
-            <md-button class="md-raised md-primary entry-btn" ng-click="vm.navigateTo('history')">
+            <md-button ng-disabled="vm.user === undefined || vm.user.branch === undefined" class="md-raised md-primary entry-btn" ng-click="vm.navigateTo('history')">
                 הסטוריה
             </md-button>
         </div>
         <div layout="column" style="margin-bottom: 10px;">
             <md-button class="md-raised md-primary entry-btn" ng-click="vm.openBranchCodeAlert()">
-                החלף סניף
+                <span ng-hide="vm.processing">החלף סניף</span>
+                <md-progress-circular ng-if="vm.processing" class="md-hue-2 btn-circular" md-diameter="20px"></md-progress-circular>
             </md-button>
         </div>
     </div>
