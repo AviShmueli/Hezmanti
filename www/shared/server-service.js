@@ -48,6 +48,19 @@
             return $http(req);
         }
 
+        var updateUserLastSeenTime = function (id, date) {
+            var req = {
+                method: 'POST',
+                url: '/api/updateUserLastSeenTime',
+                data: {
+                    id: id,
+                    date: date
+                }
+            };
+
+            return $http(req);
+        }
+
         var getAllBranches = function () {
             var req = {
                 method: 'GET',
@@ -136,7 +149,8 @@
             updateOrder: updateOrder,
             getAllOrdersCount: getAllOrdersCount,
             checkBranchCode: checkBranchCode,
-            getDepartments: getDepartments
+            getDepartments: getDepartments,
+            updateUserLastSeenTime: updateUserLastSeenTime
         };
 
         return service;

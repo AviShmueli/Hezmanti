@@ -15,6 +15,7 @@
     DAL.getAllOrdersCount = getAllOrdersCount;
     DAL.checkBranchCode = checkBranchCode;
     DAL.changeBranchCode = changeBranchCode;
+    DAL.updateUserLastSeenTime = updateUserLastSeenTime;
 
 
     var deferred = require('deferred');
@@ -412,6 +413,37 @@
 
         return d.promise;
     }
+
+    function updateUserLastSeenTime(branchId, date) {
+
+        var d = deferred();
+
+        getCollection('gorme-branches').then(function (mongo) {
+
+            mongo.collection.update({
+                '_id': new ObjectID(branchId)
+            }, {
+                $set: {
+                    'lastSeen': date
+                }
+            }, function (err, result) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to update branch: ",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(result);
+            });
+        });
+
+        return d.promise;
+    }
+
 
 })(module.exports);
 

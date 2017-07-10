@@ -75,6 +75,15 @@ app.post('/api/addOrder', function (req, res) {
     });
 });
 
+app.post('/api/updateUserLastSeenTime', function (req, res) {
+    BL.updateUserLastSeenTime(req.body.id, req.body.date).then(function (result) {
+        res.send(result);
+    }, function (error) {
+        logger.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
+});
+
 app.post('/api/updateOrder', function (req, res) {
     BL.updateOrder(req.body.order).then(function (result) {
         res.send(result);

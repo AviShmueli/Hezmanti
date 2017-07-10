@@ -20,8 +20,14 @@
         vm.userAutorized = false;
         vm.processing = false;
 
-        vm.navigateTo = function (to) {
-            $state.go(to);
+        vm.navigateTo = function (to, param) {
+            if (param) {
+                $state.go(to, {mode: param});
+            }
+            else{
+                $state.go(to);
+            }
+            
         }
 
         document.addEventListener("deviceready", function () {
@@ -97,6 +103,25 @@
             openUserNameAlert();
         }
 
+        //* ---- Preper Data ------ */
+        var catalog = dataContext.getCatalog();
+
+        if (!catalog) {
+            server.getCatalog().then(function (response) {
+                vm.items = response.data;
+                var departmentsMap = {};
+                for (var index = 0; index < response.data.length; index++) {
+                    var item = response.data[index];
+                    if (!departmentsMap.hasOwnProperty(item.departmentId)) {
+                        departmentsMap[item.departmentId] = [];
+                    }
+                    departmentsMap[item.departmentId].push(item);
+                }
+                dataContext.setCatalog(departmentsMap);
+            });
+        }
+
+        server.updateUserLastSeenTime(vm.user.branch._id, new Date());
 
     }
 

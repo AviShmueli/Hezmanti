@@ -5,12 +5,13 @@
         .module('app')
         .service('stockContext', stockContext);
 
-    stockContext.$inject = ['$rootScope', '$localStorage'];
+    stockContext.$inject = ['$rootScope', '$localStorage', 'dataContext'];
 
-    function stockContext($rootScope, $localStorage) {
+    function stockContext($rootScope, $localStorage, dataContext) {
 
         var self = this;
         self.$storage = $localStorage;
+        
 
         if (self.$storage.stock === undefined) {
             self.$storage.stock = {};
@@ -48,7 +49,7 @@
 
         var cleanStock = function () {
             self.$storage.stock = {};
-            var catalog = self.$storage.catalog;
+            var catalog = self.$storage.stockCatalog;
             for (var department in catalog) {
                 if (catalog.hasOwnProperty(department)) {
                     for (var index = 0; index < catalog[department].length; index++) {
@@ -57,6 +58,13 @@
                     }
                 }
             }
+        }
+
+        var getStockCatalog = function () {
+            if(self.$storage.stockCatalog === undefined){
+                self.$storage.stockCatalog = angular.copy(dataContext.getCatalog());
+            }
+            return self.$storage.stockCatalog;
         }
 
         var service = {

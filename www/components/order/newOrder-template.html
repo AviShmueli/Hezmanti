@@ -3,7 +3,7 @@
         <ui-view layout="column" layout-fill>
             <div layout="column" layout-align="center center" flex>
                 <search-item style="width: 100%" item-count-changed="vm.itemCountChanged"></search-item>
-                <items-list style="width: 100%" ng-repeat="(key, value) in vm.departmentsMap" 
+                <items-list style="width: 100%" ng-repeat="(key, value) in vm.catalog" 
                             items="value" list-title="value[0].departmentName" department-id="value[0].departmentId" 
                             edit-mode="true" item-count-changed="vm.itemCountChanged"></items-list>
             </div>

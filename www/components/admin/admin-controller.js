@@ -5,9 +5,11 @@
         .module('app')
         .controller('AdminController', AdminController);
 
-    AdminController.$inject = ['$scope', '$mdSidenav', 'device', '$location'];
+    AdminController.$inject = ['$scope', '$mdSidenav', 'device', '$location',
+                               'server', 'dataContext'];
 
-    function AdminController($scope, $mdSidenav, device, $location) {
+    function AdminController($scope, $mdSidenav, device, $location,
+                             server, dataContext) {
 
         var vm = this;
         vm.imagesPath = device.getImagesPath();
@@ -61,6 +63,24 @@
             headerText: 'קטלוג',
             defultOpen: false
         }];
+
+        //* ---- Preper Data ------ */
+        var catalog = dataContext.getCatalog();
+
+        if (!catalog) {
+            server.getCatalog().then(function (response) {
+                vm.items = response.data;
+                var departmentsMap = {};
+                for (var index = 0; index < response.data.length; index++) {
+                    var item = response.data[index];
+                    if (!departmentsMap.hasOwnProperty(item.departmentId)) {
+                        departmentsMap[item.departmentId] = [];
+                    }
+                    departmentsMap[item.departmentId].push(item);
+                }
+                dataContext.setCatalog(departmentsMap);
+            });
+        }
     }
 
 })();

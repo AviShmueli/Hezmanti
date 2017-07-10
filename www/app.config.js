@@ -34,7 +34,7 @@
         });
 
         $stateProvider.state("order", {
-            url: "/order",
+            url: "/order/:mode",
             templateUrl: "components/order/order.html",
             controller: "OrderController",
             controllerAs: "vm"

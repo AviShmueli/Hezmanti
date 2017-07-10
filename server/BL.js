@@ -11,6 +11,7 @@
     BL.updateOrder = updateOrder;
     BL.getAllOrdersCount = getAllOrdersCount;
     BL.checkBranchCode = checkBranchCode;
+    BL.updateUserLastSeenTime = updateUserLastSeenTime;
 
     var deferred = require('deferred');
     var DAL = require('./DAL');
@@ -188,6 +189,19 @@
             } else {
                 d.resolve('not-found');
             }
+        }, function (error) {
+            d.deferred(error);
+        });
+
+        return d.promise;
+    }
+
+    function updateUserLastSeenTime(id, date) {
+
+        var d = deferred();
+
+        DAL.updateUserLastSeenTime(id,new Date(date)).then(function (result) {
+            d.resolve(result);
         }, function (error) {
             d.deferred(error);
         });

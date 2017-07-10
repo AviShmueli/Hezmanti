@@ -22,12 +22,12 @@
 
     <div>
         <div layout="column" style="margin-bottom: 10px;">
-            <md-button ng-disabled="vm.user === undefined || vm.user.branch === undefined" class="md-raised md-primary entry-btn" ng-click="vm.navigateTo('order')">
+            <md-button ng-disabled="vm.user === undefined || vm.user.branch === undefined" class="md-raised md-primary entry-btn" ng-click="vm.navigateTo('order', 'order')">
                 הזמנת סחורה
             </md-button>
         </div>
         <div layout="column" style="margin-bottom: 10px;">
-            <md-button ng-disabled="vm.user === undefined || vm.user.branch === undefined" class="md-raised md-primary entry-btn" ng-click="vm.navigateTo('stocktaking')">
+            <md-button ng-disabled="vm.user === undefined || vm.user.branch === undefined" class="md-raised md-primary entry-btn" ng-click="vm.navigateTo('order', 'stock')">
                 ספירת מלאי
             </md-button>
         </div>
