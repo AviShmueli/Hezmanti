@@ -30,12 +30,14 @@
         vm.imagesPath = device.getImagesPath();
 
         vm.toggleFilterSection = function () {
-            if (vm.showList === true) {
-                vm.showList = false;
-                vm.expand_icon = 'expand_more';
-            } else {
-                vm.showList = true;
-                vm.expand_icon = 'expand_less';
+            if (vm.showArrow) {
+                if (vm.showList === true) {
+                    vm.showList = false;
+                    vm.expand_icon = 'expand_more';
+                } else {
+                    vm.showList = true;
+                    vm.expand_icon = 'expand_less';
+                }
             }
         }
 

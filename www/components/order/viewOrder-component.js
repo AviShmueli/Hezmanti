@@ -11,7 +11,9 @@
                 updateOrder: '=',
                 showDeleteBtn: '=',
                 switchToNewOrderMode: '=',
-                showEditBtn: '='
+                showEditBtn: '=',
+                itemCountChangedCallback : '=',
+                cleanData: '='
             },
             controller: viewOrderController,
             controllerAs: 'vm',
@@ -51,16 +53,13 @@
         };
 
         vm.itemCountChanged = function (item) {
+            // in view order dialog this is the callback function
             if (vm.orderChanged) {
                 vm.orderChanged(item);
             } else {
-                if (item.count !== undefined && item.count !== '' && item.count > 0) {
-                    var isNew = dataContext.updateCart(item);
-                    if (isNew) {
-                        vm.items.push(item);
-                    }
-                } else {
-                    dataContext.removeItemFromCart(item);
+                var isNew = vm.itemCountChangedCallback(item);
+                if (isNew) {
+                    vm.items.push(item);
                 }
             }
         }
@@ -75,7 +74,7 @@
                 .cancel('ביטול');
 
             $mdDialog.show(confirm).then(function () {
-                dataContext.cleanCart();
+                vm.cleanData();
                 vm.switchToNewOrderMode('new');
             }, function () { });
         }

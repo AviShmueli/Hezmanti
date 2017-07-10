@@ -13,6 +13,10 @@
         self.$storage = $localStorage;
         
 
+        if (self.$storage.stockCatalog === undefined) {
+            self.$storage.stockCatalog = null;
+        }
+
         if (self.$storage.stock === undefined) {
             self.$storage.stock = {};
         }
@@ -22,9 +26,9 @@
         }
 
         var updateStock = function (item) {
-            var card = getStock();
-            if (card.hasOwnProperty(item._id)) {
-                card[item._id].count = item.count;
+            var stock = getStock();
+            if (stock.hasOwnProperty(item._id)) {
+                stock[item._id].count = item.count;
                 return false;
             } else {
                 self.$storage.stock[item._id] = item;
@@ -33,9 +37,9 @@
         }
 
         var removeItemFromStock = function (item) {
-            var card = self.$storage.stock;
-            if (card.hasOwnProperty(item._id)) {
-                delete card[item._id];
+            var stock = self.$storage.stock;
+            if (stock.hasOwnProperty(item._id)) {
+                delete stock[item._id];
             }
         }
 
@@ -61,7 +65,7 @@
         }
 
         var getStockCatalog = function () {
-            if(self.$storage.stockCatalog === undefined){
+            if(self.$storage.stockCatalog === undefined || self.$storage.stockCatalog === null){
                 self.$storage.stockCatalog = angular.copy(dataContext.getCatalog());
             }
             return self.$storage.stockCatalog;
@@ -73,6 +77,7 @@
             getStockCount: getStockCount,
             getStockItemsList: getStockItemsList,
             cleanStock: cleanStock,
+            getStockCatalog: getStockCatalog
         };
 
         return service;

@@ -15,17 +15,19 @@
             <div layout="column" layout-align="center center" flex>
                 <md-card layout-margin style="width: 100%">
                     <md-table-container>
-                        <table md-table md-row-select multiple ng-model="selected" md-progress="vm.promise">
+                        <table class="history-table" md-table md-row-select multiple ng-model="selected" md-progress="vm.promise">
                             <thead md-head>
                                 <tr md-row>
-                                    <th md-column md-order-by="createdDate">תאריך</th>
-                                    <th md-column md-order-by="orderId">מספר הזמנה</th>
+                                    <th width="33%" md-column md-order-by="createdDate">תאריך</th>
+                                    <th width="33%" md-column md-order-by="orderId">מספר הזמנה</th>
+                                    <th width="33%" md-column md-order-by="orderId">סוג</th>
                                 </tr>
                             </thead>
                             <tbody md-body>
                                 <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="order in vm.orders">
-                                    <td md-cell mdNumeric ng-click="vm.openOrderDialog(order, $event)">{{::order.createdDate | date: 'dd/MM'}}</td>
+                                    <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::order.createdDate | date: 'dd/MM'}}</td>
                                     <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::order.orderId}}</td>
+                                    <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::(order.type === undefined || order.type === 'order')? 'הזמנה' : 'מלאי'}}</td>
                                 </tr>
                             </tbody>
                         </table>

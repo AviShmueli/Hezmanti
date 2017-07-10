@@ -121,7 +121,9 @@
             });
         }
 
-        server.updateUserLastSeenTime(vm.user.branch._id, new Date());
+        if (vm.user !== undefined && vm.user.branch !== undefined) {
+            server.updateUserLastSeenTime(vm.user.branch._id, new Date());
+        }
 
     }
 

@@ -5,7 +5,7 @@
         .module('app')
         .controller('ViewOrderDialogController', ViewOrderDialogController);
 
-    function ViewOrderDialogController($scope, $mdDialog, $mdToast, server, order, showEditBtn) {
+    function ViewOrderDialogController($scope, $mdDialog, $mdToast, server, order, showEditBtn, mode) {
 
         $scope.hide = function () {
             $mdDialog.hide();
@@ -13,6 +13,7 @@
 
         $scope.order = order;
         $scope.showEditBtn = showEditBtn;
+        $scope.titleText = (mode !== undefined && mode === 'order')? 'הזמנה' : 'דיווח מלאי' ;
 
         $scope.orderChanged = function (newOrder) {
             for (var index = 0; index < this.items.length; index++) {

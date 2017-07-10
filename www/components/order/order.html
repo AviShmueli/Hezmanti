@@ -23,10 +23,17 @@
 
 <md-content layout-padding md-scroll-y style="height: 90%" dir="rtl">
 
-    <view-order items="vm.cardItems" order-title="vm.pageText.viewTitle + ' ' + vm.currDate" show-delete-btn="true" switch-to-new-order-mode="vm.switchMode"
-        ng-if="vm.viewMode === 'viewOrder' && vm.showErrorMessage === false && vm.showSucseesMessage === false" show-edit-btn="true"></view-order>
+    <view-order items="vm.cartItems" 
+                order-title="vm.pageText.viewTitle + ' ' + vm.currDate" 
+                show-delete-btn="true" 
+                show-edit-btn="true"
+                switch-to-new-order-mode="vm.switchMode"
+                item-count-changed-callback="vm.itemCountChanged"
+                clean-data="vm.cleanData"
+                ng-if="vm.viewMode === 'viewOrder' && vm.showErrorMessage === false && vm.showSucseesMessage === false" >
+    </view-order>
 
-    <new-order ng-if="vm.viewMode === 'newOrder'" catalog="vm.pageMode" item-count-changed="vm.itemCountChanged"></new-order>
+    <new-order ng-if="vm.viewMode === 'newOrder'" catalog="vm.catalog" item-count-changed="vm.itemCountChanged"></new-order>
 
     <md-card style="width: 100%; margin: 0px;" layout-margin ng-if="vm.showSucseesMessage === true && vm.viewMode === 'viewOrder'">
         <md-card-title class="management-filter-card-title">

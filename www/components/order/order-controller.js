@@ -44,7 +44,7 @@
 
         initCartItems();
 
-        var cleanData = function () {
+        vm.cleanData = function () {
             if (vm.pageMode === 'order') {
                 dataContext.cleanCart();
             }
@@ -87,10 +87,10 @@
         vm.itemCountChanged = function (item) {
             if (item.count !== undefined && item.count !== '' && item.count > 0) {
                 if (vm.pageMode === 'order') {
-                    dataContext.updateCart(item);
+                    return dataContext.updateCart(item);
                 }
                 if (vm.pageMode === 'stock') {
-                    stockContext.updateStock(item);
+                    return stockContext.updateStock(item);
                 }
             } else {
                 if (vm.pageMode === 'order') {
@@ -124,13 +124,14 @@
                     branchId: vm.user.branch.serialNumber,
                     createdDate: new Date(),
                     createdBy: vm.user.name,
-                    items: itemsOrderList
+                    items: itemsOrderList,
+                    type: vm.pageMode
                 }
 
                 server.addOrder(order).then(function (response) {
                     vm.showSucseesMessage = true;
                     vm.sendingOrder = false;
-                    cleanData();
+                    vm.cleanData();
                 }, function (error) {
                     vm.sendingOrder = false;
                     vm.showErrorMessage = true;
@@ -152,7 +153,7 @@
             viewBTN: "הצג מלאי",
             title: "דיווח מלאי",
             viewTitle: 'מלאי לתאריך',
-            sucsessMessage: 'דיווח הלמאי נשלח בהצחלה !',
+            sucsessMessage: 'דיווח המלאי נשלח בהצחלה !',
             errorMessage: 'אירעה שגיאה בשליחת הדיווח !'
         };
 

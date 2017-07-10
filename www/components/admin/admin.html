@@ -57,7 +57,9 @@
 
   <dashboard ng-if="vm.viewMode === 'ordersStatus'"></dashboard>
   <users-manager ng-if="vm.viewMode === 'usersManager'"></users-manager>
-  <orders-manager ng-if="vm.viewMode === 'ordersManager'"></orders-manager>
+  <orders-manager ng-if="vm.viewMode === 'ordersManager'" page-mode="'order'"></orders-manager>
+  <orders-manager ng-if="vm.viewMode === 'stockManager'" page-mode="'stock'"></orders-manager>
+  <orders-distribution ng-if="vm.viewMode === 'ordersDistribution'"></orders-distribution>
 
 </md-content>
 

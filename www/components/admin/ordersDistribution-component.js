@@ -3,16 +3,16 @@
 
     angular
         .module('app')
-        .component('ordersManager', {
+        .component('ordersDistribution', {
             bindings: {
                 pageMode: '='
             },
-            controller: ordersManagerController,
+            controller: ordersDistributionController,
             controllerAs: 'vm',
-            templateUrl: 'components/order/ordersManager-template.html'
+            templateUrl: 'components/admin/ordersDistribution-template.html'
         });
 
-    function ordersManagerController(server, $q, filesHandler, $filter, $mdDialog, $timeout, dataContext) {
+    function ordersDistributionController(server, $q, filesHandler, $filter, $mdDialog, $timeout, dataContext) {
 
         var vm = this;
 
@@ -87,53 +87,32 @@
             return listToReturn;
         }
 
-        vm.openOrderDialog = function (order, ev) {
-            $mdDialog.show({
-                    controller: 'ViewOrderDialogController',
-                    templateUrl: './components/order/viewOrderDialog-template.html',
-                    controllerAs: vm,
-                    parent: angular.element(document.body),
-                    targetEvent: ev,
-                    clickOutsideToClose: true,
-                    locals: {
-                        order: order,
-                        showEditBtn: true,
-                        mode: vm.pageMode
-                    }
-                })
-                .then(function (answer) {
-                    //$scope.status = 'You said the information was "' + answer + '".';
-                }, function () {
-                    //$scope.status = 'You cancelled the dialog.';
-                });
+        vm.updateSum = function(count, item){
+            item.sum = (item.s1count || 0) + (item.s2count || 0) + (item.s3count || 0);
         }
 
+        vm.ordersItems = [];
+        vm.ordersFilterCreatedDate = new Date();
         vm.ordersFilter = {};
         var filter = {};
         vm.totalOrderCount = 0;
         vm.query = {
-            order: '-createdDate',
-            limit: 10,
-            page: 1
+            order: '-createdDate'
         };
 
 
         vm.getOrders = function () {
-            
-            if (vm.pageMode === 'order') {
-                filter = {
-                    $or: [{
-                        type: {
-                            $exists: false
-                        }
-                    }, {
-                        type: 'order'
-                    }]
-                };
-            }
-            if (vm.pageMode === 'stock') {
-                filter = {'type': 'stock'};
-            }
+
+            filter = {
+                $or: [{
+                    type: {
+                        $exists: false
+                    }
+                }, {
+                    type: 'order'
+                }]
+            };
+
 
             var includeNetwork = true;
             if (vm.ordersFilter.hasOwnProperty('branchId') && vm.ordersFilter.hasOwnProperty('networkId')) {
@@ -184,9 +163,9 @@
             }
 
 
-            server.getAllOrdersCount(filter).then(function (response) {
+            /*server.getAllOrdersCount(filter).then(function (response) {
                 vm.totalOrderCount = response.data;
-            });
+            });*/
 
             var deferred = $q.defer();
             vm.promise = deferred.promise;
@@ -199,6 +178,26 @@
                         order.items = $filter('departmentsItems')(order.items, vm.ordersFilter['departmentId']);
                     }
                 }
+
+                for (var index = 0; index < vm.orders.length; index++) {
+                    
+                    var order = vm.orders[index];
+                    var orderWithOutItems = angular.copy(order);
+                    delete orderWithOutItems.items;
+
+                    for (var j = 0; j < order.items.length; j++) {
+                        var item = order.items[j];
+                        vm.ordersItems.push({
+                            order: orderWithOutItems,
+                            item: item,
+                            sum: 0//,
+                            // s1count: 0,
+                            // s2count: 0,
+                            // s3count: 0
+                        });
+                    }
+                }
+
                 deferred.resolve();
             })
         };

@@ -13,7 +13,7 @@
 
         var vm = this;
         vm.imagesPath = device.getImagesPath();
-        vm.viewMode = 'ordersManager';
+        vm.viewMode = 'ordersDistribution';
         vm.loadingData = false;
 
         vm.showSideNav = $location.search().s !== undefined ? false : true;
@@ -31,8 +31,8 @@
             defultOpen: true,
             buttons: [{
                 text: 'ניהול הזמנות',
-                mode: '',
-                icon: ''
+                mode: 'ordersDistribution',
+                icon: 'blur_linear'
             }, {
                 text: 'מצב הזמנה',
                 mode: 'ordersStatus',
@@ -48,7 +48,12 @@
             
         },{
             headerText: 'ספירות מלאי',
-            defultOpen: false
+            defultOpen: true,
+            buttons: [{
+                text: 'ניהול מלאי',
+                mode: 'stockManager',
+                icon: 'line_style'
+            }]
         },{
             headerText: 'סניפים',
             defultOpen: true,
