@@ -12,20 +12,9 @@
             templateUrl: 'components/admin/ordersDistribution-template.html'
         });
 
-    function ordersDistributionController(server, $q, filesHandler, $filter, $mdDialog, $timeout, dataContext) {
+    function ordersDistributionController(server, $q, filesHandler, $filter, $timeout, dataContext) {
 
         var vm = this;
-
-        vm.expand_icon = vm.showTasksFilter ? 'expand_less' : 'expand_more';
-        vm.toggleFilterSection = function () {
-            if (vm.showTasksFilter === true) {
-                vm.showTasksFilter = false;
-                vm.expand_icon = 'expand_more';
-            } else {
-                vm.showTasksFilter = true;
-                vm.expand_icon = 'expand_less';
-            }
-        }
 
         var orderFields = {
             createdDate: 'ת. הזמנה',
@@ -92,93 +81,38 @@
         }
 
         vm.ordersItems = [];
-        vm.ordersFilterCreatedDate = new Date();
-        vm.ordersFilter = {};
-        var filter = {};
+        
+
+        vm.initialFilter = {
+            createdDate: new Date(new Date().setDate(10)) /// קומבינה של 1 בלילה, להעיף את זה
+        };
+
         vm.totalOrderCount = 0;
         vm.query = {
             order: '-createdDate'
         };
 
 
-        vm.getOrders = function () {
-
-            filter = {
-                $or: [{
-                    type: {
-                        $exists: false
-                    }
-                }, {
-                    type: 'order'
-                }]
-            };
-
-
-            var includeNetwork = true;
-            if (vm.ordersFilter.hasOwnProperty('branchId') && vm.ordersFilter.hasOwnProperty('networkId')) {
-                includeNetwork = false;
+        vm.getOrders = function (filter) {
+            if (!filter) {
+                var filter = {};
             }
-
-            for (var property in vm.ordersFilter) {
-                if (vm.ordersFilter.hasOwnProperty(property)) {
-                    if (vm.ordersFilter[property] === '') {
-                        delete vm.ordersFilter[property];
-                    }
-
-                    if (property !== 'networkId' || (property === 'networkId' && includeNetwork)) {
-                        if (typeof (vm.ordersFilter[property]) !== "string") {
-                            for (var index = 0; index < vm.ordersFilter[property].length; index++) {
-                                var element = vm.ordersFilter[property][index];
-                                if (!filter.hasOwnProperty('$or')) {
-                                    filter['$or'] = [];
-                                }
-                                var obj = {};
-                                if (property === 'departmentId') {
-                                    obj['items.itemDepartmentId'] = parseInt(element);
-                                } else {
-                                    obj[property] = element;
-                                }
-                                filter['$or'].push(obj);
-                            }
-                        }
-                    }
-                }
-            }
-
-            // handel the free text input
-            if (vm.ordersFilterFreeText !== undefined && vm.ordersFilterFreeText !== '') {
-                filter['items.itemName'] = {
-                    "$regex": vm.ordersFilterFreeText,
-                    "$options": "i"
-                };
-            } else {
-                delete vm.ordersFilter['items'];
-            }
-
-            // handel the date input
-            if (vm.ordersFilterCreatedDate !== undefined && vm.ordersFilterCreatedDate !== null && vm.ordersFilterCreatedDate !== '') {
-                filter['createdDate'] = vm.ordersFilterCreatedDate.toLocaleDateString()
-            } else {
-                delete vm.ordersFilter.createdDate;
-            }
-
-
-            /*server.getAllOrdersCount(filter).then(function (response) {
-                vm.totalOrderCount = response.data;
-            });*/
+            filter["type"] = 'order';
 
             var deferred = $q.defer();
             vm.promise = deferred.promise;
 
             server.getAllOrders(vm.query, filter).then(function (response) {
                 vm.orders = response.data;
-                if (vm.ordersFilter.hasOwnProperty('departmentId')) {
+                /** --- HANDEL THIS !!!! --- */
+                /*if (vm.ordersFilter.hasOwnProperty('departmentId')) {
                     for (var index = 0; index < vm.orders.length; index++) {
                         var order = vm.orders[index];
                         order.items = $filter('departmentsItems')(order.items, vm.ordersFilter['departmentId']);
                     }
-                }
+                }*/
 
+                vm.ordersItems = [];
                 for (var index = 0; index < vm.orders.length; index++) {
                     
                     var order = vm.orders[index];
@@ -201,52 +135,6 @@
                 deferred.resolve();
             })
         };
-
-        vm.branches = dataContext.getBranches();
-        vm.networks = dataContext.getNetworks();
-        vm.departments = dataContext.getDepartments();
-        vm.networksBranchesMap = dataContext.getNetworksBranchesMap();
-
-        if (!vm.branches || !vm.networks || !vm.networksBranchesMap) {
-            server.getAllBranches().then(function (response) {
-                var branchesMap = {};
-                var networksMap = {};
-                var networksBranchesMap = {};
-                for (var index = 0; index < response.data.length; index++) {
-                    var b = response.data[index];
-                    if (!branchesMap.hasOwnProperty(b.serialNumber)) {
-                        branchesMap[b.serialNumber] = {
-                            name: b.name,
-                            id: b.serialNumber
-                        };
-                    }
-                    if (!networksMap.hasOwnProperty(b.networkId)) {
-                        networksMap[b.networkId] = {
-                            name: b.networkName,
-                            id: b.networkId
-                        };
-                    }
-                    if (!networksBranchesMap.hasOwnProperty(b.networkId)) {
-                        networksBranchesMap[b.networkId] = [];
-                    }
-                    networksBranchesMap[b.networkId].push({
-                        name: b.name,
-                        id: b.serialNumber
-                    });
-                }
-                vm.branches = Object.values(branchesMap);
-                vm.networks = Object.values(networksMap);
-                vm.networksBranchesMap = networksBranchesMap;
-
-                dataContext.setBranches(vm.branches);
-                dataContext.setNetworks(vm.networks);
-                dataContext.setNetworksBranchesMap(vm.networksBranchesMap);
-            })
-        }
-
-        $timeout(function () {
-            vm.getOrders();
-        }, 0);
 
     }
 

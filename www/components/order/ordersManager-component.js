@@ -120,20 +120,7 @@
 
         vm.getOrders = function () {
             
-            if (vm.pageMode === 'order') {
-                filter = {
-                    $or: [{
-                        type: {
-                            $exists: false
-                        }
-                    }, {
-                        type: 'order'
-                    }]
-                };
-            }
-            if (vm.pageMode === 'stock') {
-                filter = {'type': 'stock'};
-            }
+            filter["type"] = vm.pageMode;
 
             var includeNetwork = true;
             if (vm.ordersFilter.hasOwnProperty('branchId') && vm.ordersFilter.hasOwnProperty('networkId')) {
@@ -200,7 +187,9 @@
                     }
                 }
                 deferred.resolve();
-            })
+            });
+
+            filter = {};
         };
 
         vm.branches = dataContext.getBranches();
