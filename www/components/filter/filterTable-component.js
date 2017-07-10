@@ -42,30 +42,32 @@
         vm.filter = function () {
 
             var includeNetwork = true;
-            if (vm.ordersFilter.hasOwnProperty('branchId') && vm.ordersFilter.hasOwnProperty('networkId')) {
+            if (vm.ordersFilter.hasOwnProperty('branchId') && vm.ordersFilter.branchId.length > 0 && vm.ordersFilter.hasOwnProperty('networkId')) {
                 includeNetwork = false;
             }
 
             for (var property in vm.ordersFilter) {
                 if (vm.ordersFilter.hasOwnProperty(property)) {
-                    if (vm.ordersFilter[property] === '') {
+                    if (vm.ordersFilter[property] === '' || vm.ordersFilter[property] === null || vm.ordersFilter[property].length < 1) {
                         delete vm.ordersFilter[property];
-                    }
-
-                    if (property !== 'networkId' || (property === 'networkId' && includeNetwork)) {
-                        if (typeof (vm.ordersFilter[property]) !== "string") {
-                            for (var index = 0; index < vm.ordersFilter[property].length; index++) {
-                                var element = vm.ordersFilter[property][index];
-                                if (!filter.hasOwnProperty('$or')) {
-                                    filter['$or'] = [];
+                    } else {
+                        if (property !== 'networkId' || (property === 'networkId' && includeNetwork)) {
+                            if (typeof (vm.ordersFilter[property]) !== "string" && typeof (vm.ordersFilter[property]) !== "number") {
+                                for (var index = 0; index < vm.ordersFilter[property].length; index++) {
+                                    var element = vm.ordersFilter[property][index];
+                                    if (!filter.hasOwnProperty('$or')) {
+                                        filter['$or'] = [];
+                                    }
+                                    var obj = {};
+                                    if (property === 'departmentId') {
+                                        obj['items.itemDepartmentId'] = parseInt(element);
+                                    } else {
+                                        obj[property] = element;
+                                    }
+                                    filter['$or'].push(obj);
                                 }
-                                var obj = {};
-                                if (property === 'departmentId') {
-                                    obj['items.itemDepartmentId'] = parseInt(element);
-                                } else {
-                                    obj[property] = element;
-                                }
-                                filter['$or'].push(obj);
+                            } else {
+                                filter[property] = vm.ordersFilter[property];
                             }
                         }
                     }
@@ -89,25 +91,24 @@
                 delete vm.ordersFilter.createdDate;
             }
 
-            vm.onFilterCallback(filter);
+            vm.onFilterCallback(filter, vm.ordersFilter.departmentId);
 
             filter = {};
         };
 
-        vm.getNetworksBranches = function(){            
+        vm.getNetworksBranches = function () {
             if (!vm.ordersFilter.networkId) {
                 return;
             }
             var listToReturn = [];
-            if(vm.ordersFilter.networkId && typeof(vm.ordersFilter.networkId) === 'string'){
+            if (vm.ordersFilter.networkId && typeof (vm.ordersFilter.networkId) === 'string') {
                 return vm.networksBranchesMap[vm.ordersFilter.networkId];
-            }
-            else{
+            } else {
                 for (var index = 0; index < vm.ordersFilter.networkId.length; index++) {
                     var element = vm.ordersFilter.networkId[index];
                     listToReturn = listToReturn.concat(vm.networksBranchesMap[element]);
-                }   
-                return listToReturn;     
+                }
+                return listToReturn;
             }
         }
         /* --- arnge data --- */

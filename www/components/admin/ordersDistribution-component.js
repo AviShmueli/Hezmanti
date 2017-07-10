@@ -93,7 +93,7 @@
         };
 
 
-        vm.getOrders = function (filter) {
+        vm.getOrders = function (filter, departments) {
             if (!filter) {
                 var filter = {};
             }
@@ -104,13 +104,13 @@
 
             server.getAllOrders(vm.query, filter).then(function (response) {
                 vm.orders = response.data;
-                /** --- HANDEL THIS !!!! --- */
-                /*if (vm.ordersFilter.hasOwnProperty('departmentId')) {
+
+                if (departments) {
                     for (var index = 0; index < vm.orders.length; index++) {
                         var order = vm.orders[index];
-                        order.items = $filter('departmentsItems')(order.items, vm.ordersFilter['departmentId']);
+                        order.items = $filter('departmentsItems')(order.items, departments);
                     }
-                }*/
+                }
 
                 vm.ordersItems = [];
                 for (var index = 0; index < vm.orders.length; index++) {
