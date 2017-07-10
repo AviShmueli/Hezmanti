@@ -14,6 +14,7 @@
         var vm = this;
         vm.imagesPath = device.getImagesPath();
         vm.viewMode = 'ordersManager';
+        vm.loadingData = false;
 
         vm.showSideNav = $location.search().s !== undefined ? false : true;
 
@@ -62,12 +63,13 @@
         },{
             headerText: 'קטלוג',
             defultOpen: false
-        }];
+        }]; 
 
         //* ---- Preper Data ------ */
         var catalog = dataContext.getCatalog();
 
         if (!catalog) {
+            vm.loadingData = true;
             server.getCatalog().then(function (response) {
                 vm.items = response.data;
                 var departmentsMap = {};
@@ -79,6 +81,7 @@
                     departmentsMap[item.departmentId].push(item);
                 }
                 dataContext.setCatalog(departmentsMap);
+                vm.loadingData = false;
             });
         }
     }

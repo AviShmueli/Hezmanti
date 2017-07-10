@@ -52,11 +52,17 @@
   </md-content>
 </md-sidenav>
 
-
-<md-content layout-padding md-scroll-y style="height: 90%">
+ 
+<md-content ng-if="!vm.loadingData" layout-padding md-scroll-y style="height: 90%">
 
   <dashboard ng-if="vm.viewMode === 'ordersStatus'"></dashboard>
   <users-manager ng-if="vm.viewMode === 'usersManager'"></users-manager>
   <orders-manager ng-if="vm.viewMode === 'ordersManager'"></orders-manager>
+
+</md-content>
+
+<md-content ng-if="vm.loadingData" layout-padding md-scroll-y style="height: 90%">
+
+  Loading...
 
 </md-content>
