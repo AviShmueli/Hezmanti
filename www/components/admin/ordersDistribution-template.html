@@ -5,23 +5,24 @@
             <filter-table card-title="'סינון ופעולות'" 
                           on-filter-callback="vm.getOrders" 
                           show-download-excel-btn="vm.ordersItems.length > 0"
-                          initial-values="vm.initialFilter"></filter-table>
+                          initial-values="vm.initialFilter"
+                          download-filterd-table="vm.downloadFilterdTable"></filter-table>
                                                     
             <md-card layout-margin>
                 <md-table-container>
-                    <table md-table md-row-select multiple ng-model="selected" md-progress="vm.promise">
+                    <table md-table md-progress="vm.promise">
                         <thead md-head md-order="vm.query.order" md-order="vm.query.order" md-on-reorder="vm.getOrders">
                             <tr md-row>
                                 <th md-column md-order-by="order.branchId">סניף</th>
                                 <th md-column md-order-by="order.orderId">מספר הזמנה</th>
                                 <th md-column md-order-by="item.itemSerialNumber">קוד פריט</th>
-                                <th md-column md-order-by="item.itemName">שם פריט</th>
+                                <th width="20%" md-column md-order-by="item.itemName">שם פריט</th>
                                 <th md-column>כמות מוזמנת</th>
                                 <th md-column>ביקורת</th>
-                                <th md-column>מילועוף</th>
-                                <th md-column>עוף עוז</th>
-                                <th md-column>עוף טוב</th>
-                                <th md-column>+</th>
+                                <th md-column ng-repeat="supplier in vm.suppliers">{{supplier.name}}</th>
+                                <th md-column>
+                                    <a class="cursor-pointer" aria-label="add" ng-click="vm.addSupplier()"> + </a>
+                                </th>
                             </tr>
                         </thead>
                         <tbody md-body>
@@ -31,26 +32,12 @@
                                 <td md-cell >{{::o.item.itemSerialNumber}}</td>
                                 <td md-cell >{{::o.item.itemName}}</td>
                                 <td md-cell >{{::o.item.count}}</td>
-                                <td md-cell ng-class="{'text-green' : o.sum === o.item.count}">{{o.sum}}</td>
-                                <td md-cell> 
+                                <td md-cell ng-class="{'text-green' : o.sum === o.item.count, 'text-red': vm.checkAllTableSum && o.sum !== o.item.count}">{{o.sum}}</td>
+                                <td md-cell ng-repeat="supplier in vm.suppliers"> 
                                     <md-input-container style="margin: 0">
                                         <input aria-label="input" style="width: 40px;" type="number" name="name{{$index}}" 
-                                               ng-model="o.s1count" min="0" max="{{o.item.count - o.sum + o.s1count}}"
-                                               ng-change="vm.updateSum(o.s1count, o)">
-                                    </md-input-container> 
-                                </td>
-                                 <td md-cell> 
-                                    <md-input-container style="margin: 0">
-                                        <input aria-label="input" style="width: 40px;" type="number" name="name{{$index}}" 
-                                               ng-model="o.s2count" min="0" max="{{o.item.count - o.sum + o.s2count}}"
-                                               ng-change="vm.updateSum(o.s2count, o)">
-                                    </md-input-container> 
-                                </td>
-                                 <td md-cell> 
-                                    <md-input-container style="margin: 0">
-                                        <input aria-label="input" style="width: 40px;" type="number" name="name{{$index}}" 
-                                               ng-model="o.s3count" min="0" max="{{o.item.count - o.sum + o.s3count}}"
-                                               ng-change="vm.updateSum(o.s3count, o)">
+                                               ng-model="o.suppliers[supplier.id.toString()]" min="0" max="{{o.item.count - o.sum + o.suppliers[supplier.id.toString()]}}"
+                                               ng-change="vm.updateSum(o)">
                                     </md-input-container> 
                                 </td>
                                 <td></td>

@@ -4,12 +4,13 @@
 
             <filter-table card-title="'סינון ופעולות'" 
                           on-filter-callback="vm.getOrders" 
-                          show-download-excel-btn="vm.orders.length > 0">
+                          show-download-excel-btn="vm.orders.length > 0"
+                          download-filterd-table="vm.downloadFilterdTable">
             </filter-table>
 
             <md-card layout-margin>
                 <md-table-container>
-                    <table md-table md-row-select multiple ng-model="selected" md-progress="vm.promise">
+                    <table md-table md-progress="vm.promise">
                         <!--md-progress="vm.promise"-->
                         <thead md-head md-order="vm.query.order" md-order="vm.query.order" md-on-reorder="vm.getOrders">
                             <tr md-row>

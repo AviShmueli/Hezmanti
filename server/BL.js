@@ -13,6 +13,7 @@
     BL.checkBranchCode = checkBranchCode;
     BL.updateUserLastSeenTime = updateUserLastSeenTime;
 
+    var Moment = require('moment-timezone');
     var deferred = require('deferred');
     var DAL = require('./DAL');
 
@@ -99,8 +100,9 @@
 
         if (filter.hasOwnProperty('createdDate')) {
             var date = filter.createdDate.split('/');
-            var dayEnd = new Date(Date.UTC(date[2], date[0] - 1, date[1] , 23, 59, 59, 999));
-            var dayStart = new Date(Date.UTC(date[2], date[0] - 1, date[1], 0, 0, 0));
+            //var dayEnd = new Date(Date.UTC(date[2], date[0] - 1, date[1] , 23, 59, 59, 999));
+            var dayEnd = Moment(new Date(date[2], date[0] - 1, date[1] , 23, 59, 59, 999)).tz('Asia/Jerusalem').toDate();
+            var dayStart = Moment(new Date(date[2], date[0] - 1, date[1], 0, 0, 0)).tz('Asia/Jerusalem').toDate();
             filter.createdDate = {
                 "$gt": dayStart,
                 "$lt": dayEnd

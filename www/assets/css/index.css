@@ -225,3 +225,11 @@ md-dialog.md-dialog-fullscreen {
 .text-green{
     color: green !important;
 }
+
+.text-red{
+    color: red !important;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}

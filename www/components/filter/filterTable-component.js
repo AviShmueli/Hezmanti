@@ -8,7 +8,8 @@
                 cardTitle: '=',
                 onFilterCallback: '=',
                 showDownloadExcelBtn: '=',
-                initialValues: '='
+                initialValues: '=',
+                downloadFilterdTable: '='
             },
             controller: filterTableController,
             controllerAs: 'vm',

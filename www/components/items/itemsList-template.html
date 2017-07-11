@@ -18,7 +18,7 @@
     </a>
     <form name="itemsForm">
         <md-table-container ng-if="vm.showList" layout-margin>
-            <table id="items-table" md-table md-row-select multiple ng-model="selected" md-progress="vm.promise">
+            <table id="items-table" md-table md-progress="vm.promise">
                 <tbody md-body >
                     <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="item in vm.items">
                         <td md-cell style="padding: 0 6px; font-size: 15px; width: 80%" ng-if="item.name !== undefined">{{::item.name}}</td>

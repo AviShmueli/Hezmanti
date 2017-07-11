@@ -1,5 +1,7 @@
 ﻿/*jshint esversion: 6 */
 
+process.env.TZ = 'Asia/Jerusalem' 
+
 var express = require('express');
 var BL = require('./BL');
 var DAL = require('./DAL');
