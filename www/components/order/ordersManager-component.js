@@ -53,12 +53,12 @@
                 order: vm.query.order
             }
             var fileName = new Date().getTime().toString();
-            server.getAllOrders(query, filter).then(function (response) {
+            server.getAllOrders(query, vm.filter).then(function (response) {
                 var orders = response.data;
-                if (vm.ordersFilter.hasOwnProperty('departmentId')) {
+                if (vm.departments) {
                     for (var index = 0; index < orders.length; index++) {
                         var order = orders[index];
-                        order.items = $filter('departmentsItems')(order.items, vm.ordersFilter['departmentId']);
+                        order.items = $filter('departmentsItems')(order.items, vm.departments);
                     }
                 }
 
@@ -108,6 +108,8 @@
                 });
         }
 
+        vm.departments = null;
+        vm.filter = {};
         vm.totalOrderCount = 0;
         vm.query = {
             order: '-createdDate',
@@ -118,8 +120,12 @@
 
         vm.getOrders = function (filter, departments) {
             
-            if (!filter) {
-                var filter = {};
+            if (filter) {
+                vm.filter = filter;
+            }
+
+            if (departments) {
+                vm.departments = departments;
             }
 
             filter["type"] = vm.pageMode;
@@ -137,10 +143,10 @@
             server.getAllOrders(vm.query, filter).then(function (response) {
                 vm.orders = response.data;
 
-                if (departments) {
+                if (vm.departments) {
                     for (var index = 0; index < vm.orders.length; index++) {
                         var order = vm.orders[index];
-                        order.items = $filter('departmentsItems')(order.items, departments);
+                        order.items = $filter('departmentsItems')(order.items, vm.departments);
                     }
                 }
 
