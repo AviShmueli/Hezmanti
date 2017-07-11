@@ -129,7 +129,9 @@
                     if (!branchesMap.hasOwnProperty(b.serialNumber)) {
                         branchesMap[b.serialNumber] = {
                             name: b.name,
-                            id: b.serialNumber
+                            id: b.serialNumber,
+                            networkId: b.networkId,
+                            networkName: b.networkName
                         };
                     }
                     if (!networksMap.hasOwnProperty(b.networkId)) {

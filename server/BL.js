@@ -12,6 +12,7 @@
     BL.getAllOrdersCount = getAllOrdersCount;
     BL.checkBranchCode = checkBranchCode;
     BL.updateUserLastSeenTime = updateUserLastSeenTime;
+    BL.getAllTodayOrders = getAllTodayOrders;
 
     var Moment = require('moment-timezone');
     var deferred = require('deferred');
@@ -70,8 +71,6 @@
                 d.deferred(error);
             });
         });
-
-
 
         return d.promise;
     }
@@ -211,6 +210,18 @@
         return d.promise;
     }
 
+    function getAllTodayOrders() {
+
+        var d = deferred();
+
+        DAL.getAllTodayOrders().then(function (result) {
+            d.resolve(result);
+        }, function (error) {
+            d.deferred(error);
+        });
+
+        return d.promise;
+    }
 
 
 })(module.exports);

@@ -16,8 +16,9 @@
     DAL.checkBranchCode = checkBranchCode;
     DAL.changeBranchCode = changeBranchCode;
     DAL.updateUserLastSeenTime = updateUserLastSeenTime;
+    DAL.getAllTodayOrders = getAllTodayOrders;
 
-
+var Moment = require('moment-timezone');
     var deferred = require('deferred');
     var mongodb = require('mongodb').MongoClient;
     var ObjectID = require('mongodb').ObjectID;
@@ -290,7 +291,7 @@
         var d = deferred();
 
         getCollection('gorme-orders').then(function (mongo) {
-            
+
             mongo.collection.find(filter, options).toArray(function (err, result) {
                 if (err) {
                     var errorObj = {
@@ -430,6 +431,41 @@
                 if (err) {
                     var errorObj = {
                         message: "error while trying to update branch: ",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(result);
+            });
+        });
+
+        return d.promise;
+    }
+
+    function getAllTodayOrders() {
+
+        var d = deferred();
+
+        var filter = {};
+
+        var date = new Date().toDateString();
+        var offset = Moment().tz('Asia/Jerusalem').utcOffset();
+        var dayStart = Moment(date).tz('Asia/Jerusalem').add(offset, 'm').toDate();
+        var dayEnd = Moment(date).tz('Asia/Jerusalem').add(offset, 'm').add(1, 'd').toDate();
+        filter.createdDate = {
+            "$gt": dayStart,
+            "$lt": dayEnd
+        };
+
+        getCollection('gorme-orders').then(function (mongo) {
+
+            mongo.collection.find(filter, {branchId: 1, createdDate: 1}).toArray(function (err, result) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to get All orders count: ",
                         error: err
                     };
                     mongo.db.close();

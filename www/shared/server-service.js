@@ -139,6 +139,15 @@
             return $http(req);
         }
 
+        var getAllTodayOrders = function () {
+            var req = {
+                method: 'GET',
+                url: '/api/getAllTodayOrders'
+            };
+
+            return $http(req);
+        }
+
         var service = {
             addOrder: addOrder,
             getCatalog: getCatalog,
@@ -150,7 +159,8 @@
             getAllOrdersCount: getAllOrdersCount,
             checkBranchCode: checkBranchCode,
             getDepartments: getDepartments,
-            updateUserLastSeenTime: updateUserLastSeenTime
+            updateUserLastSeenTime: updateUserLastSeenTime,
+            getAllTodayOrders: getAllTodayOrders
         };
 
         return service;
