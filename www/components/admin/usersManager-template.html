@@ -16,16 +16,16 @@
 
                         <md-input-container class="md-block" flex>
                             <label>רשת</label>
-                            <md-select md-no-asterisk ng-model="vm.tasksFilter.userId" name="user" ng-disabled="vm.users.length < 1">
-                                <md-option ng-repeat="(key, value) in vm.users" value="{{value._id}}" dir="rtl">
-                                    {{value.name}}
+                            <md-select md-no-asterisk ng-model="vm.networkFilter" name="user" ng-disabled="vm.users.length < 1">
+                                <md-option ng-repeat="network in vm.networks" value="{{network.id}}" dir="rtl">
+                                    {{network.name}}
                                 </md-option>
                             </md-select>
                         </md-input-container>
 
                         <md-input-container class="md-block" flex>
                             <label>חיפוש</label>
-                            <input ng-model="vm.tasksFilterFreeText" name="name">
+                            <input ng-model="vm.FilterFreeText" name="name">
                         </md-input-container>
 
                         <!--<div class="md-secondary md-block" flex layout="row" layout-align="end center">
@@ -48,7 +48,7 @@
                             </tr>
                         </thead>
                         <tbody md-body>
-                            <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="branch in vm.branches | orderBy: vm.query.order">
+                            <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="branch in vm.branches | orderBy: vm.query.order | filter: {networkId: vm.networkFilter, name: vm.FilterFreeText}">
                                 <td md-cell mdNumeric>{{branch.serialNumber}}</td>
                                 <td md-cell>{{branch.name}}</td>
                                 <td md-cell>{{branch.networkName}}</td>

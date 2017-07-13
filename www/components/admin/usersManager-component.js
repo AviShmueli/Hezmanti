@@ -12,7 +12,7 @@
             templateUrl: 'components/admin/usersManager-template.html'
         });
 
-    function usersManagerController(server, $q) {
+    function usersManagerController(server, $q, dataContext) {
 
         var vm = this;
 
@@ -30,6 +30,8 @@
 
         var deferred = $q.defer();
         vm.promise = deferred.promise;
+
+        vm.networks = dataContext.getNetworks();
 
         server.getAllBranches().then(function(response){
             vm.branches = response.data;

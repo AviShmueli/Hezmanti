@@ -120,7 +120,7 @@
 
         vm.getOrders = function (filter, departments) {
             
-            if (filter) {
+            if (filter && typeof(filter) !== 'number') {
                 vm.filter = filter;
             }
 
@@ -128,10 +128,10 @@
                 vm.departments = departments;
             }
 
-            filter["type"] = vm.pageMode;
+            vm.filter["type"] = vm.pageMode;
 
 
-            server.getAllOrdersCount(filter).then(function (response) {
+            server.getAllOrdersCount(vm.filter).then(function (response) {
                 vm.totalOrderCount = response.data;
             });
 
@@ -140,7 +140,7 @@
 
 
 
-            server.getAllOrders(vm.query, filter).then(function (response) {
+            server.getAllOrders(vm.query, vm.filter).then(function (response) {
                 vm.orders = response.data;
 
                 if (vm.departments) {
@@ -154,7 +154,7 @@
                 deferred.resolve();
             });
 
-            filter = {};
+            vm.filter = {};
         };
 
     }

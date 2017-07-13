@@ -13,7 +13,7 @@
 
         var vm = this;
         vm.imagesPath = device.getImagesPath();
-        vm.viewMode = 'ordersDistribution';
+        vm.viewMode = 'ordersManager';
         vm.loadingData = false;
 
         vm.showSideNav = $location.search().s !== undefined ? false : true;
