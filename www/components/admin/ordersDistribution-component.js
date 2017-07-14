@@ -169,15 +169,18 @@
 
         vm.suppliers = [{
                 name: 'מילועוף',
-                id: 30000
+                id: 30000,
+                show: true
             },
             {
                 name: 'עוף עוז',
-                id: 30005
+                id: 30005,
+                show: true
             },
             {
                 name: 'עוף טוב',
-                id: 30050
+                id: 30050,
+                show: true
             },
         ];
 
@@ -219,7 +222,8 @@
                         if ($scope.newSupplier.$valid) {
                             $mdDialog.hide({
                                 name: $scope.name,
-                                id: $scope.id
+                                id: $scope.id,
+                                show: true
                             });
                         }
 

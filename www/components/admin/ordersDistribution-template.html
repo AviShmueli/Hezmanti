@@ -19,9 +19,16 @@
                                 <th width="20%" md-column md-order-by="item.itemName">שם פריט</th>
                                 <th md-column>כמות מוזמנת</th>
                                 <th md-column>ביקורת</th>
-                                <th md-column ng-repeat="supplier in vm.suppliers">{{supplier.name}}</th>
+                                <th md-column ng-repeat="supplier in vm.suppliers" ng-if="supplier.show">
+                                    {{supplier.name}}
+                                    <a class="cursor-pointer" aria-label="add" ng-click="supplier.show = false;"> 
+                                        <ng-md-icon icon="remove_circle_outline" size="15"></ng-md-icon>
+                                    </a>
+                                </th>
                                 <th md-column>
-                                    <a class="cursor-pointer" aria-label="add" ng-click="vm.addSupplier()"> + </a>
+                                    <a class="cursor-pointer" aria-label="add" ng-click="vm.addSupplier()">
+                                        <ng-md-icon icon="add_circle_outline"></ng-md-icon>
+                                    </a>
                                 </th>
                             </tr>
                         </thead>
@@ -33,7 +40,7 @@
                                 <td md-cell >{{::o.item.itemName}}</td>
                                 <td md-cell >{{::o.item.count}}</td>
                                 <td md-cell ng-class="{'text-green' : o.sum === o.item.count, 'text-red': vm.checkAllTableSum && o.sum !== o.item.count}">{{o.sum}}</td>
-                                <td md-cell ng-repeat="supplier in vm.suppliers"> 
+                                <td md-cell ng-repeat="supplier in vm.suppliers" ng-if="supplier.show"> 
                                     <md-input-container style="margin: 0">
                                         <input aria-label="input" style="width: 40px;" type="number" name="name{{$index}}" 
                                                ng-model="o.suppliers[supplier.id.toString()]" min="0" max="{{o.item.count - o.sum + o.suppliers[supplier.id.toString()]}}"
