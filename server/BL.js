@@ -63,7 +63,7 @@
 
         order.createdDate = new Date(order.createdDate);
 
-        DAL.getNextSequence('orderId').then(function (result) {
+        DAL.getNextSequence(order.type + 'Id').then(function (result) {
             order['orderId'] = result;
             DAL.addOrder(order).then(function (result) {
                 d.resolve(result);
@@ -107,21 +107,14 @@
                 "$gt": dayStart,
                 "$lt": dayEnd
             };
-
-
-            /*var date = filter.createdDate;
-            var a = new Date(date).toISOString().split('T')[0];
-            //var dayEnd = new Date(Date.UTC(date[2], date[0] - 1, date[1] , 23, 59, 59, 999));
-            var dayEnd = Moment(new Date(date.y, date.m, date.d , 23, 59, 59, 999)).tz('Asia/Jerusalem').toDate();
-            var dayStart = Moment(new Date(date[2], date[0] - 1, date[1], 0, 0, 0)).tz('Asia/Jerusalem').toDate();
-            filter.createdDate = {
-                "$gt": dayStart,
-                "$lt": dayEnd
-            };*/
         }
 
         if (filter.hasOwnProperty('orderId')) {
             filter.orderId = parseInt(filter.orderId);
+        }
+
+        if (filter.hasOwnProperty('branchId')) {
+            filter.branchId = parseInt(filter.branchId);
         }
 
         var sortField = (query.order.indexOf('-') === -1) ? query.order : query.order.substr(1);

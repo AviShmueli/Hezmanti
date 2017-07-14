@@ -124,9 +124,9 @@
                 vm.filter = filter;
             }
 
-            if (departments) {
+            //if (departments) {
                 vm.departments = departments;
-            }
+            //}
 
             vm.filter["type"] = vm.pageMode;
 

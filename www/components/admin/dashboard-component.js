@@ -19,11 +19,14 @@
         vm.showLaunchBtn = $location.search().s !== undefined ? false : true;
 
         vm.branchesMap = {};
-        vm.allBranches = dataContext.getBranches();
+        vm.allBranches = dataContext.getNetworksBranchesMap();
+        vm.networks = dataContext.getNetworks();
 
         var setBranchesMap = function () {
             angular.forEach(vm.allBranches, function (obj, key) {
-                vm.branchesMap[obj.id] = obj;
+                angular.forEach(obj, function (obj1, key1) {
+                    vm.branchesMap[obj1.id] = obj1;
+                });
             });
         }
 
@@ -39,17 +42,16 @@
             vm.allBranchesLength = vm.allBranches.length;
             setBranchesMap();
         }
-        
+
 
         vm.openInNewTab = function () {
             window.open(window.location.href + '?s=0', '_blank');
         }
 
         var resetAllBranches = function () {
-            for (var index = 0; index < vm.allBranches.length; index++) {
-                var element = vm.allBranches[index];
-                element['sendOrder'] = false;    
-            }
+            angular.forEach(vm.branchesMap, function (obj, key) {
+                obj['sendOrder'] = false;
+            });
         }
 
         vm.lastUpdateDate;
@@ -60,7 +62,7 @@
                     var order = response.data[index];
                     vm.branchesMap[order.branchId]['sendOrder'] = true;
                 }
-                
+
             });
             var date = new Date().getDate();
             if (date !== vm.lastUpdateDate) {

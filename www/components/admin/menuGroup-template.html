@@ -11,7 +11,7 @@
 </md-item>
 <span ng-show="vm.showSection">
 <md-divider></md-divider>
-<md-list-item ng-repeat="button in vm.buttons" ng-click="vm.viewMode = button.mode" ng-class="{'list-item-active': vm.viewMode === button.mode}">
+<md-list-item ng-repeat="button in vm.buttons" ng-click="vm.switchViewMode(button.mode)" ng-class="{'list-item-active': vm.viewMode === button.mode}">
     <md-icon style=" color: #000000">{{button.icon}}</md-icon>
     <p>{{button.text}}</p>
 </md-list-item>

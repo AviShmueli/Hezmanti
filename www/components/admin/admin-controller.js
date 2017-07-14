@@ -6,14 +6,16 @@
         .controller('AdminController', AdminController);
 
     AdminController.$inject = ['$scope', '$mdSidenav', 'device', '$location',
-                               'server', 'dataContext'];
+                               'server', 'dataContext', '$state'];
 
     function AdminController($scope, $mdSidenav, device, $location,
-                             server, dataContext) {
+                             server, dataContext,  $state) {
 
         var vm = this;
+
+        vm.viewMode = $state.params.mode || 'ordersDistribution';
+
         vm.imagesPath = device.getImagesPath();
-        vm.viewMode = 'ordersManager';
         vm.loadingData = false;
 
         vm.showSideNav = $location.search().s !== undefined ? false : true;
@@ -38,7 +40,7 @@
                 mode: 'ordersStatus',
                 icon: 'timeline'
             }, {
-                text: 'דוחות הזמנה',
+                text: 'הזמנות',
                 mode: 'ordersManager',
                 icon: 'view_quilt'
             }]

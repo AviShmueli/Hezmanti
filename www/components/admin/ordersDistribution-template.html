@@ -11,14 +11,14 @@
             <md-card layout-margin>
                 <md-table-container>
                     <table md-table md-progress="vm.promise">
-                        <thead md-head md-order="vm.query.order" md-order="vm.query.order" md-on-reorder="vm.getOrders">
+                        <thead md-head md-order="vm.query.order">
                             <tr md-row>
-                                <th md-column md-order-by="order.branchId">סניף</th>
+                                <th md-column md-order-by="order.branchName">סניף</th>
                                 <th md-column md-order-by="order.orderId">מספר הזמנה</th>
-                                <th md-column md-order-by="item.itemSerialNumber">קוד פריט</th>
+                                <!--<th md-column md-order-by="item.itemSerialNumber">קוד פריט</th>-->
                                 <th width="20%" md-column md-order-by="item.itemName">שם פריט</th>
-                                <th md-column>כמות מוזמנת</th>
-                                <th md-column>ביקורת</th>
+                                <th md-column md-order-by="item.count">כמות מוזמנת</th>
+                                <th md-column md-order-by="sum">ביקורת</th>
                                 <th md-column ng-repeat="supplier in vm.suppliers" ng-if="supplier.show">
                                     {{supplier.name}}
                                     <a class="cursor-pointer" aria-label="add" ng-click="supplier.show = false;"> 
@@ -34,9 +34,9 @@
                         </thead>
                         <tbody md-body>
                             <tr class="distribution-table" md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="o in vm.ordersItems | orderBy: vm.query.order">
-                                <td md-cell >{{::o.order.branchId}}</td>
+                                <td md-cell >{{::o.order.branchName}}</td>
                                 <td md-cell >{{::o.order.orderId}}</td>
-                                <td md-cell >{{::o.item.itemSerialNumber}}</td>
+                                <!--<td md-cell >{{::o.item.itemSerialNumber}}</td>-->
                                 <td md-cell >{{::o.item.itemName}}</td>
                                 <td md-cell >{{::o.item.count}}</td>
                                 <td md-cell ng-class="{'text-green' : o.sum === o.item.count, 'text-red': vm.checkAllTableSum && o.sum !== o.item.count}">{{o.sum}}</td>

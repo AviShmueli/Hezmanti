@@ -15,7 +15,7 @@
             templateUrl: 'components/admin/menuGroup-template.html'
         });
 
-    function menuGroupController() {
+    function menuGroupController($state) {
 
         var vm = this;
         vm.showSection = vm.defultOpen || false;
@@ -29,6 +29,10 @@
                 vm.showSection = true;
                 vm.expand_icon = 'expand_less';
             }
+        }
+
+        vm.switchViewMode = function (toMode) {
+            $state.go('admin' ,{mode: toMode});
         }
     }
 })();

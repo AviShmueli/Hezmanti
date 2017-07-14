@@ -54,18 +54,37 @@
                     } else {
                         if (property !== 'networkId' || (property === 'networkId' && includeNetwork)) {
                             if (typeof (vm.ordersFilter[property]) !== "string" && typeof (vm.ordersFilter[property]) !== "number") {
-                                for (var index = 0; index < vm.ordersFilter[property].length; index++) {
-                                    var element = vm.ordersFilter[property][index];
-                                    if (!filter.hasOwnProperty('$or')) {
-                                        filter['$or'] = [];
-                                    }
-                                    var obj = {};
+                                if (vm.ordersFilter[property].length === 1) {
                                     if (property === 'departmentId') {
-                                        obj['items.itemDepartmentId'] = parseInt(element);
+                                        filter['items.itemDepartmentId'] = parseInt(vm.ordersFilter[property][0]);
                                     } else {
-                                        obj[property] = element;
+                                        if (property === 'branchId') {
+                                            filter['branchId'] = parseInt(vm.ordersFilter[property][0]);
+                                        }
+                                        else{
+                                            filter[property] = vm.ordersFilter[property][0];
+                                        }
+                                        
                                     }
-                                    filter['$or'].push(obj);
+                                } else {
+                                    for (var index = 0; index < vm.ordersFilter[property].length; index++) {
+                                        var element = vm.ordersFilter[property][index];
+                                        if (!filter.hasOwnProperty('$or')) {
+                                            filter['$or'] = [];
+                                        }
+                                        var obj = {};
+                                        if (property === 'departmentId') {
+                                            obj['items.itemDepartmentId'] = parseInt(element);
+                                        } else {
+                                            if (property === 'branchId') {
+                                                obj['branchId'] = parseInt(element);
+                                            }
+                                            else{
+                                                obj[property] = element;
+                                            }
+                                        }
+                                        filter['$or'].push(obj);
+                                    }
                                 }
                             } else {
                                 filter[property] = vm.ordersFilter[property];
@@ -88,7 +107,7 @@
             // handel the date input
             if (vm.createdDate !== undefined && vm.createdDate !== null && vm.createdDate !== '') {
                 //var date = vm.createdDate.toLocaleDateString().split('/');
-                
+
                 filter['createdDate'] = vm.createdDate;
             } else {
                 delete vm.ordersFilter.createdDate;

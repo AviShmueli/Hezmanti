@@ -55,7 +55,7 @@
         });
 
         $stateProvider.state("admin", {
-            url: "/admin",
+            url: "/admin/:mode",
             templateUrl: "components/admin/admin.html",
             controller: "AdminController",
             controllerAs: "vm"

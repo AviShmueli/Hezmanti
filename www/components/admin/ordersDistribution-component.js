@@ -50,8 +50,8 @@
             var suppliersItemsMap = vm.mapAllItemsBySuppliers();
 
             for (var index = 0; index < vm.suppliers.length; index++) {
-                
-                var supplier = vm.suppliers[index];   
+
+                var supplier = vm.suppliers[index];
 
                 if (suppliersItemsMap.hasOwnProperty(supplier.id)) {
                     var fileName = supplier.name + '_' + $filter('date')(new Date(), 'dd/MM/yyyy');
@@ -91,10 +91,9 @@
             orderDate = new Date(orderDate);
             var day = orderDate.getDay();
             var deliveryDate = new Date(orderDate);
-            if (day === 0 || day === 6) {
+            if (day === 5) {
                 deliveryDate.setDate(orderDate.getDate() + 2);
-            }
-            else{
+            } else {
                 deliveryDate.setDate(orderDate.getDate() + 1);
             }
             return $filter('date')(deliveryDate, 'dd/MM/yyyy');
@@ -111,7 +110,7 @@
         vm.ordersItems = [];
 
         vm.initialFilter = {
-            createdDate: new Date()
+            createdDate: new Date(new Date().setDate(12))
         };
 
         vm.departments = null;
@@ -127,9 +126,9 @@
                 vm.filter = filter;
             }
 
-            if (departments) {
+            //if (departments) {
                 vm.departments = departments;
-            }
+            //}
 
             vm.filter["type"] = 'order';
 
