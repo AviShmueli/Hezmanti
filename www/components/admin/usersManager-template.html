@@ -3,14 +3,16 @@
         <ui-view layout="column" layout-fill>
 
             <md-card layout="column">
+                <a ng-click="vm.toggleFilterSection()" style="margin: 0; cursor: pointer">
                 <md-card-title class="management-filter-card-title">
                     <md-card-title-text>
                         <h3>סינון</h3>
                     </md-card-title-text>
-                    <md-button class="md-icon-button" ng-click="vm.toggleFilterSection()" aria-label="toggle">
+                    <md-button class="md-icon-button" aria-label="toggle">
                         <ng-md-icon id="expand_more_icon" icon="{{vm.expand_icon}}" options='{"rotation": "counterclock"}'></ng-md-icon>
                     </md-button>
                 </md-card-title>
+                </a>
                 <div layout-gt-xs="column" flex layout-padding ng-show="vm.showTasksFilter">
                     <div layout-gt-xs="row" layout="column">
 

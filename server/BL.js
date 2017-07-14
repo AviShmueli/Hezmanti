@@ -98,14 +98,26 @@
             filter = JSON.parse(query.filter);
 
         if (filter.hasOwnProperty('createdDate')) {
-            var date = filter.createdDate.split('/');
-            //var dayEnd = new Date(Date.UTC(date[2], date[0] - 1, date[1] , 23, 59, 59, 999));
-            var dayEnd = Moment(new Date(date[2], date[0] - 1, date[1] , 23, 59, 59, 999)).tz('Asia/Jerusalem').toDate();
-            var dayStart = Moment(new Date(date[2], date[0] - 1, date[1], 0, 0, 0)).tz('Asia/Jerusalem').toDate();
+
+            var date = new Date(filter.createdDate).toDateString();
+            var offset = Moment().tz('Asia/Jerusalem').utcOffset();
+            var dayStart = Moment(date).tz('Asia/Jerusalem').add(offset, 'm').toDate();
+            var dayEnd = Moment(date).tz('Asia/Jerusalem').add(offset, 'm').add(1, 'd').toDate();
             filter.createdDate = {
                 "$gt": dayStart,
                 "$lt": dayEnd
             };
+
+
+            /*var date = filter.createdDate;
+            var a = new Date(date).toISOString().split('T')[0];
+            //var dayEnd = new Date(Date.UTC(date[2], date[0] - 1, date[1] , 23, 59, 59, 999));
+            var dayEnd = Moment(new Date(date.y, date.m, date.d , 23, 59, 59, 999)).tz('Asia/Jerusalem').toDate();
+            var dayStart = Moment(new Date(date[2], date[0] - 1, date[1], 0, 0, 0)).tz('Asia/Jerusalem').toDate();
+            filter.createdDate = {
+                "$gt": dayStart,
+                "$lt": dayEnd
+            };*/
         }
 
         if (filter.hasOwnProperty('orderId')) {
@@ -151,7 +163,7 @@
 
         if (filter.hasOwnProperty('createdDate')) {
             var date = filter.createdDate.split('/');
-            var dayEnd = new Date(Date.UTC(date[2], date[0] - 1, date[1] , 23, 59, 59, 999));
+            var dayEnd = new Date(Date.UTC(date[2], date[0] - 1, date[1], 23, 59, 59, 999));
             var dayStart = new Date(Date.UTC(date[2], date[0] - 1, date[1], 0, 0, 0));
             filter.createdDate = {
                 "$gt": dayStart,
@@ -201,7 +213,7 @@
 
         var d = deferred();
 
-        DAL.updateUserLastSeenTime(id,new Date(date)).then(function (result) {
+        DAL.updateUserLastSeenTime(id, new Date(date)).then(function (result) {
             d.resolve(result);
         }, function (error) {
             d.deferred(error);

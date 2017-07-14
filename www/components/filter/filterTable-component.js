@@ -87,7 +87,9 @@
 
             // handel the date input
             if (vm.createdDate !== undefined && vm.createdDate !== null && vm.createdDate !== '') {
-                filter['createdDate'] = vm.createdDate.toLocaleDateString()
+                //var date = vm.createdDate.toLocaleDateString().split('/');
+                
+                filter['createdDate'] = vm.createdDate;
             } else {
                 delete vm.ordersFilter.createdDate;
             }

@@ -30,7 +30,7 @@
             headerText: 'הזמנות',
             defultOpen: true,
             buttons: [{
-                text: 'ניהול הזמנות',
+                text: 'חלוקת הזמנות לספקים',
                 mode: 'ordersDistribution',
                 icon: 'blur_linear'
             }, {
