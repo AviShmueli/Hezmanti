@@ -20,10 +20,16 @@
                                 <th md-column md-order-by="item.count">כמות מוזמנת</th>
                                 <th md-column md-order-by="sum">ביקורת</th>
                                 <th md-column ng-repeat="supplier in vm.suppliers" ng-if="supplier.show">
-                                    {{supplier.name}}
+                                    
                                     <a class="cursor-pointer" aria-label="add" ng-click="supplier.show = false;"> 
                                         <ng-md-icon icon="remove_circle_outline" size="15"></ng-md-icon>
                                     </a>
+                                    {{supplier.name}}
+                                    <md-input-container style="margin: 0">
+                                        <input aria-label="input" style="width: 20px;" type="number" name="name{{$index}}" 
+                                               ng-model="o.suppliers[supplier.id.toString()].percent" min="0" max="100"
+                                               ng-change="vm.updateAllItems(o.suppliers[supplier.id.toString()].percent, supplier.id)">
+                                    </md-input-container> 
                                 </th>
                                 <th md-column>
                                     <a class="cursor-pointer" aria-label="add" ng-click="vm.addSupplier()">

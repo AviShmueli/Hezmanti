@@ -238,6 +238,25 @@
             });
         }
 
+        var timer;
+        vm.updateAllItems = function(persent, supplierId){
+            $timeout.cancel(timer);
+            timer = $timeout(function () {
+                for (var index = 0; index < vm.ordersItems.length; index++) {
+                    var orderItem = vm.ordersItems[index];
+                    if (!orderItem.hasOwnProperty("suppliers")) {
+                        orderItem["suppliers"] = {};
+                        orderItem.suppliers[supplierId] = Math.ceil(orderItem.item.count * (persent * 0.01));
+                    
+                    }
+                    else{
+                        orderItem.suppliers[supplierId] = Math.floor(orderItem.item.count * (persent * 0.01));
+                    }
+                    vm.updateSum(orderItem);    
+            }
+            }, 500);
+        }
+
     }
 
 }());
