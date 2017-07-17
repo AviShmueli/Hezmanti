@@ -17,8 +17,9 @@
                                 <th md-column md-order-by="orderId">מספר הזמנה</th>
                                 <th md-column md-order-by="createdDate">תאריך</th>
                                 <th md-column md-order-by="branchName"><span>שם סניף</span></th>
-                                <th md-column md-order-by="brachId">מזהה סניף</th>
+                                <th md-column md-order-by="brachId">מספר סניף</th>
                                 <th md-column>כמות מוצרים</th>
+                                <th md-column md-order-by="branchName"><span>שולח</span></th>
                                 <th md-column></th>
                             </tr>
                         </thead>
@@ -29,6 +30,7 @@
                                 <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::order.branchName}}</td>
                                 <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::order.branchId}}</td>
                                 <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{order.items.length}}</td>
+                                <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{order.createdBy}}</td>
                                 <td md-cell>
                                     <md-button ng-click="vm.downloadExel(order._id)" aria-label="download">
                                         <md-icon style="width:28px;height:28px;" md-svg-src="/assets/images/Exel_download.svg">
