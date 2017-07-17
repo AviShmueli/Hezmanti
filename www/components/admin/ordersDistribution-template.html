@@ -26,7 +26,7 @@
                                     </a>
                                     {{supplier.name}}
                                     <md-input-container style="margin: 0">
-                                        <input aria-label="input" style="width: 20px;" type="number" name="name{{$index}}" 
+                                        <input aria-label="input" style="width: 35px;" type="number" name="name{{$index}}" 
                                                ng-model="o.suppliers[supplier.id.toString()].percent" min="0" max="100"
                                                ng-change="vm.updateAllItems(o.suppliers[supplier.id.toString()].percent, supplier.id)">
                                     </md-input-container> 
