@@ -11,7 +11,8 @@
             'ngFileSaver',
             'angularMoment',
             'logglyLogger',
-            'ngSanitize'
+            'ngSanitize',
+            'anguFixedHeaderTable'
         ]);
 
 })();

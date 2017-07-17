@@ -22,12 +22,13 @@
 
         vm.navigateTo = function (to, param) {
             if (param) {
-                $state.go(to, {mode: param});
-            }
-            else{
+                $state.go(to, {
+                    mode: param
+                });
+            } else {
                 $state.go(to);
             }
-            
+
         }
 
         document.addEventListener("deviceready", function () {
@@ -94,9 +95,11 @@
         if (vm.user !== undefined) {
             if (vm.user.name === undefined) {
                 openUserNameAlert().then(function (result) {
-                    dataContext.setUserName(result);
-                    vm.user.name = result;
-                    vm.openBranchCodeAlert();
+                    if (result !== '') {
+                        dataContext.setUserName(result);
+                        vm.user.name = result;
+                        vm.openBranchCodeAlert();
+                    }
                 });
             }
         } else {

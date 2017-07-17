@@ -12,7 +12,8 @@
             templateUrl: 'components/admin/ordersDistribution-template.html'
         });
 
-    function ordersDistributionController(server, $q, filesHandler, $filter, $timeout, dataContext, $mdToast, $mdDialog) {
+    function ordersDistributionController(server, $q, filesHandler, $filter, $timeout, dataContext,
+                                          $mdToast, $mdDialog, $window) {
 
         var vm = this;
 
@@ -23,6 +24,8 @@
             itemSerialNumber: 'פריט/ברקוד',
             count: 'מארזים'
         };
+
+        vm.tableHeight = $window.innerHeight - 200;
 
         vm.checkAllTableSum = false;
         vm.downloading = false;
@@ -109,9 +112,9 @@
 
         vm.ordersItems = [];
 
-        vm.initialFilter = {
-            createdDate: new Date(new Date().setDate(12))
-        };
+        //vm.initialFilter = {
+         //   createdDate: new Date(new Date().setDate(12))
+        //};
 
         vm.departments = null;
         vm.filter = {};

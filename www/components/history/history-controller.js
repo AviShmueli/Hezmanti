@@ -51,7 +51,8 @@
                     fullscreen: true,
                     locals: {
                         order: order,
-                        showEditBtn: false
+                        showEditBtn: false,
+                        mode: order.type
                     }
                 })
                 .then(function (answer) {
