@@ -62,8 +62,8 @@
         var d = deferred();
 
         order.createdDate = new Date(order.createdDate);
-
-        DAL.getNextSequence(order.type + 'Id').then(function (result) {
+        var seq = (order.type === 'order' || order.type === 'secondOrder') ? 'orderId' : 'stockId';
+        DAL.getNextSequence(seq).then(function (result) {
             order['orderId'] = result;
             DAL.addOrder(order).then(function (result) {
                 d.resolve(result);

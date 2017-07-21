@@ -27,7 +27,7 @@
                                 <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="order in vm.orders">
                                     <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::order.createdDate | date: 'dd/MM'}}</td>
                                     <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::order.orderId}}</td>
-                                    <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::(order.type === undefined || order.type === 'order')? 'הזמנה' : 'מלאי'}}</td>
+                                    <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::vm.getOrderTypeText(order.type)}}</td>
                                 </tr>
                             </tbody>
                         </table>

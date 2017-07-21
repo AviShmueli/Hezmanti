@@ -7,13 +7,16 @@
             bindings: {
                 items: '=',
                 orderTitle: '=',
+                orderDate: '=',
                 orderChanged: '=',
                 updateOrder: '=',
                 showDeleteBtn: '=',
                 switchToNewOrderMode: '=',
                 showEditBtn: '=',
                 itemCountChangedCallback : '=',
-                cleanData: '='
+                cleanData: '=',
+                showSecondOrder: '=',
+                isSecondOrder: '='
             },
             controller: viewOrderController,
             controllerAs: 'vm',
@@ -77,6 +80,31 @@
                 vm.cleanData();
                 vm.switchToNewOrderMode('new');
             }, function () { });
+        }
+
+        var getDeliveryDate = function () {
+
+            var day = new Date().getDay();
+            var deliveryDate = new Date();
+            if (day === 5) {
+                deliveryDate.setDate(deliveryDate.getDate() + 2);
+            } else {
+                deliveryDate.setDate(deliveryDate.getDate() + 1);
+            }
+            return $filter('date')(deliveryDate, 'dd/MM');
+        }
+
+        if (vm.showSecondOrder) {              
+            $scope.$watch(
+                "vm.isSecondOrder",
+                function handleFooChange(newValue, oldValue) {
+                    if (newValue) {
+                        vm.orderDate = $filter('date')(new Date(), 'dd/MM');
+                    } else {
+                        vm.orderDate = getDeliveryDate();
+                    }
+                }
+            );
         }
     }
 

@@ -24,12 +24,15 @@
 <md-content layout-padding md-scroll-y style="height: 90%" dir="rtl">
 
     <view-order items="vm.cartItems" 
-                order-title="vm.pageText.viewTitle + ' ' + vm.currDate" 
+                order-title="vm.pageText.viewTitle" 
+                order-date="vm.currDate"
                 show-delete-btn="true" 
                 show-edit-btn="true"
                 switch-to-new-order-mode="vm.switchMode"
                 item-count-changed-callback="vm.itemCountChanged"
                 clean-data="vm.cleanData"
+                show-second-order="(vm.pageMode === 'order')"
+                is-second-order="vm.isSecondOrder"
                 ng-if="vm.viewMode === 'viewOrder' && vm.showErrorMessage === false && vm.showSucseesMessage === false" >
     </view-order>
 

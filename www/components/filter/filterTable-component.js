@@ -16,7 +16,7 @@
             templateUrl: 'components/filter/filterTable-template.html'
         });
 
-    function filterTableController(server, $q, filesHandler, $filter, $timeout, dataContext) {
+    function filterTableController($scope, server, $q, filesHandler, $filter, $timeout, dataContext) {
 
         var vm = this;
 
@@ -113,6 +113,11 @@
                 delete vm.ordersFilter.createdDate;
             }
 
+            // handel the switch input that indicate whther to filter items that havent been handled yet
+            if (vm.unhandledItems) {
+                //TODO: complete this when client side filtering will work
+            }
+
             vm.onFilterCallback(filter, vm.ordersFilter.departmentId);
 
             filter = {};
@@ -133,6 +138,19 @@
                 return listToReturn;
             }
         }
+
+        $scope.$watch(
+            "vm.networkFilterAll",
+            function handleFooChange(newValue, oldValue) {
+                if (newValue) {
+                    vm.networks.forEach(function(element) {
+                        vm.ordersFilter.networkId.push(element);
+                    }, this);
+                } else {
+                    vm.ordersFilter.networkId = [];
+                }
+            }
+        );
         /* --- arnge data --- */
 
         vm.branches = dataContext.getBranches();

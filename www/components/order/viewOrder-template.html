@@ -3,7 +3,11 @@
     <search-item ng-if="vm.editMode" style="width: 100%; min-width: 360px;" item-count-changed="vm.itemCountChanged"></search-item>
 
     <div style="width: 100%; min-width: 360px;">
+        
         <div class="edit-button" ng-if="vm.items.length > 0">
+            <md-checkbox ng-if="vm.showSecondOrder" ng-model="vm.isSecondOrder" aria-label="Checkbox 1" style="float: right; margin: 10px">
+            הזמנה שניה
+          </md-checkbox>
             <md-button ng-if="vm.showDeleteBtn" aria-label="delete" class="md-fab md-mini md-hue-1 md-icon-button" ng-click="vm.cleanCart($event)">
                 <ng-md-icon icon="delete"></ng-md-icon>
             </md-button>
@@ -12,8 +16,7 @@
             </md-button> 
         </div>
 
-
-        <items-list ng-if="vm.items.length > 0" items="vm.items" list-title="vm.orderTitle" defult-open="true" can-shrink="false"
+        <items-list ng-if="vm.items.length > 0" items="vm.items" list-title="vm.orderTitle + ' ' + vm.orderDate" defult-open="true" can-shrink="false"
             style="width: 100%" edit-mode="vm.editMode" item-count-changed="vm.itemCountChanged"></items-list>
     </div>
     <md-card style="width: 100%" layout-margin ng-if="vm.items.length < 1">

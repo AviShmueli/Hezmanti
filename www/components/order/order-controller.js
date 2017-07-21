@@ -26,10 +26,10 @@
         vm.user = dataContext.getUser();
 
         vm.cartItems = dataContext.getCartItemsList();
-        vm.currDate = $filter('date')(new Date(), 'dd/MM');
         vm.showSucseesMessage = false;
         vm.showErrorMessage = false;
         vm.sendingOrder = false;
+        vm.isSecondOrder = false;
 
         vm.viewMode = 'newOrder';
 
@@ -125,7 +125,7 @@
                     createdDate: new Date(),
                     createdBy: vm.user.name,
                     items: itemsOrderList,
-                    type: vm.pageMode
+                    type: vm.isSecondOrder ? 'secondOrder' : vm.pageMode
                 }
 
                 server.addOrder(order).then(function (response) {
@@ -137,6 +137,18 @@
                     vm.showErrorMessage = true;
                 });
             }
+        }
+
+        var getDeliveryDate = function () {
+
+            var day = new Date().getDay();
+            var deliveryDate = new Date();
+            if (day === 5) {
+                deliveryDate.setDate(deliveryDate.getDate() + 2);
+            } else {
+                deliveryDate.setDate(deliveryDate.getDate() + 1);
+            }
+            return $filter('date')(deliveryDate, 'dd/MM');
         }
 
         var orderText = {
@@ -158,7 +170,20 @@
         };
 
         vm.pageText = (vm.pageMode === 'order') ? orderText : stockText;
+        vm.currDate = (vm.pageMode === 'order') ? getDeliveryDate() : $filter('date')(new Date(), 'dd/MM');
 
+
+        /*
+        $rootScope.safeApply = function (fn) {
+            var phase = this.$root.$$phase;
+            if (phase == '$apply' || phase == '$digest') {
+                if (fn && (typeof (fn) === 'function')) {
+                    fn();
+                }
+            } else {
+                this.$apply(fn);
+            }
+        };*/
     }
 
 })();

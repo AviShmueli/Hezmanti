@@ -78,5 +78,18 @@
             }
         })
 
+        vm.getOrderTypeText = function (type) {
+            if(type === 'order' ){
+                return 'הזמנה';
+            }
+            if(type === 'secondOrder'){
+               return 'הזמנה שניה';
+            }
+            if(type === 'stock'){
+                return 'מלאי';
+            }
+
+        }
+
     }
 })();

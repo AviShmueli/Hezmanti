@@ -9,12 +9,17 @@
             </md-button>
         </md-card-title>
     </a>
-    <div layout-gt-xs="row" flex layout-padding ng-show="vm.showTasksFilter">
+    <div id="filterInputs" layout-gt-xs="row" flex layout-padding ng-show="vm.showTasksFilter">
         <div layout-gt-xs="column" flex="90" layout="column">
             <div layout-gt-xs="row" layout="column">
                 <md-input-container class="md-block" flex>
                     <label>רשת</label>
                     <md-select md-no-asterisk ng-model="vm.ordersFilter.networkId" name="user" multiple>
+                        <md-select-header>
+                            <md-option value="false" dir="rtl">
+                            all
+                            </md-option>
+                        </md-select-header>
                         <md-option ng-repeat="(key, value) in vm.networks" value="{{value.id}}" dir="rtl">
                             {{value.name}}
                         </md-option>
@@ -60,6 +65,13 @@
                 <md-input-container class="md-block" flex>
                     <label>פריט בהזמנה</label>
                     <input ng-model="vm.ordersFilterFreeText" name="name">
+                </md-input-container>
+            </div>
+            <div layout-gt-xs="row" layout="column">
+                <md-input-container class="md-block" flex>
+                    <md-switch class="md-primary" name="special" ng-model="vm.unhandledItems" required>
+                        פריטים שלא טופלו
+                    </md-switch>
                 </md-input-container>
             </div>
         </div>
