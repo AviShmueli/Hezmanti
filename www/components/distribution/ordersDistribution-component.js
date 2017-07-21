@@ -9,13 +9,17 @@
             },
             controller: ordersDistributionController,
             controllerAs: 'vm',
-            templateUrl: 'components/admin/ordersDistribution-template.html'
+            templateUrl: 'components/distribution/ordersDistribution-template.html'
         });
 
     function ordersDistributionController(server, $q, filesHandler, $filter, $timeout, dataContext,
-                                          $mdToast, $mdDialog, $window) {
+        $mdToast, $mdDialog, $window, distributionContext) {
 
         var vm = this;
+        vm.tableHeight = $window.innerHeight - 200;
+        vm.checkAllTableSum = false;
+        vm.downloading = false;
+        vm.ordersItems = distributionContext.getDistributionState();
 
         var orderFields = {
             createdDate: 'ת. הזמנה',
@@ -25,10 +29,48 @@
             count: 'מארזים'
         };
 
-        vm.tableHeight = $window.innerHeight - 200;
+        /* --- initiate table */       
 
-        vm.checkAllTableSum = false;
-        vm.downloading = false;
+        var initiateDistributionData = function () {
+            var filter = {'type' : 'order'};
+            var query = { 'order': '-createdDate' };
+            
+            var deferred = $q.defer();
+            vm.promise = deferred.promise;
+
+            server.getAllOrders(query, filter).then(function (response) {
+                var orders = response.data;
+
+                var ordersItems = [];
+                for (var index = 0; index < orders.length; index++) {
+
+                    var order = orders[index];
+                    var orderWithOutItems = angular.copy(order);
+                    delete orderWithOutItems.items;
+
+                    for (var j = 0; j < order.items.length; j++) {
+                        var item = order.items[j];
+                        ordersItems.push({
+                            order: orderWithOutItems,
+                            item: item,
+                            sum: 0
+                        });
+                    }
+                }
+
+                distributionContext.saveDistributionState(ordersItems);
+                vm.ordersItems = ordersItems;
+
+                deferred.resolve();
+            });
+        }
+
+        if (angular.isUndefined(vm.ordersItems)) {
+            initiateDistributionData();
+        }
+
+
+        /* ---- download order ---- */
         vm.downloadFilterdTable = function () {
             if (!vm.checkAllTableSum) {
                 vm.checkAllTableSum = true;
@@ -110,10 +152,12 @@
             }
         }
 
-        vm.ordersItems = [];
+
+
+        /* ---- Filters----- */
 
         //vm.initialFilter = {
-         //   createdDate: new Date(new Date().setDate(12))
+        //   createdDate: new Date(new Date().setDate(12))
         //};
 
         vm.departments = null;
@@ -130,15 +174,37 @@
             }
 
             //if (departments) {
-                vm.departments = departments;
+            vm.departments = departments;
             //}
 
-            vm.filter["type"] = 'order';
+            filter["type"] = 'order';
+
+            // unhendeled items
+            // $filter('filter')(vm.ordersItems, {sum: 0})
+
+            // branchId filter
+            // $filter('filter')(vm.ordersItems, {order : {branchId: 226}})
+
+            // item name filter
+            // $filter('filter')(vm.ordersItems, {item : {itemName: 'שניצל'}})
+
+            // order created date filter
+            //
+
+            // item department filter
+            // 
+
+            
+        
 
             var deferred = $q.defer();
             vm.promise = deferred.promise;
 
-            server.getAllOrders(vm.query, vm.filter).then(function (response) {
+            vm.ordersItems =  $filter('distributionDataFilter')(vm.ordersItems, filter, departments);
+            var b =  $filter('filter')(vm.ordersItems, {'order.orderId': 1000034});
+
+            deferred.resolve();
+            /*server.getAllOrders(vm.query, vm.filter).then(function (response) {
                 vm.orders = response.data;
 
                 if (vm.departments) {
@@ -166,9 +232,12 @@
                 }
 
                 deferred.resolve();
-            })
+            })*/
         };
 
+
+
+        /* ---- Suplier ----- */
         vm.suppliers = [{
                 name: 'מילועוף',
                 id: 30000,
@@ -239,7 +308,7 @@
         }
 
         var timer;
-        vm.updateAllItems = function(persent, supplierId){
+        vm.updateAllItems = function (persent, supplierId) {
             $timeout.cancel(timer);
             timer = $timeout(function () {
                 for (var index = 0; index < vm.ordersItems.length; index++) {
@@ -247,13 +316,12 @@
                     if (!orderItem.hasOwnProperty("suppliers")) {
                         orderItem["suppliers"] = {};
                         orderItem.suppliers[supplierId] = Math.ceil(orderItem.item.count * (persent * 0.01));
-                    
-                    }
-                    else{
+
+                    } else {
                         orderItem.suppliers[supplierId] = Math.floor(orderItem.item.count * (persent * 0.01));
                     }
-                    vm.updateSum(orderItem);    
-            }
+                    vm.updateSum(orderItem);
+                }
             }, 500);
         }
 

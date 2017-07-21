@@ -15,6 +15,7 @@
                         <thead md-head md-order="vm.query.order">
                             <tr md-row>
                                 <th md-column md-order-by="orderId">מספר הזמנה</th>
+                                <th md-column md-order-by="orderId">אספקה שניה</th>
                                 <th md-column md-order-by="createdDate">תאריך</th>
                                 <th md-column md-order-by="branchName"><span>שם סניף</span></th>
                                 <th md-column md-order-by="brachId">מספר סניף</th>
@@ -26,6 +27,10 @@
                         <tbody md-body>
                             <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="order in vm.orders | orderBy: vm.query.order">
                                 <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::order.orderId}}</td>
+                                <td md-cell ng-click="vm.openOrderDialog(order, $event)">
+                                    <md-checkbox name="tos" ng-disabled="true" ng-model="order.type === 'secondOrder'">
+                                    </md-checkbox>                               
+                                </td>
                                 <td md-cell mdNumeric ng-click="vm.openOrderDialog(order, $event)">{{::order.createdDate | date: 'dd/MM'}}</td>
                                 <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::order.branchName}}</td>
                                 <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::order.branchId}}</td>

@@ -127,8 +127,17 @@
             //if (departments) {
                 vm.departments = departments;
             //}
-
-            vm.filter["type"] = vm.pageMode;
+            if (vm.pageMode === 'order') {
+                if (!vm.filter.hasOwnProperty("$or")) {
+                    vm.filter["$or"] = [];
+                }
+                vm.filter["$or"].push({"type": 'order'});
+                vm.filter["$or"].push({"type": 'secondOrder'});
+            }
+            if (vm.pageMode === 'stock') {
+                vm.filter["type"] = 'stock';
+            }
+            
 
 
             server.getAllOrdersCount(vm.filter).then(function (response) {

@@ -15,5 +15,29 @@
             return filtered;
         };
     })
+    .filter('distributionDataFilter', function ($filter) {
+        return function (orderItems, filter, departments) {
+            var filtered = [];
+            angular.forEach(orderItems, function (order) {
+                
+                if (departments) {
+                   order.items = $filter('departmentsItems')(order.items, departments);
+                }
+                
+                for (var property in filter) {
+                    var a = property;
+                    //var b =  $filter('filter')(order.order, filter);
+                }
+                /*angular.forEach(departmentsIds, function (departmentId) {
+                    if (item.itemDepartmentId === parseInt(departmentId)) {
+                        filtered.push(item);
+                    }
+                });*/
+
+                filtered.push(order);
+            });
+            return filtered;
+        };
+    })
 
 })();

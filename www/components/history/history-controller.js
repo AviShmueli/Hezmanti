@@ -83,7 +83,7 @@
                 return 'הזמנה';
             }
             if(type === 'secondOrder'){
-               return 'הזמנה שניה';
+               return 'אספקה שניה';
             }
             if(type === 'stock'){
                 return 'מלאי';
