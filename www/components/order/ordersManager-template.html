@@ -1,6 +1,6 @@
 <md-content flex md-scroll-y class="background-color-transparent" dir="rtl">
     <main flex>
-        <ui-view layout="column" layout-fill>
+        <ui-view layout="column" layout-fill>        
 
             <filter-table card-title="'סינון ופעולות'" 
                           on-filter-callback="vm.getOrders" 
@@ -28,7 +28,7 @@
                             <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="order in vm.orders | orderBy: vm.query.order">
                                 <td md-cell ng-click="vm.openOrderDialog(order, $event)">{{::order.orderId}}</td>
                                 <td md-cell ng-click="vm.openOrderDialog(order, $event)">
-                                    <md-checkbox name="tos" ng-disabled="true" ng-model="order.type === 'secondOrder'">
+                                    <md-checkbox aria-label="checkBox" name="tos" ng-disabled="true" ng-checked="order.type === 'secondOrder'">
                                     </md-checkbox>                               
                                 </td>
                                 <td md-cell mdNumeric ng-click="vm.openOrderDialog(order, $event)">{{::order.createdDate | date: 'dd/MM'}}</td>

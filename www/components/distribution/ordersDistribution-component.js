@@ -19,7 +19,9 @@
         vm.tableHeight = $window.innerHeight - 200;
         vm.checkAllTableSum = false;
         vm.downloading = false;
-        vm.ordersItems = distributionContext.getDistributionState();
+ 
+        var allOrderItems = distributionContext.getDistributionState();
+        vm.ordersItems = allOrderItems;
 
         var orderFields = {
             createdDate: 'ת. הזמנה',
@@ -32,7 +34,7 @@
         /* --- initiate table */       
 
         var initiateDistributionData = function () {
-            var filter = {'type' : 'order'};
+            var filter = {'$or' : [{"type": 'order'},{"type": 'secondOrder'}]};
             var query = { 'order': '-createdDate' };
             
             var deferred = $q.defer();
@@ -59,6 +61,7 @@
                 }
 
                 distributionContext.saveDistributionState(ordersItems);
+                allOrderItems = ordersItems;
                 vm.ordersItems = ordersItems;
 
                 deferred.resolve();
@@ -66,6 +69,10 @@
         }
 
         if (angular.isUndefined(vm.ordersItems)) {
+            initiateDistributionData();
+        }
+
+        vm.refreshDataFromServer = function(){
             initiateDistributionData();
         }
 
@@ -168,6 +175,9 @@
         };
 
         vm.getOrders = function (filter, departments) {
+            
+            var deferred = $q.defer();
+            vm.promise = deferred.promise;
 
             if (filter) {
                 vm.filter = filter;
@@ -177,33 +187,62 @@
             vm.departments = departments;
             //}
 
-            filter["type"] = 'order';
 
-            // unhendeled items
-            // $filter('filter')(vm.ordersItems, {sum: 0})
-
-            // branchId filter
+            // branchId filter - multiple
             // $filter('filter')(vm.ordersItems, {order : {branchId: 226}})
 
-            // item name filter
+            // item name filter - multiple ??
             // $filter('filter')(vm.ordersItems, {item : {itemName: 'שניצל'}})
 
-            // order created date filter
-            //
+            // item department filter - multiple
+            // $filter('filter')(vm.ordersItems, {item : {itemDepartmentId: 2}})
 
-            // item department filter
-            // 
+            // order network filter - multiple
+            // $filter('filter')(vm.ordersItems, {order : {networkId: "2"}})
+
+            // orderId filter - multiple
+            // $filter('filter')(vm.ordersItems, {order : {orderId: 1000034}})
+            
+
+            var localFilter = {};
+
+            if (filter.hasOwnProperty("items.itemName")) {
+                localFilter["item"] = {$ : filter["items.itemName"].$regex};
+            }
+
+            if (filter.hasOwnProperty("unhandledItems") && filter.unhandledItems) {
+                localFilter["sum"] = 0;
+            }
+
+            if (filter.hasOwnProperty("type") && filter.type === "secondOrder") {
+                localFilter["order"] = {type: "secondOrder"};
+            }
+            else{
+                localFilter["order"] = {type: "order"};
+            }
+
+            // filter unhendeled items & second orders
+            vm.ordersItems = $filter('filter')(allOrderItems, localFilter, true);
+
+            // filter by date
+            if (filter.hasOwnProperty("createdDate")) {               
+                var filterdDate = filter.createdDate;
+                var startDate = new Date(filterdDate.getFullYear(), filterdDate.getMonth(), filterdDate.getDate());
+                var endDate = new Date(filterdDate.getFullYear(), filterdDate.getMonth(), filterdDate.getDate() + 1);
+                vm.ordersItems = $filter('dateFilter')(vm.ordersItems, startDate, endDate);
+            }
 
             
-        
 
-            var deferred = $q.defer();
-            vm.promise = deferred.promise;
+            //vm.ordersItems =  $filter('distributionDataFilter')(vm.ordersItems, filter, departments);
+            
 
-            vm.ordersItems =  $filter('distributionDataFilter')(vm.ordersItems, filter, departments);
-            var b =  $filter('filter')(vm.ordersItems, {'order.orderId': 1000034});
+            
+            
 
             deferred.resolve();
+
+
             /*server.getAllOrders(vm.query, vm.filter).then(function (response) {
                 vm.orders = response.data;
 

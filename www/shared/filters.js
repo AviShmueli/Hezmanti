@@ -39,5 +39,19 @@
             return filtered;
         };
     })
+    .filter('dateFilter', function ($filter) {
+        return function (orderItems, startDate, endDate) {
+            var filtered = [];
+            angular.forEach(orderItems, function (order) {
+                
+                var orderDate = new Date(order.order.createdDate);
+                
+                if(orderDate >= startDate && orderDate < endDate){
+                    filtered.push(order);
+                }               
+            });
+            return filtered;
+        };
+    })
 
 })();

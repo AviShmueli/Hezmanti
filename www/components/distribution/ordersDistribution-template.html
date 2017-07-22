@@ -2,6 +2,8 @@
     <main flex>
         <ui-view layout="column" layout-fill>
 
+            <md-button aria-label="refresh" ng-click="vm.refreshDataFromServer()"> רענן </md-button>
+            
             <filter-table card-title="'סינון ופעולות'" 
                           on-filter-callback="vm.getOrders" 
                           show-download-excel-btn="vm.ordersItems.length > 0"

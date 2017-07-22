@@ -16,7 +16,7 @@
             templateUrl: 'components/filter/filterTable-template.html'
         });
 
-    function filterTableController($scope, server, $q, filesHandler, $filter, $timeout, dataContext) {
+    function filterTableController($scope, server, $q, filesHandler, $filter, $timeout, dataContext, $mdConstant) {
 
         var vm = this;
 
@@ -60,11 +60,10 @@
                                     } else {
                                         if (property === 'branchId') {
                                             filter['branchId'] = parseInt(vm.ordersFilter[property][0]);
-                                        }
-                                        else{
+                                        } else {
                                             filter[property] = vm.ordersFilter[property][0];
                                         }
-                                        
+
                                     }
                                 } else {
                                     for (var index = 0; index < vm.ordersFilter[property].length; index++) {
@@ -78,8 +77,7 @@
                                         } else {
                                             if (property === 'branchId') {
                                                 obj['branchId'] = parseInt(element);
-                                            }
-                                            else{
+                                            } else {
                                                 obj[property] = element;
                                             }
                                         }
@@ -116,6 +114,12 @@
             // handel the switch input that indicate whther to filter items that havent been handled yet
             if (vm.unhandledItems) {
                 //TODO: complete this when client side filtering will work
+                filter["unhandledItems"] = true;
+            }
+
+            // handel the switch input that indicate whther to filter items that havent been handled yet
+            if (vm.showSecondOrders) {
+                filter["type"] = "secondOrder";
             }
 
             vm.onFilterCallback(filter, vm.ordersFilter.departmentId);
@@ -139,11 +143,48 @@
             }
         }
 
+        /* --- Items --- */
+
+        vm.readonly = false;
+        vm.selectedItems = [];
+        vm.selectedItem = {};
+        vm.searchText = null;
+        vm.querySearch = querySearch;
+        vm.customKeys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA];
+        vm.transformChip = transformChip;
+
+        function querySearch(query) {
+            var results = query ? vm.items.filter(createFilterFor(query)) : [];
+            return results;
+        }
+
+        function createFilterFor(query) {
+            var lowercaseQuery = angular.lowercase(query);
+
+            return function filterFn(item) {
+                return (item.name.indexOf(lowercaseQuery) === 0);
+            };
+        }
+
+        function transformChip(chip) {
+            // If it is an object, it's already a known chip
+            if (angular.isObject(chip)) {
+                return chip;
+            }
+
+            // Otherwise, create a new one
+            return {
+                name: chip.name,
+                type: 'new'
+            }
+        }
+
+
         $scope.$watch(
             "vm.networkFilterAll",
             function handleFooChange(newValue, oldValue) {
                 if (newValue) {
-                    vm.networks.forEach(function(element) {
+                    vm.networks.forEach(function (element) {
                         vm.ordersFilter.networkId.push(element);
                     }, this);
                 } else {
@@ -153,10 +194,24 @@
         );
         /* --- arnge data --- */
 
+        var setItemsList = function (catalog) {
+            var itemsList = [];
+
+            for (var d in catalog) {
+                if (catalog.hasOwnProperty(d)) {
+                    var items = catalog[d];
+                    itemsList = itemsList.concat(items);
+                }
+            }
+
+            return itemsList;
+        }
+
         vm.branches = dataContext.getBranches();
         vm.networks = dataContext.getNetworks();
         vm.departments = dataContext.getDepartments();
         vm.networksBranchesMap = dataContext.getNetworksBranchesMap();
+        vm.items = setItemsList(dataContext.getCatalog());
 
         if (!vm.branches || !vm.networks || !vm.networksBranchesMap) {
             server.getAllBranches().then(function (response) {

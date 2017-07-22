@@ -17,7 +17,7 @@
                     <md-select md-no-asterisk ng-model="vm.ordersFilter.networkId" name="user" multiple>
                         <md-select-header>
                             <md-option value="vm.networkFilterAll" dir="rtl">
-                            all
+                                all
                             </md-option>
                         </md-select-header>
                         <md-option ng-repeat="(key, value) in vm.networks" value="{{value.id}}" dir="rtl">
@@ -64,13 +64,37 @@
 
                 <md-input-container class="md-block" flex>
                     <label>פריט בהזמנה</label>
-                    <input ng-model="vm.ordersFilterFreeText" name="name">
+                    <md-chips ng-model="vm.selectedItems" 
+                              md-autocomplete-snap 
+                              md-transform-chip="vm.transformChip($chip)"
+                              md-require-match="false"
+                              md-separator-keys="vm.customKeys">
+                        <md-autocomplete md-selected-item="vm.selectedItems" 
+                                         md-search-text="vm.searchText" 
+                                         md-items="item in vm.querySearch(vm.searchText)"
+                                         md-item-text="item.name" 
+                                         placeholder="חפש פריט">
+                            <span dir="rtl" md-highlight-text="vm.searchText">{{item.name}}</span>
+                        </md-autocomplete>
+                        <md-chip-template>
+                            <span dir="rtl">
+                                <strong>{{$chip.name}}</strong>
+                            </span>
+                        </md-chip-template>
+                    </md-chips>
+                    <!--<input ng-model="vm.ordersFilterFreeText" name="name">-->
                 </md-input-container>
             </div>
             <div layout-gt-xs="row" layout="column">
                 <md-input-container class="md-block" flex>
                     <md-switch class="md-primary" name="special" ng-model="vm.unhandledItems" required>
                         פריטים שלא טופלו
+                    </md-switch>
+                </md-input-container>
+
+                <md-input-container class="md-block" flex>
+                    <md-switch class="md-primary" name="special" ng-model="vm.showSecondOrders" required>
+                        אספקה שניה
                     </md-switch>
                 </md-input-container>
             </div>
