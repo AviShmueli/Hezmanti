@@ -4,6 +4,9 @@
 
             <md-button aria-label="refresh" ng-click="vm.refreshDataFromServer()"> רענן </md-button>
             
+            <md-card>
+                <span>showing {{vm.ordersItems.length}} of {{vm.allOrderItemsCount}} records</span>
+            </md-card>
             <filter-table card-title="'סינון ופעולות'" 
                           on-filter-callback="vm.getOrders" 
                           show-download-excel-btn="vm.ordersItems.length > 0"
@@ -60,12 +63,12 @@
                         </tbody>
                     </table>
                 </md-table-container>
-                <!--</md-card>
-                    <md-card>-->
+                </md-card>
+                    
                 <!--<md-table-pagination md-label="{'of': ' מתוך ', 'page': 'עמוד מספר', 'rowsPerPage': 'מספר שורות בעמוד' }" md-limit="vm.query.limit"
-                    md-limit-options="[5, 10, 15, 20]" md-page="vm.query.page" md-total="{{vm.totalOrderCount}}" md-on-paginate="vm.getOrders"
+                    md-limit-options="[5, 10, 15, 20]" md-page="vm.ordersItems.length" md-total="{{vm.allOrderItemsCount}}" md-on-paginate="vm.getOrders"
                     md-page-select></md-table-pagination>-->
-            </md-card>
+           
 
         </ui-view>
     </main>

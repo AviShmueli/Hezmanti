@@ -103,10 +103,10 @@
             }
 
             // handel the date input
-            if (vm.createdDate !== undefined && vm.createdDate !== null && vm.createdDate !== '') {
+            if (vm.ordersFilter.createdDate !== undefined && vm.ordersFilter.createdDate !== null && vm.ordersFilter.createdDate !== '') {
                 //var date = vm.createdDate.toLocaleDateString().split('/');
 
-                filter['createdDate'] = vm.createdDate;
+                filter['createdDate'] = vm.ordersFilter.createdDate;
             } else {
                 delete vm.ordersFilter.createdDate;
             }
@@ -122,7 +122,7 @@
                 filter["type"] = "secondOrder";
             }
 
-            vm.onFilterCallback(filter, vm.ordersFilter.departmentId);
+            vm.onFilterCallback(filter, vm.ordersFilter);
 
             filter = {};
         };
@@ -211,7 +211,7 @@
         vm.networks = dataContext.getNetworks();
         vm.departments = dataContext.getDepartments();
         vm.networksBranchesMap = dataContext.getNetworksBranchesMap();
-        vm.items = setItemsList(dataContext.getCatalog());
+        //vm.items = setItemsList(dataContext.getCatalog());
 
         if (!vm.branches || !vm.networks || !vm.networksBranchesMap) {
             server.getAllBranches().then(function (response) {

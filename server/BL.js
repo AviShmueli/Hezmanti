@@ -154,10 +154,12 @@
 
         var d = deferred();
 
-        if (filter.hasOwnProperty('createdDate')) {
-            var date = filter.createdDate.split('/');
-            var dayEnd = new Date(Date.UTC(date[2], date[0] - 1, date[1], 23, 59, 59, 999));
-            var dayStart = new Date(Date.UTC(date[2], date[0] - 1, date[1], 0, 0, 0));
+if (filter.hasOwnProperty('createdDate')) {
+
+            var date = new Date(filter.createdDate).toDateString();
+            var offset = Moment().tz('Asia/Jerusalem').utcOffset();
+            var dayStart = Moment(date).tz('Asia/Jerusalem').add(offset, 'm').toDate();
+            var dayEnd = Moment(date).tz('Asia/Jerusalem').add(offset, 'm').add(1, 'd').toDate();
             filter.createdDate = {
                 "$gt": dayStart,
                 "$lt": dayEnd

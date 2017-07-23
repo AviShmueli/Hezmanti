@@ -22,6 +22,7 @@
  
         var allOrderItems = distributionContext.getDistributionState();
         vm.ordersItems = allOrderItems;
+        vm.allOrderItemsCount = allOrderItems.length;
 
         var orderFields = {
             createdDate: 'ת. הזמנה',
@@ -62,6 +63,7 @@
 
                 distributionContext.saveDistributionState(ordersItems);
                 allOrderItems = ordersItems;
+                vm.allOrderItemsCount = allOrderItems.length;
                 vm.ordersItems = ordersItems;
 
                 deferred.resolve();
@@ -174,7 +176,7 @@
             order: '-createdDate'
         };
 
-        vm.getOrders = function (filter, departments) {
+        vm.getOrders = function (filter, originalFilter) {
             
             var deferred = $q.defer();
             vm.promise = deferred.promise;
@@ -184,7 +186,7 @@
             }
 
             //if (departments) {
-            vm.departments = departments;
+            vm.departments = originalFilter.departmentId;
             //}
 
 
@@ -233,9 +235,9 @@
             }
 
             
-
-            //vm.ordersItems =  $filter('distributionDataFilter')(vm.ordersItems, filter, departments);
-            
+            if (Object.keys(originalFilter).length !== 0) {
+                vm.ordersItems =  $filter('distributionDataFilter')(vm.ordersItems, originalFilter);
+            }
 
             
             

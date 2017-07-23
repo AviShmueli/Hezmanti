@@ -42,7 +42,7 @@
 
                 <md-input-container>
                     <label>תאריך הזמנה</label>
-                    <md-datepicker md-open-on-focus ng-model="vm.createdDate" md-hide-icons="calendar"></md-datepicker>
+                    <md-datepicker md-open-on-focus ng-model="vm.ordersFilter.createdDate" md-hide-icons="calendar"></md-datepicker>
                 </md-input-container>
 
                 <md-input-container class="md-block" flex>
@@ -64,12 +64,12 @@
 
                 <md-input-container class="md-block" flex>
                     <label>פריט בהזמנה</label>
-                    <md-chips ng-model="vm.selectedItems" 
+                    <!--<md-chips ng-model="vm.selectedItems" 
                               md-autocomplete-snap 
                               md-transform-chip="vm.transformChip($chip)"
                               md-require-match="false"
                               md-separator-keys="vm.customKeys">
-                        <md-autocomplete md-selected-item="vm.selectedItems" 
+                        <md-autocomplete md-selected-item="vm.selectedItem" 
                                          md-search-text="vm.searchText" 
                                          md-items="item in vm.querySearch(vm.searchText)"
                                          md-item-text="item.name" 
@@ -81,8 +81,8 @@
                                 <strong>{{$chip.name}}</strong>
                             </span>
                         </md-chip-template>
-                    </md-chips>
-                    <!--<input ng-model="vm.ordersFilterFreeText" name="name">-->
+                    </md-chips>-->
+                    <input ng-model="vm.ordersFilterFreeText" name="name">
                 </md-input-container>
             </div>
             <div layout-gt-xs="row" layout="column">

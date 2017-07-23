@@ -118,14 +118,14 @@
         };
 
 
-        vm.getOrders = function (filter, departments) {
+        vm.getOrders = function (filter, originalFilter) {
             
             if (filter && typeof(filter) !== 'number') {
                 vm.filter = filter;
             }
 
             //if (departments) {
-                vm.departments = departments;
+                vm.departments = originalFilter.departmentId;
             //}
             if (vm.pageMode === 'order') {
                 if (!vm.filter.hasOwnProperty("$or")) {
