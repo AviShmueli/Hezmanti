@@ -93,9 +93,9 @@
             }
 
             // handel the free text input
-            if (vm.ordersFilterFreeText !== undefined && vm.ordersFilterFreeText !== '') {
+            if (vm.ordersFilter.freeText !== undefined && vm.ordersFilter.freeText !== '') {
                 filter['items.itemName'] = {
-                    "$regex": vm.ordersFilterFreeText,
+                    "$regex": vm.ordersFilter.freeText,
                     "$options": "i"
                 };
             } else {

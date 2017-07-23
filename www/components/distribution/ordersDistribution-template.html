@@ -2,10 +2,17 @@
     <main flex>
         <ui-view layout="column" layout-fill>
 
-            <md-button aria-label="refresh" ng-click="vm.refreshDataFromServer()"> רענן </md-button>
             
             <md-card>
-                <span>showing {{vm.ordersItems.length}} of {{vm.allOrderItemsCount}} records</span>
+                <div layout="row" flex>
+                    <div layout="column" flex="80" layout-padding>
+                        <span>מציג {{vm.ordersItems.length}} מתוך {{vm.allOrderItemsCount}} פריטים</span>
+                    </div>
+                    <div layout="column" flex="20">
+                        <md-button aria-label="refresh" class="md-primary" ng-click="vm.refreshDataFromServer($event)"> רענן נתונים מהשרת </md-button>
+                    </div >
+                </div>
+                
             </md-card>
             <filter-table card-title="'סינון ופעולות'" 
                           on-filter-callback="vm.getOrders" 
@@ -18,10 +25,11 @@
                     <table md-table md-progress="vm.promise" fixed-header table-height="{{vm.tableHeight}}px">
                         <thead md-head md-order="vm.query.order">
                             <tr md-row>
+                                <th md-column>#</th>
                                 <th md-column md-order-by="order.branchName">סניף</th>
                                 <th md-column md-order-by="order.orderId">מספר הזמנה</th>
                                 <!--<th md-column md-order-by="item.itemSerialNumber">קוד פריט</th>-->
-                                <th width="20%" md-column md-order-by="item.itemName">שם פריט</th>
+                                <th md-column md-order-by="item.itemName">שם פריט</th>
                                 <th md-column md-order-by="item.count">כמות מוזמנת</th>
                                 <th md-column md-order-by="sum">ביקורת</th>
                                 <th md-column ng-repeat="supplier in vm.suppliers" ng-if="supplier.show">
@@ -45,6 +53,7 @@
                         </thead>
                         <tbody md-body>
                             <tr class="distribution-table" md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="o in vm.ordersItems | orderBy: vm.query.order">
+                                <td md-cell >{{::$index}}</td>
                                 <td md-cell >{{::o.order.branchName}}</td>
                                 <td md-cell >{{::o.order.orderId}}</td>
                                 <!--<td md-cell >{{::o.item.itemSerialNumber}}</td>-->
@@ -58,7 +67,7 @@
                                                ng-change="vm.updateSum(o)">
                                     </md-input-container> 
                                 </td>
-                                <td></td>
+                                <td md-cell></td>
                             </tr>
                         </tbody>
                     </table>

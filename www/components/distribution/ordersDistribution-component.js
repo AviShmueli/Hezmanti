@@ -19,7 +19,7 @@
         vm.tableHeight = $window.innerHeight - 200;
         vm.checkAllTableSum = false;
         vm.downloading = false;
- 
+
         var allOrderItems = distributionContext.getDistributionState();
         vm.ordersItems = allOrderItems;
         vm.allOrderItemsCount = allOrderItems.length;
@@ -32,12 +32,20 @@
             count: 'מארזים'
         };
 
-        /* --- initiate table */       
+        /* ---- initiate table ---- */
 
         var initiateDistributionData = function () {
-            var filter = {'$or' : [{"type": 'order'},{"type": 'secondOrder'}]};
-            var query = { 'order': '-createdDate' };
-            
+            var filter = {
+                '$or': [{
+                    "type": 'order'
+                }, {
+                    "type": 'secondOrder'
+                }]
+            };
+            var query = {
+                'order': '-createdDate'
+            };
+
             var deferred = $q.defer();
             vm.promise = deferred.promise;
 
@@ -66,6 +74,8 @@
                 vm.allOrderItemsCount = allOrderItems.length;
                 vm.ordersItems = ordersItems;
 
+                vm.getOrders(vm.filter, {});
+
                 deferred.resolve();
             });
         }
@@ -74,8 +84,21 @@
             initiateDistributionData();
         }
 
-        vm.refreshDataFromServer = function(){
-            initiateDistributionData();
+        vm.refreshDataFromServer = function (ev) {
+
+
+            var confirm = $mdDialog.confirm()
+                .title('לרענן נתונים מהשרת?')
+                .textContent('כל הנתונים על הדף ימחקו')
+                .ariaLabel('Lucky day')
+                .parent(angular.element(document.querySelector('#dialogsWraper')))
+                .targetEvent(ev)
+                .ok('רענן')
+                .cancel('ביטול');
+            $mdDialog.show(confirm).then(function () {
+                initiateDistributionData();
+            }, function () {});
+
         }
 
 
@@ -177,7 +200,7 @@
         };
 
         vm.getOrders = function (filter, originalFilter) {
-            
+
             var deferred = $q.defer();
             vm.promise = deferred.promise;
 
@@ -185,95 +208,42 @@
                 vm.filter = filter;
             }
 
-            //if (departments) {
-            vm.departments = originalFilter.departmentId;
-            //}
-
-
-            // branchId filter - multiple
-            // $filter('filter')(vm.ordersItems, {order : {branchId: 226}})
-
-            // item name filter - multiple ??
-            // $filter('filter')(vm.ordersItems, {item : {itemName: 'שניצל'}})
-
-            // item department filter - multiple
-            // $filter('filter')(vm.ordersItems, {item : {itemDepartmentId: 2}})
-
-            // order network filter - multiple
-            // $filter('filter')(vm.ordersItems, {order : {networkId: "2"}})
-
-            // orderId filter - multiple
-            // $filter('filter')(vm.ordersItems, {order : {orderId: 1000034}})
-            
-
             var localFilter = {};
 
-            if (filter.hasOwnProperty("items.itemName")) {
+            /*if (filter.hasOwnProperty("items.itemName")) {
                 localFilter["item"] = {$ : filter["items.itemName"].$regex};
-            }
+            }*/
 
             if (filter.hasOwnProperty("unhandledItems") && filter.unhandledItems) {
                 localFilter["sum"] = 0;
             }
 
             if (filter.hasOwnProperty("type") && filter.type === "secondOrder") {
-                localFilter["order"] = {type: "secondOrder"};
-            }
-            else{
-                localFilter["order"] = {type: "order"};
+                localFilter["order"] = {
+                    type: "secondOrder"
+                };
+            } else {
+                localFilter["order"] = {
+                    type: "order"
+                };
             }
 
             // filter unhendeled items & second orders
             vm.ordersItems = $filter('filter')(allOrderItems, localFilter, true);
 
             // filter by date
-            if (filter.hasOwnProperty("createdDate")) {               
+            if (filter.hasOwnProperty("createdDate")) {
                 var filterdDate = filter.createdDate;
                 var startDate = new Date(filterdDate.getFullYear(), filterdDate.getMonth(), filterdDate.getDate());
                 var endDate = new Date(filterdDate.getFullYear(), filterdDate.getMonth(), filterdDate.getDate() + 1);
                 vm.ordersItems = $filter('dateFilter')(vm.ordersItems, startDate, endDate);
             }
 
-            
             if (Object.keys(originalFilter).length !== 0) {
-                vm.ordersItems =  $filter('distributionDataFilter')(vm.ordersItems, originalFilter);
+                vm.ordersItems = $filter('distributionDataFilter')(vm.ordersItems, originalFilter);
             }
 
-            
-            
-
             deferred.resolve();
-
-
-            /*server.getAllOrders(vm.query, vm.filter).then(function (response) {
-                vm.orders = response.data;
-
-                if (vm.departments) {
-                    for (var index = 0; index < vm.orders.length; index++) {
-                        var order = vm.orders[index];
-                        order.items = $filter('departmentsItems')(order.items, vm.departments);
-                    }
-                }
-
-                vm.ordersItems = [];
-                for (var index = 0; index < vm.orders.length; index++) {
-
-                    var order = vm.orders[index];
-                    var orderWithOutItems = angular.copy(order);
-                    delete orderWithOutItems.items;
-
-                    for (var j = 0; j < order.items.length; j++) {
-                        var item = order.items[j];
-                        vm.ordersItems.push({
-                            order: orderWithOutItems,
-                            item: item,
-                            sum: 0
-                        });
-                    }
-                }
-
-                deferred.resolve();
-            })*/
         };
 
 
