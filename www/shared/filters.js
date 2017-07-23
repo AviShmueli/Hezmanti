@@ -41,7 +41,7 @@
                             itemsToWorkOn = filtered;
                         }, this);
                     }
-
+// . CHECK THIS ----
                     if (property === 'departmentId') {
                         filter[property].forEach(function (element) {
                             angular.forEach(itemsToWorkOn, function (order) {
