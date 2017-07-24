@@ -112,13 +112,13 @@
             }
 
             // handel the switch input that indicate whther to filter items that havent been handled yet
-            if (vm.unhandledItems) {
+            if (vm.ordersFilter.unhandledItems) {
                 //TODO: complete this when client side filtering will work
                 filter["unhandledItems"] = true;
             }
 
             // handel the switch input that indicate whther to filter items that havent been handled yet
-            if (vm.showSecondOrders) {
+            if (vm.ordersFilter.showSecondOrders) {
                 filter["type"] = "secondOrder";
             }
 
@@ -141,6 +141,10 @@
                 }
                 return listToReturn;
             }
+        }
+
+        vm.clean = function () {
+            vm.ordersFilter = {};
         }
 
         /* --- Items --- */

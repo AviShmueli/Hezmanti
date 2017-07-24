@@ -13,6 +13,7 @@
     BL.checkBranchCode = checkBranchCode;
     BL.updateUserLastSeenTime = updateUserLastSeenTime;
     BL.getAllTodayOrders = getAllTodayOrders;
+    BL.saveDistribution = saveDistribution;
 
     var Moment = require('moment-timezone');
     var deferred = require('deferred');
@@ -154,7 +155,7 @@
 
         var d = deferred();
 
-if (filter.hasOwnProperty('createdDate')) {
+        if (filter.hasOwnProperty('createdDate')) {
 
             var date = new Date(filter.createdDate).toDateString();
             var offset = Moment().tz('Asia/Jerusalem').utcOffset();
@@ -222,6 +223,19 @@ if (filter.hasOwnProperty('createdDate')) {
         var d = deferred();
 
         DAL.getAllTodayOrders().then(function (result) {
+            d.resolve(result);
+        }, function (error) {
+            d.deferred(error);
+        });
+
+        return d.promise;
+    }
+
+    function saveDistribution(distributionList) {
+
+        var d = deferred();
+
+        DAL.saveDistribution(distributionList).then(function (result) {
             d.resolve(result);
         }, function (error) {
             d.deferred(error);

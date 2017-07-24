@@ -135,6 +135,15 @@ app.get('/api/getAllTodayOrders', function (req, res) {
     });
 });
 
+app.post('/api/saveDistribution', function (req, res) {
+    BL.saveDistribution(req.body.distributionList).then(function (result) {
+        res.send(result);
+    }, function (error) {
+        logger.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
+});
+
 //var newBranches = 
 
 //DAL.insertToCatalog(newBranches);

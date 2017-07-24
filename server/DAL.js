@@ -17,6 +17,7 @@
     DAL.changeBranchCode = changeBranchCode;
     DAL.updateUserLastSeenTime = updateUserLastSeenTime;
     DAL.getAllTodayOrders = getAllTodayOrders;
+    DAL.saveDistribution = saveDistribution;
 
 var Moment = require('moment-timezone');
     var deferred = require('deferred');
@@ -466,6 +467,29 @@ var Moment = require('moment-timezone');
                 if (err) {
                     var errorObj = {
                         message: "error while trying to get All orders count: ",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(result);
+            });
+        });
+
+        return d.promise;
+    }
+
+    function saveDistribution(distributionList) {
+        var d = deferred();
+
+        getCollection('gorme-distribution').then(function (mongo) {
+
+            mongo.collection.insert(distributionList, function (err, result) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to add distributions : ",
                         error: err
                     };
                     mongo.db.close();

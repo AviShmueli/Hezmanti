@@ -86,7 +86,6 @@
 
         vm.refreshDataFromServer = function (ev) {
 
-
             var confirm = $mdDialog.confirm()
                 .title('לרענן נתונים מהשרת?')
                 .textContent('כל הנתונים על הדף ימחקו')
@@ -135,6 +134,14 @@
                     filesHandler.downloadOrderAsCSV(suppliersItemsMap[supplier.id], orderFields, fileName);
                 }
             }
+
+            server.saveDistribution(vm.ordersItems).then(function (response) {
+                $mdToast.show(
+                    $mdToast.simple()
+                    .textContent('הנתונים נשמרו בהצלחה!')
+                    .hideDelay(3000)
+                );
+            });
 
             vm.downloading = false;
         }

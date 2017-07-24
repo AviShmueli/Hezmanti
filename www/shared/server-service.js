@@ -148,6 +148,18 @@
             return $http(req);
         }
 
+        var saveDistribution = function (distributionList) {
+            var req = {
+                method: 'POST',
+                url: '/api/saveDistribution',
+                data: {
+                    distributionList: distributionList
+                }
+            };
+
+            return $http(req);
+        }
+
         var service = {
             addOrder: addOrder,
             getCatalog: getCatalog,
@@ -160,7 +172,8 @@
             checkBranchCode: checkBranchCode,
             getDepartments: getDepartments,
             updateUserLastSeenTime: updateUserLastSeenTime,
-            getAllTodayOrders: getAllTodayOrders
+            getAllTodayOrders: getAllTodayOrders,
+            saveDistribution: saveDistribution
         };
 
         return service;

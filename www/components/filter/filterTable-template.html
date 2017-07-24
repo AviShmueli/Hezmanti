@@ -87,13 +87,13 @@
             </div>
             <div layout-gt-xs="row" layout="column">
                 <md-input-container class="md-block" flex>
-                    <md-switch class="md-primary" name="special" ng-model="vm.unhandledItems" required>
+                    <md-switch class="md-primary" name="special" ng-model="vm.ordersFilter.unhandledItems" required>
                         פריטים שלא טופלו
                     </md-switch>
                 </md-input-container>
 
                 <md-input-container class="md-block" flex>
-                    <md-switch class="md-primary" name="special" ng-model="vm.showSecondOrders" required>
+                    <md-switch class="md-primary" name="special" ng-model="vm.ordersFilter.showSecondOrders" required>
                         אספקה שניה
                     </md-switch>
                 </md-input-container>
@@ -101,6 +101,7 @@
         </div>
         <div class="md-secondary md-block" flex="10" layout="column" layout-align="center center">
             <md-button aria-label="filter" ng-click="vm.filter()" class="md-warn md-raised md-hue-1">סנן</md-button>
+            <md-button aria-label="filter" ng-click="vm.clean()" class="md-warn md-raised md-hue-1">איפוס</md-button>
             <md-button ng-if="vm.showDownloadExcelBtn" aria-label="download" ng-click="vm.downloadFilterdTable()" class=" md-raised ">
                 <md-icon ng-hide="vm.downloading" style="width:22px;height:22px;" md-svg-src="/assets/images/Exel_download.svg">
                 </md-icon>
