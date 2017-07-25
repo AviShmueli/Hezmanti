@@ -133,7 +133,7 @@
                     var fileName = supplier.name + '_' + $filter('date')(new Date(), 'dd/MM/yyyy');
                     filesHandler.downloadOrderAsCSV(suppliersItemsMap[supplier.id], orderFields, fileName);
                 }
-            }
+            } 
 
             server.saveDistribution(vm.ordersItems).then(function (response) {
                 $mdToast.show(
