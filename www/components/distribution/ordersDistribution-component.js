@@ -20,9 +20,6 @@
         vm.checkAllTableSum = false;
         vm.downloading = false;
 
-        var allOrderItems = distributionContext.getDistributionState();
-        vm.ordersItems = allOrderItems;
-        vm.allOrderItemsCount = allOrderItems.length;
 
         var orderFields = {
             createdDate: 'ת. הזמנה',
@@ -80,10 +77,6 @@
             });
         }
 
-        if (angular.isUndefined(vm.ordersItems)) {
-            initiateDistributionData();
-        }
-
         vm.refreshDataFromServer = function (ev) {
 
             var confirm = $mdDialog.confirm()
@@ -98,6 +91,16 @@
                 initiateDistributionData();
             }, function () {});
 
+        }
+
+        var allOrderItems = distributionContext.getDistributionState();
+
+        if (angular.isUndefined(vm.ordersItems)) {
+            initiateDistributionData();
+        }
+        else{
+            vm.ordersItems = allOrderItems;
+            vm.allOrderItemsCount = allOrderItems.length;
         }
 
 
