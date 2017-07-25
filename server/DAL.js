@@ -18,12 +18,13 @@
     DAL.updateUserLastSeenTime = updateUserLastSeenTime;
     DAL.getAllTodayOrders = getAllTodayOrders;
     DAL.saveDistribution = saveDistribution;
+    DAL.getConfigValue = getConfigValue;
 
 var Moment = require('moment-timezone');
     var deferred = require('deferred');
     var mongodb = require('mongodb').MongoClient;
     var ObjectID = require('mongodb').ObjectID;
-    var mongoUrl = 'mongodb://admin:avi3011algo@ds127059-a0.mlab.com:27059/algotodo_db_01?replicaSet=rs-ds127059';
+    var mongoUrl = 'mongodb://admin:avi3011algo@ds127059-a1.mlab.com:27059/algotodo_db_01?replicaSet=rs-ds127059';
     //var mongoUrl = 'mongodb://admin:avi3011algo@ds033996.mlab.com:33996/algotodo_db_01';
     //var mongoUrl = 'mongodb://localhost:27017/Hezmanti';
     var phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
@@ -123,7 +124,7 @@ var Moment = require('moment-timezone');
 
         var d = deferred();
 
-        getCollection('gorme-catalog').then(function (mongo) {
+        getCollection('gorme-suppliers').then(function (mongo) {
 
             mongo.collection.insert(catalog, function (err, results) {
 
@@ -490,6 +491,29 @@ var Moment = require('moment-timezone');
                 if (err) {
                     var errorObj = {
                         message: "error while trying to add distributions : ",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(result);
+            });
+        });
+
+        return d.promise;
+    }
+
+    function getConfigValue(key) {
+        var d = deferred();
+
+        getCollection('gorme-config').then(function (mongo) {
+
+            mongo.collection.find({_id: key}).toArray( function (err, result) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to get config : ",
                         error: err
                     };
                     mongo.db.close();

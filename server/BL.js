@@ -210,7 +210,9 @@
         var d = deferred();
 
         DAL.updateUserLastSeenTime(id, new Date(date)).then(function (result) {
-            d.resolve(result);
+            DAL.getConfigValue("lastCatalogUpdate").then(function (result) {
+                d.resolve(result);
+            });       
         }, function (error) {
             d.deferred(error);
         });

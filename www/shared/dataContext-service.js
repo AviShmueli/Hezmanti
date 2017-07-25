@@ -85,6 +85,7 @@
 
         var setCatalog = function (ctalog) {
             self.$storage.catalog = ctalog;
+            setLastCatalogRefresh(new Date().toISOString());
         }
 
         var getCatalog = function () {
@@ -150,6 +151,14 @@
             self.$storage.departments = departments;
         }
 
+        var getLastCatalogRefresh = function () {
+            return self.$storage.lastCatalogRefresh || null;
+        }
+
+        var setLastCatalogRefresh = function (newVal) {
+            self.$storage.lastCatalogRefresh = newVal;
+        }
+
         var service = {
             removeItemFromCart: removeItemFromCart,
             updateCart: updateCart,
@@ -168,7 +177,9 @@
             setUserName: setUserName,
             setUserBranch: setUserBranch,
             getDepartments: getDepartments,
-            setDepartments: setDepartments
+            setDepartments: setDepartments,
+            getLastCatalogRefresh: getLastCatalogRefresh,
+            setLastCatalogRefresh: setLastCatalogRefresh
         };
 
         return service;

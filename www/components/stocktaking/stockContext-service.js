@@ -66,9 +66,13 @@
 
         var getStockCatalog = function () {
             if(self.$storage.stockCatalog === undefined || self.$storage.stockCatalog === null){
-                self.$storage.stockCatalog = angular.copy(dataContext.getCatalog());
+                setStockCatalog();
             }
             return self.$storage.stockCatalog;
+        }
+
+        var setStockCatalog = function () {
+            self.$storage.stockCatalog = angular.copy(dataContext.getCatalog());
         }
 
         var service = {
@@ -77,7 +81,8 @@
             getStockCount: getStockCount,
             getStockItemsList: getStockItemsList,
             cleanStock: cleanStock,
-            getStockCatalog: getStockCatalog
+            getStockCatalog: getStockCatalog,
+            setStockCatalog: setStockCatalog
         };
 
         return service;

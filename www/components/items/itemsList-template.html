@@ -37,7 +37,11 @@
                         <td md-cell ng-if="!vm.editMode" style="padding: 0 6px; font-size: 12px;">
                             <span > {{::item.count}} </span>
                         </td>
-                        <td md-cell style="padding: 0 6px; font-size: 12px;">{{item.unit}}</td>
+                        <td md-cell style="padding: 0 6px; font-size: 12px;">
+                            <span ng-if="vm.pageMode === 'stock' && item.weighable">ק"ג</span>
+                            <span ng-if="vm.pageMode === 'stock' && !item.weighable">יחידות</span>
+                            <span ng-if="vm.pageMode === 'order'">{{item.unit}}</span>                          
+                        </td>
                     </tr>
                 </tbody>
             </table>

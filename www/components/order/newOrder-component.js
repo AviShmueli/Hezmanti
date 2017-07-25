@@ -6,7 +6,8 @@
         .component('newOrder', {
             bindings: {
                 catalog: '=',
-                itemCountChanged: '='
+                itemCountChanged: '=',
+                pageMode: '='
             },
             controller: newOrderController,
             controllerAs: 'vm',

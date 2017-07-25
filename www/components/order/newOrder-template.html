@@ -5,7 +5,8 @@
                 <search-item style="width: 100%" item-count-changed="vm.itemCountChanged"></search-item>
                 <items-list style="width: 100%" ng-repeat="(key, value) in vm.catalog" 
                             items="value" list-title="value[0].departmentName" department-id="value[0].departmentId" 
-                            edit-mode="true" item-count-changed="vm.itemCountChanged"></items-list>
+                            edit-mode="true" item-count-changed="vm.itemCountChanged"
+                            page-mode="vm.pageMode"></items-list>
             </div>
         </ui-view>
     </main>

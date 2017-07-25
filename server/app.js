@@ -144,9 +144,134 @@ app.post('/api/saveDistribution', function (req, res) {
     });
 });
 
-//var newBranches = 
+var newBranches = [
+  {
+    "supplierId": 30000,
+    "name": "מילועוף"
+  },
+  {
+    "supplierId": 30004,
+    "name": "א.ב איכות הבשר"
+  },
+  {
+    "supplierId": 30006,
+    "name": "אורן דרזי"
+  },
+  {
+    "supplierId": 30012,
+    "name": "דבאח"
+  },
+  {
+    "supplierId": 30015,
+    "name": "צדקה יוסף"
+  },
+  {
+    "supplierId": 30024,
+    "name": "בקר תנובה"
+  },
+  {
+    "supplierId": 30027,
+    "name": "עוף ירושלים"
+  },
+  {
+    "supplierId": 30033,
+    "name": "נטו"
+  },
+  {
+    "supplierId": 30034,
+    "name": "קוסדא"
+  },
+  {
+    "supplierId": 30044,
+    "name": "טל הל יסכה"
+  },
+  {
+    "supplierId": 30047,
+    "name": "טכנו שק"
+  },
+  {
+    "supplierId": 30048,
+    "name": "דגת הארץ - אגודה שיתופית חקלאית בע\"מ"
+  },
+  {
+    "supplierId": 30050,
+    "name": "עוף טוב (שאן) בע\"מ"
+  },
+  {
+    "supplierId": 30051,
+    "name": "מאסטרפוד בע\"מ"
+  },
+  {
+    "supplierId": 30060,
+    "name": "ד. שוחט סחר בקר בע\"מ"
+  },
+  {
+    "supplierId": 30064,
+    "name": "תנובה בע\"מ"
+  },
+  {
+    "supplierId": 30068,
+    "name": "יהודה ניב-שיווק מוצרי בשר ומזון"
+  },
+  {
+    "supplierId": 30069,
+    "name": "נחמיה לחוביץ בע\"מ"
+  },
+  {
+    "supplierId": 30098,
+    "name": "חמים וטעים בע\"מ"
+  },
+  {
+    "supplierId": 30107,
+    "name": "בלדי בע\"מ"
+  },
+  {
+    "supplierId": 30119,
+    "name": "דניאל דני מוצרי בשר בע\"מ"
+  },
+  {
+    "supplierId": 30158,
+    "name": "עוף עוז (שיווק) בע\"מ"
+  },
+  {
+    "supplierId": 30173,
+    "name": "ציון שמכה ובניו בע\"מ"
+  },
+  {
+    "supplierId": 30178,
+    "name": "ח.ש. בקרנה בשר הכפר בע\"מ"
+  },
+  {
+    "supplierId": 30221,
+    "name": "כרדי ובניו בע\"מ"
+  },
+  {
+    "supplierId": 30232,
+    "name": "ג'י.טי.סי חברה כללית למסחר בע\"מ"
+  },
+  {
+    "supplierId": 30239,
+    "name": "איילות תוצרת חקלאית בע\"מ"
+  },
+  {
+    "supplierId": 30422,
+    "name": "סנו פרופשיונל בע\"מ"
+  },
+  {
+    "supplierId": 30528,
+    "name": "לוגיסטימן"
+  },
+  {
+    "supplierId": 30572,
+    "name": "לב ים שיווק דגים בע\"מ"
+  },
+  {
+    "supplierId": 30573,
+    "name": "לב ים שיווק דגים בע\"מ"
+  }
+];
 
-//DAL.insertToCatalog(newBranches);
+DAL.insertToCatalog(newBranches);
 //DAL.insertNewBranches(newBranches);
 
 /*app.post('/registerNewClient', function (req, res) {

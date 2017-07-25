@@ -7,11 +7,12 @@
 
     EntryScreenController.$inject = [
         '$rootScope', '$scope', 'server', '$state', '$interval',
-        '$log', 'device', 'dataContext', '$location', '$mdDialog'
+        '$log', 'device', 'dataContext', '$location', '$mdDialog',
+        'stockContext'
     ];
 
     function EntryScreenController($rootScope, $scope, server, $state, $interval,
-        $log, device, dataContext, $location, $mdDialog) {
+        $log, device, dataContext, $location, $mdDialog, stockContext) {
 
         var vm = this;
 
@@ -109,7 +110,7 @@
         //* ---- Preper Data ------ */
         var catalog = dataContext.getCatalog();
 
-        if (!catalog) {
+        var refreshCatalog = function () {
             server.getCatalog().then(function (response) {
                 vm.items = response.data;
                 var departmentsMap = {};
@@ -121,11 +122,27 @@
                     departmentsMap[item.departmentId].push(item);
                 }
                 dataContext.setCatalog(departmentsMap);
+                stockContext.setStockCatalog();
             });
         }
 
+        if (!catalog) {
+            refreshCatalog();
+        }
+
         if (vm.user !== undefined && vm.user.branch !== undefined) {
-            server.updateUserLastSeenTime(vm.user.branch._id, new Date());
+            server.updateUserLastSeenTime(vm.user.branch._id, new Date()).then(function (result){
+                if (result.data && result.data.length > 0) {
+                    var serverLastCatalogRefresh = result.data[0].date;
+                    var clientLastCatalogRefresh = dataContext.getLastCatalogRefresh();
+                    var d1 = new Date(serverLastCatalogRefresh), 
+                        d2 = new Date(clientLastCatalogRefresh);
+
+                    if (d1 > d2) {
+                        refreshCatalog();
+                    }
+                }               
+            });;
         }
 
     }

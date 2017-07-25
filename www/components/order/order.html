@@ -36,7 +36,10 @@
                 ng-if="vm.viewMode === 'viewOrder' && vm.showErrorMessage === false && vm.showSucseesMessage === false" >
     </view-order>
 
-    <new-order ng-if="vm.viewMode === 'newOrder'" catalog="vm.catalog" item-count-changed="vm.itemCountChanged"></new-order>
+    <new-order ng-if="vm.viewMode === 'newOrder'" 
+               catalog="vm.catalog" 
+               item-count-changed="vm.itemCountChanged"
+               page-mode="vm.pageMode"></new-order>
 
     <md-card style="width: 100%; margin: 0px;" layout-margin ng-if="vm.showSucseesMessage === true && vm.viewMode === 'viewOrder'">
         <md-card-title class="management-filter-card-title">

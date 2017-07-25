@@ -11,7 +11,8 @@
                 canShrink: '=',
                 departmentId: '=',
                 editMode: '=',
-                itemCountChanged: '='
+                itemCountChanged: '=',
+                pageMode: '='
             },
             controller: itemsListController,
             controllerAs: 'vm',
