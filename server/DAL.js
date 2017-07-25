@@ -23,7 +23,7 @@ var Moment = require('moment-timezone');
     var deferred = require('deferred');
     var mongodb = require('mongodb').MongoClient;
     var ObjectID = require('mongodb').ObjectID;
-    var mongoUrl = 'mongodb://admin:avi3011algo@ds127059-a0.mlab.com:27059/algotodo_db_01';
+    var mongoUrl = 'mongodb://admin:avi3011algo@ds127059-a0.mlab.com:27059/algotodo_db_01?replicaSet=rs-ds127059';
     //var mongoUrl = 'mongodb://admin:avi3011algo@ds033996.mlab.com:33996/algotodo_db_01';
     //var mongoUrl = 'mongodb://localhost:27017/Hezmanti';
     var phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
