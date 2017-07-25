@@ -346,6 +346,42 @@
             }, 500);
         }
 
+        vm.myData = [
+    {
+        "firstName": "Cox",
+        "lastName": "Carney",
+        "company": "Enormo",
+        "employed": true
+    },
+    {
+        "firstName": "Lorraine",
+        "lastName": "Wise",
+        "company": "Comveyer",
+        "employed": false
+    },
+    {
+        "firstName": "Nancy",
+        "lastName": "Waters",
+        "company": "Fuelton",
+        "employed": false
+    }
+];
+
+vm.gridOptions = {  
+    enableFiltering: true,
+    flatEntityAccess: true,
+    showGridFooter: true,
+    fastWatch: true,
+    data: vm.myData
+  };
+ 
+   vm.gridOptions.columnDefs = [
+    {name:'firstName'},
+    {name:'lastName'},
+    {name:'company'},
+    {field:'employed'}
+  ];
+
     }
 
 }());

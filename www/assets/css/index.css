@@ -237,3 +237,9 @@ md-dialog.md-dialog-fullscreen {
 #filterInputs md-input-container{
     margin: 0!important;
 }
+
+.grid {
+    direction: ltr;
+  width: 650px;
+  height: 400px;
+}

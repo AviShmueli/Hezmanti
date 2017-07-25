@@ -12,19 +12,8 @@
     <div id="filterInputs" layout-gt-xs="row" flex layout-padding ng-show="vm.showTasksFilter">
         <div layout-gt-xs="column" flex="90" layout="column">
             <div layout-gt-xs="row" layout="column">
-                <md-input-container class="md-block" flex>
-                    <label>רשת</label>
-                    <md-select md-no-asterisk ng-model="vm.ordersFilter.networkId" name="user" multiple>
-                        <md-select-header>
-                            <md-option value="vm.networkFilterAll" dir="rtl">
-                                all
-                            </md-option>
-                        </md-select-header>
-                        <md-option ng-repeat="(key, value) in vm.networks" value="{{value.id}}" dir="rtl">
-                            {{value.name}}
-                        </md-option>
-                    </md-select>
-                </md-input-container>
+
+                <md-select-multi select-lable="'רשת'" select-model="vm.ordersFilter.networkId" select-values="vm.networks"></md-select-multi>
 
                 <md-input-container class="md-block" flex>
                     <label>סניף</label>

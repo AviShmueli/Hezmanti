@@ -19,7 +19,11 @@
                           show-download-excel-btn="vm.ordersItems.length > 0"
                           initial-values="vm.initialFilter"
                           download-filterd-table="vm.downloadFilterdTable"></filter-table>
-                                                    
+
+            <!--<md-card layout-margin>
+                 <div id="grid1" ng-grid="vm.gridOptions" class="grid"></div>
+            </md-card>      -->
+
             <md-card layout-margin>
                 <md-table-container>
                     <table md-table md-progress="vm.promise" fixed-header table-height="{{vm.tableHeight}}px">

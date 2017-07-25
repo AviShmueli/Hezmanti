@@ -1,0 +1,13 @@
+<md-input-container class="md-block" flex>
+    <label>{{vm.selectLable}}</label>
+    <md-select md-no-asterisk ng-model="vm.selectModel" name="user" multiple>
+        <md-select-header>
+            <md-option ng-model="vm.all" dir="rtl" ng-click="vm.allCheck(vm.all)">
+                all
+            </md-option>
+        </md-select-header>
+        <md-option ng-repeat="(key, value) in vm.selectValues" value="{{value.id}}" dir="rtl">
+            {{value.name}}
+        </md-option>
+    </md-select>
+</md-input-container>
