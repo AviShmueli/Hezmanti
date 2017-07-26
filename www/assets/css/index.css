@@ -243,3 +243,10 @@ md-dialog.md-dialog-fullscreen {
   width: 650px;
   height: 400px;
 }
+
+.department-card-img{
+    position: relative;
+    width: 48px;
+    top: 10%;
+    right: 40%;
+}

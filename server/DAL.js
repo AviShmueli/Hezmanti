@@ -124,7 +124,7 @@ var Moment = require('moment-timezone');
 
         var d = deferred();
 
-        getCollection('gorme-suppliers').then(function (mongo) {
+        getCollection('gorme-catalog').then(function (mongo) {
 
             mongo.collection.insert(catalog, function (err, results) {
 

@@ -12,8 +12,8 @@
             templateUrl: 'components/distribution/ordersDistribution-template.html'
         });
 
-    function ordersDistributionController(server, $q, filesHandler, $filter, $timeout, dataContext,
-        $mdToast, $mdDialog, $window, distributionContext) {
+    function ordersDistributionController($scope, server, $q, filesHandler, $filter, $timeout, dataContext,
+        $mdToast, $mdDialog, $window, distributionContext, lodash) {
 
         var vm = this;
         vm.tableHeight = $window.innerHeight - 200;
@@ -49,13 +49,18 @@
             server.getAllOrders(query, filter).then(function (response) {
                 var orders = response.data;
 
+                var newOrdersCount = 0;
                 var newOrdersItems = [];
                 for (var index = 0; index < orders.length; index++) {
 
                     var order = orders[index];
 
-                    if (allOrderItems.indexOf(order._id) === -1) {
-
+                    var isExcist = lodash.findIndex(allOrderItems, function (o) {
+                        var a = o;
+                        return o.order._id === order._id;
+                    });
+                    if (isExcist === -1) {
+                        newOrdersCount++;
                         var orderWithOutItems = angular.copy(order);
                         delete orderWithOutItems.items;
 
@@ -70,42 +75,80 @@
                     }
                 }
 
-                allOrderItems = allOrderItems.concat(newOrdersItems);
+                if (newOrdersCount > 0) {
+                    var toastMessage = newOrdersCount > 1 ?
+                        newOrdersCount + ' הזמנות חדשות התווספו בהצלחה' :
+                        'הזמנה אחת התווספה בהצלחה'
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent(toastMessage)
+                        .hideDelay(3000)
+                    );
 
-                distributionContext.saveDistributionState(allOrderItems);
-                vm.allOrderItemsCount = allOrderItems.length;
-                vm.ordersItems = allOrderItems; // ??
+                    allOrderItems = allOrderItems.concat(newOrdersItems);
 
-                vm.getOrders(vm.filter, {}); // ??
+                    distributionContext.saveDistributionState(allOrderItems);
+                    vm.allOrderItemsCount = allOrderItems.length;
+                    vm.ordersItems = allOrderItems; // ??
 
+                    vm.getOrders(vm.filter, {}); // ??
+                }
                 deferred.resolve();
             });
         }
 
         vm.refreshDataFromServer = function (ev) {
 
-            var confirm = $mdDialog.confirm()
-                .title('לרענן נתונים מהשרת?')
-                .textContent('כל הנתונים על הדף ימחקו')
-                .ariaLabel('Lucky day')
-                .parent(angular.element(document.querySelector('#dialogsWraper')))
-                .targetEvent(ev)
-                .ok('רענן')
-                .cancel('ביטול');
-            $mdDialog.show(confirm).then(function () {
-                initiateDistributionData();
-            }, function () {});
-
+            // var confirm = $mdDialog.confirm()
+            //     .title('לרענן נתונים מהשרת?')
+            //     .textContent('כל הנתונים על הדף ימחקו')
+            //     .ariaLabel('Lucky day')
+            //     .parent(angular.element(document.querySelector('#dialogsWraper')))
+            //     .targetEvent(ev)
+            //     .ok('רענן')
+            //     .cancel('ביטול');
+            // $mdDialog.show(confirm).then(function () {
+            //     initiateDistributionData();
+            // }, function () {});
+            initiateDistributionData();
         }
 
         var allOrderItems = distributionContext.getDistributionState();
 
-        if (angular.isUndefined(vm.ordersItems)) {
+        if (angular.isUndefined(allOrderItems)) {
+            allOrderItems = [];
             initiateDistributionData();
         } else {
             vm.ordersItems = allOrderItems;
             vm.allOrderItemsCount = allOrderItems.length;
         }
+        vm.tableSummary = {
+            count: 0,
+            sum: 0
+        }
+
+        $scope.$watch('vm.ordersItems', function (orders) {
+            vm.tableSummary = {
+                count: 0,
+                sum: 0
+            };
+            
+            orders.forEach(function (order) {
+                vm.tableSummary.count += order.item.count;
+                vm.tableSummary.sum += order.sum || 0;
+                if (order.suppliers) {
+                    for (var key in order.suppliers) {
+                        if (order.suppliers.hasOwnProperty(key)) {
+                            var val = order.suppliers[key];
+                            if (!vm.tableSummary.hasOwnProperty(key)) {
+                                vm.tableSummary[key] = 0;
+                            }
+                            vm.tableSummary[key] += val;
+                        }
+                    }
+                }
+            }, this);
+        }, true);
 
 
         /* ---- download order ---- */
@@ -210,7 +253,7 @@
         vm.filter = {};
         vm.totalOrderCount = 0;
         vm.query = {
-            order: '-createdDate'
+            order: '-order.orderId'
         };
 
         vm.getOrders = function (filter, originalFilter) {
@@ -256,6 +299,8 @@
             if (Object.keys(originalFilter).length !== 0) {
                 vm.ordersItems = $filter('distributionDataFilter')(vm.ordersItems, originalFilter);
             }
+
+            //vm.ordersItems = $filter('orderBy')(vm.ordersItems, '-oreder.orderId');
 
             deferred.resolve();
         };

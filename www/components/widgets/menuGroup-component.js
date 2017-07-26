@@ -12,7 +12,7 @@
             },
             controller: menuGroupController,
             controllerAs: 'vm',
-            templateUrl: 'components/admin/menuGroup-template.html'
+            templateUrl: 'components/widgets/menuGroup-template.html'
         });
 
     function menuGroupController($state) {
@@ -32,6 +32,7 @@
         }
 
         vm.switchViewMode = function (toMode) {
+            vm.defultOpen = true;
             $state.go('admin' ,{mode: toMode});
         }
     }

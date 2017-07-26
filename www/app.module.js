@@ -12,7 +12,8 @@
             'angularMoment',
             'logglyLogger',
             'ngSanitize',
-            'anguFixedHeaderTable'
+            'anguFixedHeaderTable',
+            'ngLodash'
         ]);
 
 })();

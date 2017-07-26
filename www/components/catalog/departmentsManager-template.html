@@ -1,0 +1,26 @@
+<md-content md-scroll-y dir="rtl">
+    <div>
+        <md-grid-list md-cols-gt-md="6" md-cols-gt-lg="8" md-cols-xl="10" md-cols="4" md-cols-md="4" md-cols-xs="4" md-row-height="140px"
+            md-gutter-gt-md="1px" md-gutter-md="1px" md-gutter="2px" style="display: initial;">
+            <div style="width: 200px;display: inline-flex;padding: 15px;" ng-repeat="department in vm.departments | orderBy:'name'" md-colspan-gt-sm="1"
+                md-rowspan-gt-sm="1">
+
+
+                <md-card>
+                  <img class="department-card-img" ng-src="{{::vm.imagesPath + '/assets/images/departments/' + department.id + '.png'}}">
+                  <md-card-content>
+                    <h2 style="text-align: center">{{department.name}}</h2>
+                  </md-card-content>
+                  <md-card-actions layout="row" layout-align="end center">
+                    <md-button>עריכה</md-button>
+                    <md-button>מוצרים</md-button>
+                  </md-card-actions>
+                </md-card>
+                <!--
+                    <div class="md-item-text md-whiteframe-z3" flex style="padding: 0 10px;margin: 20px;">
+                        <h3>{{department.name}}</h3>
+                    </div>-->
+            </div>
+        </md-grid-list>
+    </div>
+</md-content>

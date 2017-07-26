@@ -55,14 +55,15 @@
                                 </th>
                             </tr>
                             <tr md-row style="height: 20px;">
-                                <th md-column>all</th>
-                                <th md-column></th>
-                                <th md-column></th>
-                                <!--<th md-column md-order-by="item.itemSerialNumber">קוד פריט</th>-->
+                                <th md-column>סה"כ</th>
                                 <th md-column></th>
                                 <th md-column></th>
                                 <th md-column></th>
-                                <th md-column></th>
+                                <th md-column>{{vm.tableSummary.count}}</th>
+                                <th md-column>{{vm.tableSummary.sum}}</th>
+                                <th md-column ng-repeat="supplier in vm.suppliers" ng-show="supplier.show">
+                                    {{vm.tableSummary[supplier.id]}}                                   
+                                </th>
                                 <th md-column></th>
                             </tr>
                         </thead>

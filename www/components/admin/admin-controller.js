@@ -30,7 +30,7 @@
 
         vm.menu = [{
             headerText: 'הזמנות',
-            defultOpen: true,
+            defultOpen: false,
             buttons: [{
                 text: 'חלוקת הזמנות לספקים',
                 mode: 'ordersDistribution',
@@ -50,7 +50,7 @@
             
         },{
             headerText: 'ספירות מלאי',
-            defultOpen: true,
+            defultOpen: false,
             buttons: [{
                 text: 'ניהול מלאי',
                 mode: 'stockManager',
@@ -58,7 +58,7 @@
             }]
         },{
             headerText: 'סניפים',
-            defultOpen: true,
+            defultOpen: false,
             buttons: [{
                 text: 'ניהול סניפים',
                 mode: 'usersManager',
@@ -69,7 +69,12 @@
             defultOpen: false
         },{
             headerText: 'קטלוג',
-            defultOpen: false
+            defultOpen: false,
+            buttons: [{
+                text: 'מחלקות',
+                mode: 'departmentsManager',
+                icon: 'view_module'
+            }]
         }]; 
 
         //* ---- Preper Data ------ */
