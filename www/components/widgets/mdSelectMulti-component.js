@@ -16,11 +16,11 @@
 
     function SelectMultiController($scope) {
 
-        
+
         var vm = this;
         vm.all = false
 
-        if(!vm.selectModel){
+        if (!vm.selectModel) {
             vm.selectModel = [];
         }
 
@@ -28,6 +28,9 @@
             if (!vm.all) {
                 vm.all = true;
                 vm.selectValues.forEach(function (element) {
+                    if (!vm.selectModel) {
+                        vm.selectModel = [];
+                    }
                     vm.selectModel.push(element.id);
                 }, this);
             } else {

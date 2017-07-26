@@ -2,7 +2,7 @@
     <label>{{vm.selectLable}}</label>
     <md-select md-no-asterisk ng-model="vm.selectModel" name="user" multiple>
         <md-select-header>
-            <md-option ng-model="vm.all" dir="rtl" ng-click="vm.allCheck(vm.all)">
+            <md-option ng-selected="!vm.all" dir="rtl" ng-click="vm.allCheck(vm.all)">
                 all
             </md-option>
         </md-select-header>

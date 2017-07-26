@@ -49,29 +49,34 @@
             server.getAllOrders(query, filter).then(function (response) {
                 var orders = response.data;
 
-                var ordersItems = [];
+                var newOrdersItems = [];
                 for (var index = 0; index < orders.length; index++) {
 
                     var order = orders[index];
-                    var orderWithOutItems = angular.copy(order);
-                    delete orderWithOutItems.items;
 
-                    for (var j = 0; j < order.items.length; j++) {
-                        var item = order.items[j];
-                        ordersItems.push({
-                            order: orderWithOutItems,
-                            item: item,
-                            sum: 0
-                        });
+                    if (allOrderItems.indexOf(order._id) === -1) {
+
+                        var orderWithOutItems = angular.copy(order);
+                        delete orderWithOutItems.items;
+
+                        for (var j = 0; j < order.items.length; j++) {
+                            var item = order.items[j];
+                            newOrdersItems.push({
+                                order: orderWithOutItems,
+                                item: item,
+                                sum: 0
+                            });
+                        }
                     }
                 }
 
-                distributionContext.saveDistributionState(ordersItems);
-                allOrderItems = ordersItems;
-                vm.allOrderItemsCount = allOrderItems.length;
-                vm.ordersItems = ordersItems;
+                allOrderItems = allOrderItems.concat(newOrdersItems);
 
-                vm.getOrders(vm.filter, {});
+                distributionContext.saveDistributionState(allOrderItems);
+                vm.allOrderItemsCount = allOrderItems.length;
+                vm.ordersItems = allOrderItems; // ??
+
+                vm.getOrders(vm.filter, {}); // ??
 
                 deferred.resolve();
             });
@@ -97,8 +102,7 @@
 
         if (angular.isUndefined(vm.ordersItems)) {
             initiateDistributionData();
-        }
-        else{
+        } else {
             vm.ordersItems = allOrderItems;
             vm.allOrderItemsCount = allOrderItems.length;
         }
@@ -136,7 +140,7 @@
                     var fileName = supplier.name + '_' + $filter('date')(new Date(), 'dd/MM/yyyy');
                     filesHandler.downloadOrderAsCSV(suppliersItemsMap[supplier.id], orderFields, fileName);
                 }
-            } 
+            }
 
             server.saveDistribution(vm.ordersItems).then(function (response) {
                 $mdToast.show(
@@ -341,46 +345,55 @@
                     } else {
                         orderItem.suppliers[supplierId] = Math.floor(orderItem.item.count * (persent * 0.01));
                     }
+                    if (orderItem.suppliers[supplierId] === 0) {
+                        delete orderItem.suppliers[supplierId];
+                    }
                     vm.updateSum(orderItem);
                 }
             }, 500);
         }
 
-        vm.myData = [
-    {
-        "firstName": "Cox",
-        "lastName": "Carney",
-        "company": "Enormo",
-        "employed": true
-    },
-    {
-        "firstName": "Lorraine",
-        "lastName": "Wise",
-        "company": "Comveyer",
-        "employed": false
-    },
-    {
-        "firstName": "Nancy",
-        "lastName": "Waters",
-        "company": "Fuelton",
-        "employed": false
-    }
-];
+        vm.myData = [{
+                "firstName": "Cox",
+                "lastName": "Carney",
+                "company": "Enormo",
+                "employed": true
+            },
+            {
+                "firstName": "Lorraine",
+                "lastName": "Wise",
+                "company": "Comveyer",
+                "employed": false
+            },
+            {
+                "firstName": "Nancy",
+                "lastName": "Waters",
+                "company": "Fuelton",
+                "employed": false
+            }
+        ];
 
-vm.gridOptions = {  
-    enableFiltering: true,
-    flatEntityAccess: true,
-    showGridFooter: true,
-    fastWatch: true,
-    data: vm.myData
-  };
- 
-   vm.gridOptions.columnDefs = [
-    {name:'firstName'},
-    {name:'lastName'},
-    {name:'company'},
-    {field:'employed'}
-  ];
+        vm.gridOptions = {
+            enableFiltering: true,
+            flatEntityAccess: true,
+            showGridFooter: true,
+            fastWatch: true,
+            data: vm.myData
+        };
+
+        vm.gridOptions.columnDefs = [{
+                name: 'firstName'
+            },
+            {
+                name: 'lastName'
+            },
+            {
+                name: 'company'
+            },
+            {
+                field: 'employed'
+            }
+        ];
 
     }
 
