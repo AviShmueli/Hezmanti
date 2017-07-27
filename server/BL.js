@@ -14,6 +14,7 @@
     BL.updateUserLastSeenTime = updateUserLastSeenTime;
     BL.getAllTodayOrders = getAllTodayOrders;
     BL.saveDistribution = saveDistribution;
+    BL.getSuppliers = getSuppliers;
 
     var Moment = require('moment-timezone');
     var deferred = require('deferred');
@@ -238,6 +239,19 @@
         var d = deferred();
 
         DAL.saveDistribution(distributionList).then(function (result) {
+            d.resolve(result);
+        }, function (error) {
+            d.deferred(error);
+        });
+
+        return d.promise;
+    }
+
+    function getSuppliers() {
+
+        var d = deferred();
+
+        DAL.getSuppliers().then(function (result) {
             d.resolve(result);
         }, function (error) {
             d.deferred(error);

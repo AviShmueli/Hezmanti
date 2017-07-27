@@ -144,7 +144,16 @@ app.post('/api/saveDistribution', function (req, res) {
     });
 });
 
-var newBranches = 
+app.get('/api/getSuppliers', function (req, res) {
+    BL.getSuppliers().then(function (result) {
+        res.send(result);
+    }, function (error) {
+        logger.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
+});
+
+//var newBranches = 
 
 //DAL.insertToCatalog(newBranches);
 //DAL.insertNewBranches(newBranches);

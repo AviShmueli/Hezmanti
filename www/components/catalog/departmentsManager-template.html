@@ -2,11 +2,9 @@
     <div>
         <md-grid-list md-cols-gt-md="6" md-cols-gt-lg="8" md-cols-xl="10" md-cols="4" md-cols-md="4" md-cols-xs="4" md-row-height="140px"
             md-gutter-gt-md="1px" md-gutter-md="1px" md-gutter="2px" style="display: initial;">
-            <div style="width: 200px;display: inline-flex;padding: 15px;" ng-repeat="department in vm.departments | orderBy:'name'" md-colspan-gt-sm="1"
+            <div style="width: 200px;display: inline-flex;padding: 15px;cursor: pointer" ng-repeat="department in vm.departments | orderBy:'name'" md-colspan-gt-sm="1"
                 md-rowspan-gt-sm="1">
-
-
-                <md-card>
+                <md-card ng-click="vm.goToDepartmentPage(department)">
                   <img class="department-card-img" ng-src="{{::vm.imagesPath + '/assets/images/departments/' + department.id + '.png'}}">
                   <md-card-content>
                     <h2 style="text-align: center">{{department.name}}</h2>

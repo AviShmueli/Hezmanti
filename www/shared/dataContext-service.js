@@ -159,6 +159,14 @@
             self.$storage.lastCatalogRefresh = newVal;
         }
 
+        var getSuppliers = function () {
+            return self.$storage.suppliers || null;
+        }
+
+        var setSuppliers = function (newVal) {
+            self.$storage.suppliers = newVal;
+        }
+
         var service = {
             removeItemFromCart: removeItemFromCart,
             updateCart: updateCart,
@@ -179,7 +187,9 @@
             getDepartments: getDepartments,
             setDepartments: setDepartments,
             getLastCatalogRefresh: getLastCatalogRefresh,
-            setLastCatalogRefresh: setLastCatalogRefresh
+            setLastCatalogRefresh: setLastCatalogRefresh,
+            getSuppliers: getSuppliers,
+            setSuppliers: setSuppliers,
         };
 
         return service;

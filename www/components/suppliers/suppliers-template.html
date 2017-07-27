@@ -1,0 +1,36 @@
+<md-content flex md-scroll-y class="background-color-transparent" dir="rtl">
+    <main flex>
+        <ui-view layout="column" layout-fill>
+
+            <md-card layout-margin>
+                <md-table-container>
+                    <table md-table md-progress="vm.promise">
+                        <!--md-progress="vm.promise"-->
+                        <thead md-head md-order="vm.query.order">
+                            <tr md-row>
+                                <th md-column md-order-by="supplierId">id</th>
+                                <th md-column md-order-by="name">name</th>
+                                <th md-column md-order-by="priority">priority</th>
+                            </tr>
+                        </thead>
+                        <tbody md-body>
+                            <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="supplier in vm.suppliers | orderBy: vm.query.order">
+                                <td md-cell>{{::supplier.supplierId}}</td>
+                                <td md-cell>{{::supplier.name}}</td>
+                                <td md-cell>
+                                    <input aria-label="input" style="width: 40px;" type="number" name="name{{$index}}" ng-model="supplier.priority"
+                                        >
+                                </td>
+                                <td>
+                                    <ng-md-icon icon="{{vm.edit_icon}}" class="message-icon" style="fill: brown" size="40"></ng-md-icon>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+            </md-card>
+
+        </ui-view>
+    </main>
+</md-content>

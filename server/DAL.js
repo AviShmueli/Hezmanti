@@ -19,6 +19,7 @@
     DAL.getAllTodayOrders = getAllTodayOrders;
     DAL.saveDistribution = saveDistribution;
     DAL.getConfigValue = getConfigValue;
+    DAL.getSuppliers = getSuppliers;
 
 var Moment = require('moment-timezone');
     var deferred = require('deferred');
@@ -511,6 +512,29 @@ var Moment = require('moment-timezone');
         getCollection('gorme-config').then(function (mongo) {
 
             mongo.collection.find({_id: key}).toArray( function (err, result) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to get config : ",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(result);
+            });
+        });
+
+        return d.promise;
+    }
+
+    function getSuppliers() {
+        var d = deferred();
+
+        getCollection('gorme-suppliers').then(function (mongo) {
+
+            mongo.collection.find({}).toArray( function (err, result) {
                 if (err) {
                     var errorObj = {
                         message: "error while trying to get config : ",

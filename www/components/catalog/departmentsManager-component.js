@@ -1,11 +1,6 @@
 (function() {
     'use strict';
 
-    // Usage:
-    // 
-    // Creates:
-    // 
-
     angular
         .module('app')
         .component('departmentsManager', {
@@ -17,14 +12,18 @@
             },
         });
 
-    DepartmentsManagerController.$inject = ['dataContext', 'device'];
+    DepartmentsManagerController.$inject = ['dataContext', 'device', '$state'];
 
-    function DepartmentsManagerController(dataContext, device) {
+    function DepartmentsManagerController(dataContext, device, $state) {
         var vm = this;
 
         vm.imagesPath = device.getImagesPath();
         
-        vm.departments = dataContext.getDepartments()
+        vm.departments = dataContext.getDepartments();
+
+        vm.goToDepartmentPage = function (department) {
+            $state.go('admin' ,{mode: 'departmentsManager', id: department.id});
+        }
 
     }
 })();

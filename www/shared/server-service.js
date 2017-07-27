@@ -160,6 +160,15 @@
             return $http(req);
         }
 
+        var getSuppliers = function () {
+            var req = {
+                method: 'GET',
+                url: '/api/getSuppliers'
+            };
+
+            return $http(req);
+        }
+
         var service = {
             addOrder: addOrder,
             getCatalog: getCatalog,
@@ -173,7 +182,8 @@
             getDepartments: getDepartments,
             updateUserLastSeenTime: updateUserLastSeenTime,
             getAllTodayOrders: getAllTodayOrders,
-            saveDistribution: saveDistribution
+            saveDistribution: saveDistribution,
+            getSuppliers: getSuppliers
         };
 
         return service;

@@ -14,6 +14,7 @@
         var vm = this;
 
         vm.viewMode = $state.params.mode || 'ordersDistribution';
+        vm.stateIdParam = $state.params.id;
 
         vm.imagesPath = device.getImagesPath();
         vm.loadingData = false;
@@ -66,7 +67,12 @@
             }]
         },{
             headerText: 'ספקים',
-            defultOpen: false
+            defultOpen: false,
+            buttons: [{
+                text: 'ספקים',
+                mode: 'suppliersManager',
+                icon: 'view_module'
+            }]
         },{
             headerText: 'קטלוג',
             defultOpen: false,

@@ -55,12 +55,16 @@
  
 <md-content ng-if="!vm.loadingData" layout-padding md-scroll-y style="height: 90%">
 
+  <suppliers ng-if="vm.viewMode === 'suppliersManager'"></suppliers>
   <dashboard ng-if="vm.viewMode === 'ordersStatus'"></dashboard>
   <users-manager ng-if="vm.viewMode === 'usersManager'"></users-manager>
   <orders-manager ng-if="vm.viewMode === 'ordersManager'" page-mode="'order'"></orders-manager>
   <orders-manager ng-if="vm.viewMode === 'stockManager'" page-mode="'stock'"></orders-manager>
   <orders-distribution ng-if="vm.viewMode === 'ordersDistribution'"></orders-distribution>
-  <departments-manager ng-if="vm.viewMode === 'departmentsManager'"></departments-manager>
+  
+  <departments-manager ng-if="vm.viewMode === 'departmentsManager' && !vm.stateIdParam"></departments-manager>
+  <department-view ng-if="vm.viewMode === 'departmentsManager' && vm.stateIdParam" department-id="vm.stateIdParam"></departments-view>
+
 
 </md-content>
 
