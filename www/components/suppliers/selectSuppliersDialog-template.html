@@ -1,0 +1,41 @@
+<md-dialog aria-label="Mango (Fruit)"  ng-cloak dir="rtl">
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>בחירת ספקים</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon ng-md-icon icon="close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content layout-padding>
+      <md-chips ng-model="ctrl.selectedVegetables" md-autocomplete-snap
+              md-transform-chip="ctrl.transformChip($chip)"
+              md-require-match="ctrl.autocompleteDemoRequireMatch">
+      <md-autocomplete
+          md-selected-item="ctrl.selectedItem"
+          md-search-text="ctrl.searchText"
+          md-items="item in ctrl.querySearch(ctrl.searchText)"
+          md-item-text="item.name"
+          placeholder="חפש שם ספק...">
+        <span md-highlight-text="ctrl.searchText">{{item.name}}</span>
+      </md-autocomplete>
+      <md-chip-template>
+        <span dir="rtl">
+          <strong>{{$chip.name}}</strong>
+        </span>
+      </md-chip-template>
+    </md-chips>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="answer('cancel')">
+       סגור
+      </md-button>
+      <md-button ng-click="answer('ok')">
+        אישור
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

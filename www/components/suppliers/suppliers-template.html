@@ -18,14 +18,14 @@
                             </md-button>
                         </md-fab-trigger>
                         <md-fab-actions>
-                            <md-button ng-if="vm.showPriority && vm.suppliers.length > 0" aria-label="edit" class="md-fab md-raised md-mini" ng-click="vm.editTable()">
+                            <md-button ng-if="vm.showPriority && vm.suppliersList.length > 0" aria-label="edit" class="md-fab md-raised md-mini" ng-click="vm.editTable()">
                                 <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="false">
                                     עריכה
                                 </md-tooltip>
                                 <md-icon ng-md-icon icon="{{vm.edit_icon}}" aria-label="edit"></md-icon>
                             </md-button>
-                            <md-button aria-label="add" class="md-fab md-raised md-mini" ng-click="vm.addSupplier()">
-                                <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="false">
+                            <md-button aria-label="add" class="md-fab md-raised md-mini" ng-click="vm.addSupplier($event)">
+                                <md-tooltip md-direction="bottom" md-visible="tooltipVisible" md-autohide="false">
                                     הוספה
                                 </md-tooltip>
                                 <md-icon ng-md-icon icon="add" aria-label="edit"></md-icon>
@@ -35,7 +35,7 @@
                     </md-fab-speed-dial>
                 </md-card-actions>
 
-                <md-table-container ng-if="vm.suppliers.length > 0">
+                <md-table-container ng-if="vm.suppliersList.length > 0">
                     <table md-table md-progress="vm.promise">
                         <!--md-progress="vm.promise"-->
                         <thead md-head md-order="vm.query.order">
@@ -46,7 +46,7 @@
                             </tr>
                         </thead>
                         <tbody md-body>
-                            <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="supplier in vm.suppliers | orderBy: vm.query.order">
+                            <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="supplier in vm.suppliersList | orderBy: vm.query.order">
                                 <td md-cell>{{::supplier.supplierId}}</td>
                                 <td md-cell>{{::supplier.name}}</td>
                                 <td md-cell ng-if="vm.showPriority">
@@ -59,7 +59,7 @@
                     </table>
                 </md-table-container>
 
-                <md-card-content layout="row" layout-align="space-between" ng-if="vm.showPriority && vm.suppliers.length < 1">
+                <md-card-content layout="row" layout-align="space-between" ng-if="vm.showPriority && vm.suppliersList.length < 1">
                     <h3>לא שוייכו ספקים למחלקה</h3>
                 </md-card-content>
             </md-card>
