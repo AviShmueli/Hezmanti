@@ -13,7 +13,8 @@
             'logglyLogger',
             'ngSanitize',
             'anguFixedHeaderTable',
-            'ngLodash'
+            'ngLodash',
+            'nvd3'
         ]);
 
 })();

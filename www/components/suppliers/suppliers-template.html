@@ -3,32 +3,65 @@
         <ui-view layout="column" layout-fill>
 
             <md-card layout-margin>
-                <md-table-container>
+                <md-card-actions layout="row" layout-align="end center">
+                    <h2 style="margin-right: 20px;">ספקים</h2>
+                    <span flex></span>
+                    <!--<md-button  aria-label="button-label" class="md-icon-button">
+                        <ng-md-icon icon="{{vm.edit_icon}}" style="fill: brown" size="30" options='{"rotation": "counterclock"}'></ng-md-icon>
+                    </md-button>-->
+
+                    <md-fab-speed-dial ng-hide="vm.hidden" md-direction="left" md-open="vm.isOpen" class="md-scale md-fab-top-left" ng-class="{ 'md-hover-full': vm.hover }"
+                        ng-mouseenter="vm.isOpen=true" ng-mouseleave="vm.isOpen=false">
+                        <md-fab-trigger>
+                            <md-button aria-label="menu" class="md-fab md-warn">
+                                <md-icon ng-md-icon icon="menu" aria-label="menu"></md-icon>
+                            </md-button>
+                        </md-fab-trigger>
+                        <md-fab-actions>
+                            <md-button ng-if="vm.showPriority && vm.suppliers.length > 0" aria-label="edit" class="md-fab md-raised md-mini" ng-click="vm.editTable()">
+                                <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="false">
+                                    עריכה
+                                </md-tooltip>
+                                <md-icon ng-md-icon icon="{{vm.edit_icon}}" aria-label="edit"></md-icon>
+                            </md-button>
+                            <md-button aria-label="add" class="md-fab md-raised md-mini" ng-click="vm.addSupplier()">
+                                <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="false">
+                                    הוספה
+                                </md-tooltip>
+                                <md-icon ng-md-icon icon="add" aria-label="edit"></md-icon>
+                            </md-button>
+
+                        </md-fab-actions>
+                    </md-fab-speed-dial>
+                </md-card-actions>
+
+                <md-table-container ng-if="vm.suppliers.length > 0">
                     <table md-table md-progress="vm.promise">
                         <!--md-progress="vm.promise"-->
                         <thead md-head md-order="vm.query.order">
                             <tr md-row>
-                                <th md-column md-order-by="supplierId">id</th>
-                                <th md-column md-order-by="name">name</th>
-                                <th md-column md-order-by="priority">priority</th>
+                                <th md-column md-order-by="supplierId">מספר ספק</th>
+                                <th md-column md-order-by="name">שם ספק</th>
+                                <th md-column md-order-by="priority" ng-if="vm.showPriority">עדיפות</th>
                             </tr>
                         </thead>
                         <tbody md-body>
                             <tr md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="supplier in vm.suppliers | orderBy: vm.query.order">
                                 <td md-cell>{{::supplier.supplierId}}</td>
                                 <td md-cell>{{::supplier.name}}</td>
-                                <td md-cell>
-                                    <input aria-label="input" style="width: 40px;" type="number" name="name{{$index}}" ng-model="supplier.priority"
-                                        >
+                                <td md-cell ng-if="vm.showPriority">
+                                    <md-input-container>
+                                        <input ng-disabled="vm.editMode" aria-label="input" style="width: 40px;" type="number" name="name{{$index}}" ng-model="supplier.priority">  
+                                    </md-input-container>
                                 </td>
-                                <td>
-                                    <ng-md-icon icon="{{vm.edit_icon}}" class="message-icon" style="fill: brown" size="40"></ng-md-icon>
-                                </td>
-
                             </tr>
                         </tbody>
                     </table>
                 </md-table-container>
+
+                <md-card-content layout="row" layout-align="space-between" ng-if="vm.showPriority && vm.suppliers.length < 1">
+                    <h3>לא שוייכו ספקים למחלקה</h3>
+                </md-card-content>
             </md-card>
 
         </ui-view>

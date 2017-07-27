@@ -8,7 +8,8 @@
             controller: SuppliersController,
             controllerAs: 'vm',
             bindings: {
-                departmentId: '=',
+                showPriority: '=',
+                suppliersList: '='
             },
         });
 
@@ -16,10 +17,17 @@
 
     function SuppliersController(dataContext, server, _) {
         var vm = this;
-        vm.suppliers = dataContext.getSuppliers();
         vm.query = {
             order: 'name',
         }
+        
+        if (!vm.suppliersList) {
+            vm.suppliers = dataContext.getSuppliers();
+        }
+        else{
+            vm.suppliers = vm.suppliersList;
+        }
+
         if (!vm.suppliers) {
             server.getSuppliers().then(function (result) {
                 vm.suppliers = result.data;
@@ -27,14 +35,15 @@
             });
         }
 
-        vm.edit_icon = vm.showTasksFilter ? 'edit' : 'done';
-        vm.toggleFilterSection = function () {
-            if (vm.showTasksFilter === true) {
-                vm.showTasksFilter = false;
-                vm.edit_icon = 'edit';
-            } else {
-                vm.showTasksFilter = true;
+        vm.editMode = true;
+        vm.edit_icon = vm.editMode ? 'edit' : 'done';
+        vm.editTable = function () {
+            if (vm.editMode === true) {
+                vm.editMode = false;
                 vm.edit_icon = 'done';
+            } else {
+                vm.editMode = true;
+                vm.edit_icon = 'edit';
             }
         }
     }

@@ -1,1 +1,39 @@
-{{vm.departmentId}}
+<div layout="row" layout-align="end center">
+
+  <h2 style="margin-right: 10px">{{vm.department.name}}</h2>
+  <img ng-src="{{::vm.imagesPath + '/assets/images/departments/' + vm.department.id + '.png'}}">
+
+
+</div>
+
+<md-card>
+  <md-card-actions layout="row" layout-align="end center">
+      <h2 style="margin-right: 20px;">מחירות</h2>
+  </md-card-actions>
+  <md-card-content>
+    <nvd3 options="vm.options" data="vm.data" config="vm.config"></nvd3>
+  </md-card-content>
+</md-card>
+
+<div layout="row">
+<md-card layout="column" flex>
+  <md-card-actions layout="row" layout-align="end center">
+      <h2 style="margin-right: 20px;">מחירות לפי רשתות</h2>
+  </md-card-actions>
+  <md-card-content>
+    <nvd3 options="vm.networksOptions" data="vm.networksData" config="vm.config"></nvd3>
+  </md-card-content>
+</md-card>
+
+<md-card layout="column" flex>
+  <md-card-actions layout="row" layout-align="end center">
+      <h2 style="margin-right: 20px;">מוצרים מובילים</h2>
+  </md-card-actions>
+  <md-card-content>
+    <nvd3 options="vm.itemsOptions" data="vm.itemsData" config="vm.config"></nvd3>
+  </md-card-content>
+</md-card>
+</div>
+
+
+<suppliers suppliers-list="vm.department.suppliers" show-priority="true"></suppliers>
