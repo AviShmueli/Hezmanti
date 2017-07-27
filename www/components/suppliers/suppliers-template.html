@@ -13,16 +13,16 @@
                     <md-fab-speed-dial ng-hide="vm.hidden" md-direction="left" md-open="vm.isOpen" class="md-scale md-fab-top-left" ng-class="{ 'md-hover-full': vm.hover }"
                         ng-mouseenter="vm.isOpen=true" ng-mouseleave="vm.isOpen=false">
                         <md-fab-trigger>
-                            <md-button aria-label="menu" class="md-fab md-warn">
-                                <md-icon ng-md-icon icon="menu" aria-label="menu"></md-icon>
+                            <md-button aria-label="menu" class="md-fab md-warn" ng-click="vm.editTable('trigger')">
+                                <md-icon ng-md-icon icon="{{vm.edit_icon}}" options='{"rotation": "counterclock"}' aria-label="menu"></md-icon>
                             </md-button>
                         </md-fab-trigger>
-                        <md-fab-actions>
-                            <md-button ng-if="vm.showPriority && vm.suppliersList.length > 0" aria-label="edit" class="md-fab md-raised md-mini" ng-click="vm.editTable()">
+                        <md-fab-actions ng-if="vm.editMode">
+                            <md-button ng-if="vm.showPriority && vm.suppliersList.length > 0" aria-label="edit" class="md-fab md-raised md-mini" ng-click="vm.editTable('action')">
                                 <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="false">
                                     עריכה
                                 </md-tooltip>
-                                <md-icon ng-md-icon icon="{{vm.edit_icon}}" aria-label="edit"></md-icon>
+                                <md-icon ng-md-icon icon="edit" aria-label="edit"></md-icon>
                             </md-button>
                             <md-button aria-label="add" class="md-fab md-raised md-mini" ng-click="vm.addSupplier($event)">
                                 <md-tooltip md-direction="bottom" md-visible="tooltipVisible" md-autohide="false">

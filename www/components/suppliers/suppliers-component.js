@@ -33,14 +33,16 @@
         }
 
         vm.editMode = true;
-        vm.edit_icon = vm.editMode ? 'edit' : 'done';
-        vm.editTable = function () {
+        vm.edit_icon = vm.editMode ? 'menu' : 'done';
+        vm.editTable = function (from) {
             if (vm.editMode === true) {
-                vm.editMode = false;
-                vm.edit_icon = 'done';
+                if (from === 'action') {
+                    vm.editMode = false;
+                    vm.edit_icon = 'done';
+                }
             } else {
                 vm.editMode = true;
-                vm.edit_icon = 'edit';
+                vm.edit_icon = 'menu';
             }
         }
 
@@ -126,8 +128,7 @@
         $scope.answer = function (answer) {
             if (answer === 'ok') {
                 $mdDialog.hide(angular.copy(self.selectedVegetables));
-            }
-            else{
+            } else {
                 $mdDialog.cancel();
             }
         };
