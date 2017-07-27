@@ -9,7 +9,7 @@
             controllerAs: 'vm',
             bindings: {
                 showPriority: '=',
-                suppliersList: '='
+                suppliersList: '=?'
             },
         });
 
