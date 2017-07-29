@@ -132,7 +132,7 @@
                 count: 0,
                 sum: 0
             };
-            
+
             orders.forEach(function (order) {
                 vm.tableSummary.count += order.item.count;
                 vm.tableSummary.sum += order.sum || 0;
@@ -325,56 +325,23 @@
             },
         ];
 
-        vm.addSupplier = function () {
+        vm.addSupplier = function (ev) {
             $mdDialog.show({
-                clickOutsideToClose: true,
-                preserveScope: true,
-                template: '<md-dialog dir="rtl" layout-padding>' +
-                    ' <form name="newSupplier">' +
-                    '  <md-dialog-content layout-margin>' +
-                    '     <h2 class="md-title">נא להזין שם ומספר ספק</h2>' +
-                    '     <br/>' +
-                    '     <md-input-container class="md-block" flex>' +
-                    '         <label>שם הספק</label>' +
-                    '         <input ng-model="name" md-no-asterisk name="name" required >' +
-                    '         <div ng-messages="newSupplier.name.$error">' +
-                    '             <div ng-message="required">חובה להזין שם ספק</div>' +
-                    '         </div>' +
-                    '     </md-input-container>' +
-                    '     <md-input-container class="md-block" flex>' +
-                    '         <label>מזהה ספק</label>' +
-                    '         <input ng-model="id" md-no-asterisk name="id" type="number" required >' +
-                    '         <div ng-messages="newSupplier.id.$error">' +
-                    '             <div ng-message="required">חובה להזין מזהה ספק</div>' +
-                    '         </div>' +
-                    '     </md-input-container>' +
-                    '  </md-dialog-content>' +
-                    '  <md-dialog-actions>' +
-                    '     <md-button aria-label="ok" type="submit" ng-click="ok()" class="md-primary">הוסף</md-button>' +
-                    '     <md-button aria-label="cancel" ng-click="cancel()" class="md-primary">בטל</md-button>' +
-                    '  </md-dialog-actions>' +
-                    ' </form>' +
-                    '</md-dialog>',
-                controller: function DialogController($scope, $mdDialog) {
-                    $scope.cancel = function () {
-                        $mdDialog.hide();
-                    }
-                    $scope.ok = function () {
-                        if ($scope.newSupplier.$valid) {
-                            $mdDialog.hide({
-                                name: $scope.name,
-                                id: $scope.id,
-                                show: true
-                            });
-                        }
-
-                    }
-                }
-            }).then(function (result) {
-                if (result) {
-                    vm.suppliers.push(result);
-                }
-            });
+                    controller: 'selectSuppliersController',
+                    controllerAs: 'ctrl',
+                    templateUrl: './components/suppliers/selectSuppliersDialog-template.html',
+                    parent: angular.element(document.body),
+                    targetEvent: ev,
+                    clickOutsideToClose: true
+                })
+                .then(function (newSuppliers) {
+                    newSuppliers.forEach(function(element) {
+                        element["show"] = true;
+                    }, this);
+                    vm.suppliers = vm.suppliers.concat(newSuppliers);
+                }, function () {
+                    //$scope.status = 'You cancelled the dialog.';
+                });
         }
 
         var timer;
@@ -397,48 +364,6 @@
                 }
             }, 500);
         }
-
-        vm.myData = [{
-                "firstName": "Cox",
-                "lastName": "Carney",
-                "company": "Enormo",
-                "employed": true
-            },
-            {
-                "firstName": "Lorraine",
-                "lastName": "Wise",
-                "company": "Comveyer",
-                "employed": false
-            },
-            {
-                "firstName": "Nancy",
-                "lastName": "Waters",
-                "company": "Fuelton",
-                "employed": false
-            }
-        ];
-
-        vm.gridOptions = {
-            enableFiltering: true,
-            flatEntityAccess: true,
-            showGridFooter: true,
-            fastWatch: true,
-            data: vm.myData
-        };
-
-        vm.gridOptions.columnDefs = [{
-                name: 'firstName'
-            },
-            {
-                name: 'lastName'
-            },
-            {
-                name: 'company'
-            },
-            {
-                field: 'employed'
-            }
-        ];
 
     }
 

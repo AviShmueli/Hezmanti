@@ -54,11 +54,6 @@
                         showEditBtn: false,
                         mode: order.type
                     }
-                })
-                .then(function (answer) {
-                    //$scope.status = 'You said the information was "' + answer + '".';
-                }, function () {
-                    //$scope.status = 'You cancelled the dialog.';
                 });
         }
 
@@ -68,7 +63,7 @@
 
         $timeout(function () {
             vm.getOrders();
-        }, 0);
+        }, 0); 
 
         $rootScope.$on('$locationChangeStart', function (event) {
             // Check if there is a dialog active

@@ -129,22 +129,22 @@
         }
 
         var getDepartments = function () {
-            var departments = self.$storage.departments;
-            if (!departments) {
-                var catalog = getCatalog();              
-                var allCatalogList = Object.values(catalog);
-                var departmentsList = [];
-                for (var index = 0; index < allCatalogList.length; index++) {
-                    var elements = allCatalogList[index];
-                    departmentsList.push({
-                        id: elements[0].departmentId,
-                        name: elements[0].departmentName
-                    });
-                }
+            // var departments = self.$storage.departments;
+            // if (!departments) {
+            //     var catalog = getCatalog();              
+            //     var allCatalogList = Object.values(catalog);
+            //     var departmentsList = [];
+            //     for (var index = 0; index < allCatalogList.length; index++) {
+            //         var elements = allCatalogList[index];
+            //         departmentsList.push({
+            //             id: elements[0].departmentId,
+            //             name: elements[0].departmentName
+            //         });
+            //     }
 
-                self.$storage.departments = departmentsList;
-            }
-            return self.$storage.departments;
+            //     self.$storage.departments = departmentsList;
+            // }
+            return self.$storage.departments || null;
         }
 
         var setDepartments = function (departments) {

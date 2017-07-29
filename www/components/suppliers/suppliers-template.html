@@ -43,6 +43,7 @@
                                 <th md-column md-order-by="supplierId">מספר ספק</th>
                                 <th md-column md-order-by="name">שם ספק</th>
                                 <th md-column md-order-by="priority" ng-if="vm.showPriority">עדיפות</th>
+                                <th md-column ng-if="vm.showPriority"></th>
                             </tr>
                         </thead>
                         <tbody md-body>
@@ -53,6 +54,11 @@
                                     <md-input-container>
                                         <input ng-disabled="vm.editMode" aria-label="input" style="width: 40px;" type="number" name="name{{$index}}" ng-model="supplier.priority">  
                                     </md-input-container>
+                                </td>
+                                <td md-cell ng-if="vm.showPriority">
+                                   <md-button ng-if="!vm.editMode" ng-click="vm.removeSupplier(supplier)" aria-label="download">
+                                        <ng-md-icon icon="cancel"></ng-md-icon>
+                                    </md-button>
                                 </td>
                             </tr>
                         </tbody>

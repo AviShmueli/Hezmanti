@@ -169,6 +169,51 @@
             return $http(req);
         }
 
+        var addSupplier = function (supplier) {
+            var req = {
+                method: 'POST',
+                url: '/api/addSupplier',
+                data: {
+                    supplier: supplier
+                }
+            };
+
+            return $http(req);
+        }
+
+        var updateSupplier = function (supplier) {
+            var req = {
+                method: 'POST',
+                url: '/api/addSupplier',
+                data: {
+                    supplier: supplier
+                }
+            };
+
+            return $http(req);
+        }
+
+        var editDepartment = function (department) {
+            var req = {
+                method: 'POST',
+                url: '/api/editDepartment',
+                data: {
+                    department: department
+                }
+            };
+
+            return $http(req);
+        }
+
+        var getDepartments = function () {
+            var req = {
+                method: 'GET',
+                url: '/api/getDepartments'
+            };
+
+            return $http(req);
+        }
+
         var service = {
             addOrder: addOrder,
             getCatalog: getCatalog,
@@ -183,7 +228,11 @@
             updateUserLastSeenTime: updateUserLastSeenTime,
             getAllTodayOrders: getAllTodayOrders,
             saveDistribution: saveDistribution,
-            getSuppliers: getSuppliers
+            getSuppliers: getSuppliers,
+            addSupplier: addSupplier,
+            updateSupplier: updateSupplier,
+            editDepartment: editDepartment,
+            getDepartments: getDepartments
         };
 
         return service;

@@ -20,8 +20,12 @@
     DAL.saveDistribution = saveDistribution;
     DAL.getConfigValue = getConfigValue;
     DAL.getSuppliers = getSuppliers;
+    DAL.addSupplier = addSupplier;
+    DAL.updateSupplier = updateSupplier;
+    DAL.editDepartment = editDepartment;
+    DAL.getDepartments = getDepartments;
 
-var Moment = require('moment-timezone');
+    var Moment = require('moment-timezone');
     var deferred = require('deferred');
     var mongodb = require('mongodb').MongoClient;
     var ObjectID = require('mongodb').ObjectID;
@@ -125,7 +129,7 @@ var Moment = require('moment-timezone');
 
         var d = deferred();
 
-        getCollection('gorme-catalog').then(function (mongo) {
+        getCollection('gorme-departments').then(function (mongo) {
 
             mongo.collection.insert(catalog, function (err, results) {
 
@@ -465,7 +469,10 @@ var Moment = require('moment-timezone');
 
         getCollection('gorme-orders').then(function (mongo) {
 
-            mongo.collection.find(filter, {branchId: 1, createdDate: 1}).toArray(function (err, result) {
+            mongo.collection.find(filter, {
+                branchId: 1,
+                createdDate: 1
+            }).toArray(function (err, result) {
                 if (err) {
                     var errorObj = {
                         message: "error while trying to get All orders count: ",
@@ -511,7 +518,9 @@ var Moment = require('moment-timezone');
 
         getCollection('gorme-config').then(function (mongo) {
 
-            mongo.collection.find({_id: key}).toArray( function (err, result) {
+            mongo.collection.find({
+                _id: key
+            }).toArray(function (err, result) {
                 if (err) {
                     var errorObj = {
                         message: "error while trying to get config : ",
@@ -534,10 +543,124 @@ var Moment = require('moment-timezone');
 
         getCollection('gorme-suppliers').then(function (mongo) {
 
-            mongo.collection.find({}).toArray( function (err, result) {
+            mongo.collection.find({}).toArray(function (err, result) {
                 if (err) {
                     var errorObj = {
-                        message: "error while trying to get config : ",
+                        message: "error while trying to get suppliers : ",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(result);
+            });
+        });
+
+        return d.promise;
+    }
+
+    function addSupplier(supplier) {
+        var d = deferred();
+
+        getCollection('gorme-suppliers').then(function (mongo) {
+
+            mongo.collection.insert(supplier, function (err, result) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to add supplier : ",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(result);
+            });
+        });
+
+        return d.promise;
+    }
+
+    function updateSupplier(supplier) {
+        var d = deferred();
+
+        var id = new ObjectID(supplier._id);
+        delete supplier._id;
+
+        getCollection('gorme-suppliers').then(function (mongo) {
+
+            mongo.collection.findAndModify({
+                _id: id
+            }, [
+                ['_id', 'asc']
+            ], {
+                $set: supplier
+            }, {
+                new: true
+            }, function (err, result) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to update supplier : ",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(result);
+            });
+        });
+
+        return d.promise;
+    }
+
+    function editDepartment(department) {
+        var d = deferred();
+
+        var id = new ObjectID(department._id);
+        delete department._id;
+
+        getCollection('gorme-departments').then(function (mongo) {
+
+            mongo.collection.findAndModify({
+                _id: id
+            }, [
+                ['_id', 'asc']
+            ], {
+                $set: department
+            }, {
+                new: true
+            }, function (err, result) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to update department : ",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(result);
+            });
+        });
+
+        return d.promise;
+    }
+
+    function getDepartments() {
+        var d = deferred();
+
+        getCollection('gorme-departments').then(function (mongo) {
+
+            mongo.collection.find({}).toArray(function (err, result) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to get departments : ",
                         error: err
                     };
                     mongo.db.close();

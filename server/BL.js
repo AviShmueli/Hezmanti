@@ -15,6 +15,10 @@
     BL.getAllTodayOrders = getAllTodayOrders;
     BL.saveDistribution = saveDistribution;
     BL.getSuppliers = getSuppliers;
+    BL.addSupplier = addSupplier;
+    BL.updateSupplier = updateSupplier;
+    BL.editDepartment = editDepartment;
+    BL.getDepartments = getDepartments;
 
     var Moment = require('moment-timezone');
     var deferred = require('deferred');
@@ -252,6 +256,58 @@
         var d = deferred();
 
         DAL.getSuppliers().then(function (result) {
+            d.resolve(result);
+        }, function (error) {
+            d.deferred(error);
+        });
+
+        return d.promise;
+    }
+
+    function addSupplier(supplier) {
+
+        var d = deferred();
+
+        DAL.addSupplier(supplier).then(function (result) {
+            d.resolve(result);
+        }, function (error) {
+            d.deferred(error);
+        });
+
+        return d.promise;
+    }
+
+    function updateSupplier(supplier) {
+
+        var d = deferred();
+        
+        DAL.updateSupplier(supplier).then(function (result) {
+            d.resolve(result);
+        }, function (error) {
+            d.deferred(error);
+        });
+
+        return d.promise;
+    }
+
+    function editDepartment(department) {
+
+        var d = deferred();
+        
+        DAL.editDepartment(department).then(function (result) {
+            d.resolve(result);
+        }, function (error) {
+            d.deferred(error);
+        });
+
+        return d.promise;
+    }
+
+    function getDepartments() {
+
+        var d = deferred();
+        
+        DAL.getDepartments().then(function (result) {
             d.resolve(result);
         }, function (error) {
             d.deferred(error);

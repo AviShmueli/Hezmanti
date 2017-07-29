@@ -1,0 +1,32 @@
+<md-dialog aria-label="Mango (Fruit)" ng-cloak dir="rtl">
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>ספק חדש</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon ng-md-icon icon="close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content layout-padding layout-margin>
+      <md-input-container class="md-block" flex>
+        <label>שם ספק</label>
+        <input type="text" name="name" ng-model="name">
+      </md-input-container>
+      <md-input-container class="md-block" flex>
+        <label>מספר ספק</label>
+        <input type="number" name="id" ng-model="supplierId">
+      </md-input-container>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="answer('cancel')">
+        סגור
+      </md-button>
+      <md-button ng-click="answer('ok')">
+        אישור
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

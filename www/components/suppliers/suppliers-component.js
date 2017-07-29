@@ -9,22 +9,25 @@
             controllerAs: 'vm',
             bindings: {
                 showPriority: '=',
-                suppliersList: '=?'
+                suppliersList: '=?',
+                editSupliersCallback: '=?'
             },
         });
 
-    SuppliersController.$inject = ['dataContext', 'server', 'lodash', '$mdDialog'];
+    SuppliersController.$inject = ['dataContext', 'server', 'lodash', '$mdDialog', '$mdToast'];
 
-    function SuppliersController(dataContext, server, _, $mdDialog) {
+    function SuppliersController(dataContext, server, _, $mdDialog, $mdToast) {
         var vm = this;
         vm.query = {
             order: 'name',
         }
 
+        // get from local storage
         if (!vm.suppliersList) {
             vm.suppliersList = dataContext.getSuppliers();
         }
 
+        // if not excist in local sorage, get from server
         if (!vm.suppliersList) {
             server.getSuppliers().then(function (result) {
                 vm.suppliersList = result.data;
@@ -43,24 +46,104 @@
             } else {
                 vm.editMode = true;
                 vm.edit_icon = 'menu';
+                if (vm.editSupliersCallback) {
+                    vm.editSupliersCallback(vm.suppliersList);
+                }
+            }
+        }
+
+        vm.removeSupplier = function (supplier) {
+            _.remove(vm.suppliersList, function (n) {
+                return n.supplierId === supplier.supplierId;
+            });
+            if (vm.editSupliersCallback) {
+                vm.editSupliersCallback(vm.suppliersList);
             }
         }
 
         vm.addSupplier = function (ev) {
-            $mdDialog.show({
-                    controller: selectSuppliersController,
-                    controllerAs: 'ctrl',
-                    templateUrl: './components/suppliers/selectSuppliersDialog-template.html',
-                    parent: angular.element(document.body),
-                    targetEvent: ev,
-                    clickOutsideToClose: true
-                })
-                .then(function (answer) {
-                    vm.suppliersList = vm.suppliersList.concat(answer);
-                }, function () {
-                    //$scope.status = 'You cancelled the dialog.';
+            if (vm.showPriority) {
+
+                // if function call'd from department component
+                $mdDialog.show({
+                        controller: selectSuppliersController,
+                        controllerAs: 'ctrl',
+                        templateUrl: './components/suppliers/selectSuppliersDialog-template.html',
+                        parent: angular.element(document.body),
+                        targetEvent: ev,
+                        clickOutsideToClose: true
+                    })
+                    .then(function (answer) {
+                        vm.suppliersList = vm.suppliersList.concat(answer);
+                        if (vm.editSupliersCallback) {
+                            vm.editSupliersCallback(vm.suppliersList);
+                        }
+                    }, function () {
+                        //$scope.status = 'You cancelled the dialog.';
+                    });
+            } else {
+                showNewSupplierDialog().then(function (result) {
+                    if (result) {
+                        vm.suppliersList.push(result);
+                        server.addSupplier(result).then(function (result) {
+                            $mdToast.show(
+                                $mdToast.simple()
+                                .textContent("הפעולה בוצעה בהצלחה!")
+                                .hideDelay(3000)
+                            );
+                        });
+                    }
                 });
+            }
         };
+
+        function showNewSupplierDialog() {
+            return $mdDialog.show({
+                clickOutsideToClose: true,
+                preserveScope: true,
+                template: '<md-dialog dir="rtl" layout-padding>' +
+                    ' <form name="newSupplier">' +
+                    '  <md-dialog-content layout-margin>' +
+                    '     <h2 class="md-title">נא להזין שם ומספר ספק</h2>' +
+                    '     <br/>' +
+                    '     <md-input-container class="md-block" flex>' +
+                    '         <label>שם הספק</label>' +
+                    '         <input ng-model="name" md-no-asterisk name="name" required >' +
+                    '         <div ng-messages="newSupplier.name.$error">' +
+                    '             <div ng-message="required">חובה להזין שם ספק</div>' +
+                    '         </div>' +
+                    '     </md-input-container>' +
+                    '     <md-input-container class="md-block" flex>' +
+                    '         <label>מזהה ספק</label>' +
+                    '         <input ng-model="supplierId" md-no-asterisk name="id" type="number" required >' +
+                    '         <div ng-messages="newSupplier.supplierId.$error">' +
+                    '             <div ng-message="required">חובה להזין מזהה ספק</div>' +
+                    '         </div>' +
+                    '     </md-input-container>' +
+                    '  </md-dialog-content>' +
+                    '  <md-dialog-actions>' +
+                    '     <md-button aria-label="ok" type="submit" ng-click="ok()" class="md-primary">הוסף</md-button>' +
+                    '     <md-button aria-label="cancel" ng-click="cancel()" class="md-primary">בטל</md-button>' +
+                    '  </md-dialog-actions>' +
+                    ' </form>' +
+                    '</md-dialog>',
+                controller: function DialogController($scope, $mdDialog) {
+                    $scope.cancel = function () {
+                        $mdDialog.hide();
+                    }
+                    $scope.ok = function () {
+                        if ($scope.newSupplier.$valid) {
+                            $mdDialog.hide({
+                                name: $scope.name,
+                                supplierId: $scope.supplierId
+                            });
+                        }
+
+                    }
+                }
+            });
+        }
+
     }
 
     function selectSuppliersController($scope, $mdDialog, dataContext) {
@@ -134,6 +217,8 @@
         };
     }
 
-
+    angular
+        .module('app')
+        .controller('selectSuppliersController', selectSuppliersController);
 
 })();

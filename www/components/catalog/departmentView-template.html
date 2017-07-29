@@ -6,9 +6,9 @@
 
 </div>
 
-<md-card>
+<!-- <md-card>
   <md-card-actions layout="row" layout-align="end center">
-      <h2 style="margin-right: 20px;">מחירות</h2>
+      <h2 style="margin-right: 20px;">מכירות</h2>
   </md-card-actions>
   <md-card-content>
     <nvd3 options="vm.options" data="vm.data" config="vm.config"></nvd3>
@@ -18,7 +18,7 @@
 <div layout="row">
 <md-card layout="column" flex>
   <md-card-actions layout="row" layout-align="end center">
-      <h2 style="margin-right: 20px;">מחירות לפי רשתות</h2>
+      <h2 style="margin-right: 20px;">מכירות לפי רשתות</h2>
   </md-card-actions>
   <md-card-content>
     <nvd3 options="vm.networksOptions" data="vm.networksData" config="vm.config"></nvd3>
@@ -33,7 +33,7 @@
     <nvd3 options="vm.itemsOptions" data="vm.itemsData" config="vm.config"></nvd3>
   </md-card-content>
 </md-card>
-</div>
+</div> -->
 
 
-<suppliers suppliers-list="vm.department.suppliers" show-priority="true"></suppliers>
+<suppliers suppliers-list="vm.department.suppliers" show-priority="true" edit-supliers-callback="vm.editSupliersCallback"></suppliers>

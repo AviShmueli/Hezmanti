@@ -153,6 +153,43 @@ app.get('/api/getSuppliers', function (req, res) {
     });
 });
 
+app.post('/api/addSupplier', function (req, res) {
+    BL.addSupplier(req.body.supplier).then(function (result) {
+        res.send(result);
+    }, function (error) {
+        logger.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
+});
+
+app.post('/api/updateSupplier', function (req, res) {
+    BL.updateSupplier(req.body.supplier).then(function (result) {
+        res.send(result);
+    }, function (error) {
+        logger.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
+});
+
+app.post('/api/editDepartment', function (req, res) {
+    BL.editDepartment(req.body.department).then(function (result) {
+        res.send(result);
+    }, function (error) {
+        logger.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
+});
+
+app.get('/api/getDepartments', function (req, res) {
+    BL.getDepartments().then(function (result) {
+        res.send(result);
+    }, function (error) {
+        logger.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
+});
+
+
 //var newBranches = 
 
 //DAL.insertToCatalog(newBranches);
