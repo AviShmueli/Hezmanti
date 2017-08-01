@@ -15,19 +15,9 @@
 
                 <md-select-multi select-lable="'רשת'" select-model="vm.ordersFilter.networkId" select-values="vm.networks"></md-select-multi>
 
-                <md-input-container class="md-block" flex>
-                    <label>סניף</label>
-                    <md-select md-no-asterisk ng-model="vm.ordersFilter.branchId" name="user" multiple>
-                        <md-option ng-if="vm.ordersFilter.networkId === undefined || vm.ordersFilter.networkId === ''" ng-repeat="(key, value) in vm.branches"
-                            value="{{value.id}}" dir="rtl">
-                            {{value.name}}
-                        </md-option>
-                        <md-option ng-if="vm.ordersFilter.networkId !== undefined && vm.ordersFilter.networkId !== ''" ng-repeat="(key, value) in vm.getNetworksBranches()"
-                            value="{{value.id}}" dir="rtl">
-                            {{value.name}}
-                        </md-option>
-                    </md-select>
-                </md-input-container>
+                <md-select-multi select-lable="'סניף'" ng-if="vm.ordersFilter.networkId === undefined || vm.ordersFilter.networkId.length < 1" select-model="vm.ordersFilter.branchId" select-values="vm.branches"></md-select-multi>
+
+                <md-select-multi select-lable="'סניף'" ng-if="vm.ordersFilter.networkId !== undefined && vm.ordersFilter.networkId.length > 0" select-model="vm.ordersFilter.branchId" select-values="vm.branchesToFilter"></md-select-multi>
 
                 <md-input-container>
                     <label>תאריך הזמנה</label>
@@ -42,14 +32,8 @@
             </div>
 
             <div layout-gt-xs="row" layout="column">
-                <md-input-container class="md-block" flex>
-                    <label>מחלקה</label>
-                    <md-select md-no-asterisk ng-model="vm.ordersFilter.departmentId" name="user" multiple>
-                        <md-option ng-repeat="d in vm.departments" value="{{d.id}}" dir="rtl">
-                            {{d.name}}
-                        </md-option>
-                    </md-select>
-                </md-input-container>
+                
+                <md-select-multi select-lable="'מחלקה'" select-model="vm.ordersFilter.departmentId" select-values="vm.departments"></md-select-multi>
 
                 <md-input-container class="md-block" flex>
                     <label>פריט בהזמנה</label>

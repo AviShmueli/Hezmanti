@@ -18,25 +18,24 @@
 
 
         var vm = this;
-        vm.all = false
 
         if (!vm.selectModel) {
             vm.selectModel = [];
         }
 
-        vm.allCheck = function () {
-            if (!vm.all) {
-                vm.all = true;
-                vm.selectValues.forEach(function (element) {
-                    if (!vm.selectModel) {
-                        vm.selectModel = [];
-                    }
-                    vm.selectModel.push(element.id);
-                }, this);
-            } else {
-                vm.all = false;
-                vm.selectModel = [];
-            }
+        vm.selectAll = function () {
+
+            vm.selectValues.forEach(function (element) {
+                if (!vm.selectModel) {
+                    vm.selectModel = [];
+                }
+                vm.selectModel.push(element.id);
+            }, this);
+
+        }
+
+        vm.clearAll = function () {
+            vm.selectModel = [];
         }
 
     }

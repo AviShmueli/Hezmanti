@@ -127,21 +127,22 @@
             filter = {};
         };
 
-        vm.getNetworksBranches = function () {
-            if (!vm.ordersFilter.networkId) {
+        $scope.$watch('vm.ordersFilter.networkId', function (orders) {
+
+            if (!vm.ordersFilter.networkId || vm.ordersFilter.networkId.length < 1) {
                 return;
             }
             var listToReturn = [];
             if (vm.ordersFilter.networkId && typeof (vm.ordersFilter.networkId) === 'string') {
-                return vm.networksBranchesMap[vm.ordersFilter.networkId];
+                vm.branchesToFilter = vm.networksBranchesMap[vm.ordersFilter.networkId];
             } else {
                 for (var index = 0; index < vm.ordersFilter.networkId.length; index++) {
                     var element = vm.ordersFilter.networkId[index];
                     listToReturn = listToReturn.concat(vm.networksBranchesMap[element]);
                 }
-                return listToReturn;
+                vm.branchesToFilter = listToReturn;
             }
-        }
+        });
 
         vm.clean = function () {
             vm.ordersFilter = {};
@@ -183,19 +184,6 @@
             }
         }
 
-
-        $scope.$watch(
-            "vm.networkFilterAll",
-            function handleFooChange(newValue, oldValue) {
-                if (newValue) {
-                    vm.networks.forEach(function (element) {
-                        vm.ordersFilter.networkId.push(element);
-                    }, this);
-                } else {
-                    vm.ordersFilter.networkId = [];
-                }
-            }
-        );
         /* --- arnge data --- */
 
         var setItemsList = function (catalog) {
@@ -213,6 +201,7 @@
 
         vm.branches = dataContext.getBranches();
         vm.networks = dataContext.getNetworks();
+        vm.branchesToFilter = vm.branches;
         vm.departments = dataContext.getDepartments();
         vm.networksBranchesMap = dataContext.getNetworksBranchesMap();
         //vm.items = setItemsList(dataContext.getCatalog());

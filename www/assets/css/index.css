@@ -253,4 +253,9 @@ md-dialog.md-dialog-fullscreen {
 
 md-virtual-repeat-container{
     direction: rtl;
+}   
+
+.href{
+    cursor: pointer;
+    color: blue;
 }
