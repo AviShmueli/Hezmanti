@@ -14,7 +14,7 @@
             templateUrl: 'components/widgets/mdSelectMulti-template.html'
         });
 
-    function SelectMultiController($scope) {
+    function SelectMultiController($scope, $element) {
 
 
         var vm = this;
@@ -29,10 +29,14 @@
                 if (!vm.selectModel) {
                     vm.selectModel = [];
                 }
-                vm.selectModel.push(element.id);
+                vm.selectModel.push(element.id || element.name);
             }, this);
 
         }
+
+        $element.find('input').on('keydown', function (ev) {
+            ev.stopPropagation();
+        });
 
         vm.clearAll = function () {
             vm.selectModel = [];

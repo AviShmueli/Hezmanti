@@ -259,4 +259,17 @@ md-virtual-repeat-container{
 .href{
     cursor: pointer;
     color: blue;
+    font-size: small;
+    text-decoration: underline;
+}
+.multi-select-container{
+    max-width: 25%;
+}
+
+.tb-even{
+        background-color: #f9f6f1;
+}
+
+tr.distribution-table:hover {
+    background-color: blanchedalmond;
 }

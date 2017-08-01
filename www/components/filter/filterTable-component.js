@@ -19,7 +19,9 @@
     function filterTableController($scope, server, $q, filesHandler, $filter, $timeout, dataContext, $mdConstant) {
 
         var vm = this;
-
+        vm.ordersFilter = {};
+        var filter = {};
+        
         vm.expand_icon = vm.showTasksFilter ? 'expand_less' : 'expand_more';
         vm.toggleFilterSection = function () {
             if (vm.showTasksFilter === true) {
@@ -33,12 +35,11 @@
 
         if (vm.initialValues) {
             for (var property in vm.initialValues) {
-                vm[property] = vm.initialValues[property];
+                vm.ordersFilter[property] = vm.initialValues[property];
             }
         }
 
-        vm.ordersFilter = {};
-        var filter = {};
+        
 
         vm.filter = function () {
 
@@ -49,7 +50,7 @@
 
             for (var property in vm.ordersFilter) {
                 if (vm.ordersFilter.hasOwnProperty(property)) {
-                    if (vm.ordersFilter[property] === '' || vm.ordersFilter[property] === null || vm.ordersFilter[property].length < 1) {
+                    if (vm.ordersFilter[property] === undefined || vm.ordersFilter[property] === '' || vm.ordersFilter[property] === null || vm.ordersFilter[property].length < 1) {
                         delete vm.ordersFilter[property];
                     } else {
                         if (property !== 'networkId' || (property === 'networkId' && includeNetwork)) {
@@ -93,14 +94,14 @@
             }
 
             // handel the free text input
-            if (vm.ordersFilter.freeText !== undefined && vm.ordersFilter.freeText !== '') {
+            /*if (vm.ordersFilter.items !== undefined && vm.ordersFilter.items !== '') {
                 filter['items.itemName'] = {
-                    "$regex": vm.ordersFilter.freeText,
+                    "$regex": vm.ordersFilter.items,
                     "$options": "i"
                 };
             } else {
                 delete vm.ordersFilter['items'];
-            }
+            }*/
 
             // handel the date input
             if (vm.ordersFilter.createdDate !== undefined && vm.ordersFilter.createdDate !== null && vm.ordersFilter.createdDate !== '') {
@@ -130,12 +131,10 @@
         $scope.$watch('vm.ordersFilter.networkId', function (orders) {
 
             if (!vm.ordersFilter.networkId || vm.ordersFilter.networkId.length < 1) {
-                return;
+                vm.branchesToFilter = vm.branches;
             }
-            var listToReturn = [];
-            if (vm.ordersFilter.networkId && typeof (vm.ordersFilter.networkId) === 'string') {
-                vm.branchesToFilter = vm.networksBranchesMap[vm.ordersFilter.networkId];
-            } else {
+            else{
+                var listToReturn = [];
                 for (var index = 0; index < vm.ordersFilter.networkId.length; index++) {
                     var element = vm.ordersFilter.networkId[index];
                     listToReturn = listToReturn.concat(vm.networksBranchesMap[element]);
@@ -144,44 +143,23 @@
             }
         });
 
+        $scope.$watch('vm.ordersFilter.departmentId', function (orders) {
+
+            if (!vm.ordersFilter.departmentId || vm.ordersFilter.departmentId.length < 1) {
+                vm.itemsToFilter = vm.items;
+            }
+            else{
+                var listToReturn = [];
+                for (var index = 0; index < vm.ordersFilter.departmentId.length; index++) {
+                    var element = vm.ordersFilter.departmentId[index];
+                    listToReturn = listToReturn.concat(vm.catalog[element]);
+                }
+                vm.itemsToFilter = listToReturn;
+            }
+        });
+
         vm.clean = function () {
             vm.ordersFilter = {};
-        }
-
-        /* --- Items --- */
-
-        vm.readonly = false;
-        vm.selectedItems = [];
-        vm.selectedItem = {};
-        vm.searchText = null;
-        vm.querySearch = querySearch;
-        vm.customKeys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA];
-        vm.transformChip = transformChip;
-
-        function querySearch(query) {
-            var results = query ? vm.items.filter(createFilterFor(query)) : [];
-            return results;
-        }
-
-        function createFilterFor(query) {
-            var lowercaseQuery = angular.lowercase(query);
-
-            return function filterFn(item) {
-                return (item.name.indexOf(lowercaseQuery) === 0);
-            };
-        }
-
-        function transformChip(chip) {
-            // If it is an object, it's already a known chip
-            if (angular.isObject(chip)) {
-                return chip;
-            }
-
-            // Otherwise, create a new one
-            return {
-                name: chip.name,
-                type: 'new'
-            }
         }
 
         /* --- arnge data --- */
@@ -204,7 +182,9 @@
         vm.branchesToFilter = vm.branches;
         vm.departments = dataContext.getDepartments();
         vm.networksBranchesMap = dataContext.getNetworksBranchesMap();
-        //vm.items = setItemsList(dataContext.getCatalog());
+        vm.catalog = dataContext.getCatalog();
+        vm.items = setItemsList(vm.catalog);
+        vm.itemsToFilter = vm.items;
 
         if (!vm.branches || !vm.networks || !vm.networksBranchesMap) {
             server.getAllBranches().then(function (response) {

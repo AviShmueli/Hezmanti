@@ -13,13 +13,13 @@
         <div layout-gt-xs="column" flex="90" layout="column">
             <div layout-gt-xs="row" layout="column">
 
-                <md-select-multi select-lable="'רשת'" select-model="vm.ordersFilter.networkId" select-values="vm.networks"></md-select-multi>
+                <md-select-multi flex class="multi-select-container" select-lable="'רשת'" select-model="vm.ordersFilter.networkId" select-values="vm.networks"></md-select-multi>
 
-                <md-select-multi select-lable="'סניף'" ng-if="vm.ordersFilter.networkId === undefined || vm.ordersFilter.networkId.length < 1" select-model="vm.ordersFilter.branchId" select-values="vm.branches"></md-select-multi>
+                <!-- <md-select-multi flex class="multi-select-container" select-lable="'סניף'" ng-if="vm.ordersFilter.networkId === undefined || vm.ordersFilter.networkId.length < 1" select-model="vm.ordersFilter.branchId" select-values="vm.branches"></md-select-multi> -->
 
-                <md-select-multi select-lable="'סניף'" ng-if="vm.ordersFilter.networkId !== undefined && vm.ordersFilter.networkId.length > 0" select-model="vm.ordersFilter.branchId" select-values="vm.branchesToFilter"></md-select-multi>
+                <md-select-multi flex class="multi-select-container" select-lable="'סניף'"  select-model="vm.ordersFilter.branchId" select-values="vm.branchesToFilter"></md-select-multi>
 
-                <md-input-container>
+                <md-input-container >
                     <label>תאריך הזמנה</label>
                     <md-datepicker md-open-on-focus ng-model="vm.ordersFilter.createdDate" md-hide-icons="calendar"></md-datepicker>
                 </md-input-container>
@@ -33,40 +33,20 @@
 
             <div layout-gt-xs="row" layout="column">
                 
-                <md-select-multi select-lable="'מחלקה'" select-model="vm.ordersFilter.departmentId" select-values="vm.departments"></md-select-multi>
+                <md-select-multi class="multi-select-container" flex="30" select-lable="'מחלקה'" select-model="vm.ordersFilter.departmentId" select-values="vm.departments"></md-select-multi>
 
-                <md-input-container class="md-block" flex>
-                    <label>פריט בהזמנה</label>
-                    <!--<md-chips ng-model="vm.selectedItems" 
-                              md-autocomplete-snap 
-                              md-transform-chip="vm.transformChip($chip)"
-                              md-require-match="false"
-                              md-separator-keys="vm.customKeys">
-                        <md-autocomplete md-selected-item="vm.selectedItem" 
-                                         md-search-text="vm.searchText" 
-                                         md-items="item in vm.querySearch(vm.searchText)"
-                                         md-item-text="item.name" 
-                                         placeholder="חפש פריט">
-                            <span dir="rtl" md-highlight-text="vm.searchText">{{item.name}}</span>
-                        </md-autocomplete>
-                        <md-chip-template>
-                            <span dir="rtl">
-                                <strong>{{$chip.name}}</strong>
-                            </span>
-                        </md-chip-template>
-                    </md-chips>-->
-                    <input ng-model="vm.ordersFilter.freeText" name="name">
-                </md-input-container>
-            </div>
-            <div layout-gt-xs="row" layout="column">
-                <md-input-container class="md-block" flex>
-                    <md-switch class="md-primary" name="special" ng-model="vm.ordersFilter.unhandledItems" required>
+                <md-select-multi style="max-width: 25%;" flex="30" select-lable="'פריטים'" select-model="vm.ordersFilter.items" select-values="vm.itemsToFilter"></md-select-multi>
+
+            <!-- </div>
+            <div layout-gt-xs="row" layout="column"> -->
+                <md-input-container class="md-block" flex="20">
+                    <md-switch style="margin: 3px;" class="md-primary" name="special" ng-model="vm.ordersFilter.unhandledItems" required>
                         פריטים שלא טופלו
                     </md-switch>
                 </md-input-container>
 
-                <md-input-container class="md-block" flex>
-                    <md-switch class="md-primary" name="special" ng-model="vm.ordersFilter.showSecondOrders" required>
+                <md-input-container class="md-block" flex="20">
+                    <md-switch style="margin: 3px;" class="md-primary" name="special" ng-model="vm.ordersFilter.showSecondOrders" required>
                         אספקה שניה
                     </md-switch>
                 </md-input-container>

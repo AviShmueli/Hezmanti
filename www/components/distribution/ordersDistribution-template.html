@@ -36,16 +36,16 @@
                                 <th md-column md-order-by="item.itemName">שם פריט</th>
                                 <th md-column md-order-by="item.count">כמות מוזמנת</th>
                                 <th md-column md-order-by="sum">ביקורת</th>
-                                <th md-column ng-repeat="supplier in vm.suppliers" ng-show="supplier.show">
+                                <th md-column ng-repeat="supplier in vm.suppliers | orderBy: 'priority'">
                                     
-                                    <a class="cursor-pointer" aria-label="add" ng-click="supplier.show = false;"> 
+                                    <a class="cursor-pointer" aria-label="add" ng-click="vm.removeSupplierFromView(supplier)"> 
                                         <ng-md-icon icon="remove_circle_outline" size="15"></ng-md-icon>
                                     </a>
                                     {{supplier.name}}
                                     <md-input-container style="margin: 0">
                                         <input aria-label="input" style="width: 35px;" type="number" name="name{{$index}}" 
-                                               ng-model="o.suppliers[supplier.id.toString()].percent" min="0" max="100"
-                                               ng-change="vm.updateAllItems(o.suppliers[supplier.id.toString()].percent, supplier.id)">
+                                               ng-model="o.suppliers[supplier.supplierId.toString()].percent" min="0" max="100"
+                                               ng-change="vm.updateAllItems(o.suppliers[supplier.supplierId.toString()].percent, supplier.supplierId)">
                                     </md-input-container> 
                                 </th>
                                 <th md-column>
@@ -61,26 +61,26 @@
                                 <th md-column></th>
                                 <th md-column>{{vm.tableSummary.count}}</th>
                                 <th md-column>{{vm.tableSummary.sum}}</th>
-                                <th md-column ng-repeat="supplier in vm.suppliers" ng-show="supplier.show">
-                                    {{vm.tableSummary[supplier.id]}}                                   
+                                <th md-column ng-repeat="supplier in vm.suppliers | orderBy: 'priority'">
+                                    {{vm.tableSummary[supplier.supplierId]}}                                   
                                 </th>
                                 <th md-column></th>
                             </tr>
                         </thead>
                         <tbody md-body>
-                            <tr class="distribution-table" md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="o in vm.ordersItems | orderBy: vm.query.order">
-                                <td md-cell >{{::$index}}</td>
+                            <tr ng-class="{'tb-even': $even}" class="distribution-table" md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="o in vm.ordersItems | orderBy: vm.query.order  track by o.id">
+                                <td md-cell >{{::$index+1}}</td>
                                 <td md-cell >{{::o.order.branchName}}</td>
                                 <td md-cell >{{::o.order.orderId}}</td>
                                 <!--<td md-cell >{{::o.item.itemSerialNumber}}</td>-->
                                 <td md-cell >{{::o.item.itemName}}</td>
                                 <td md-cell >{{::o.item.count}}</td>
                                 <td md-cell ng-class="{'text-green' : o.sum === o.item.count, 'text-red': (vm.checkAllTableSum && o.sum !== o.item.count) || o.sum > o.item.count}">{{o.sum}}</td>
-                                <td md-cell ng-repeat="supplier in vm.suppliers" ng-show="supplier.show"> 
+                                <td md-cell ng-repeat="supplier in vm.suppliers | orderBy: 'priority'"> 
                                     <md-input-container style="margin: 0">
                                         <!--max="{{o.item.count - o.sum + o.suppliers[supplier.id.toString()]}}"-->
                                         <input aria-label="input" style="width: 40px;" type="number" name="name{{$index}}" 
-                                               ng-model="o.suppliers[supplier.id.toString()]" min="0"
+                                               ng-model="o.suppliers[supplier.supplierId.toString()]" min="0"
                                                ng-change="vm.updateSum(o)">
                                     </md-input-container> 
                                 </td>

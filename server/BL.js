@@ -19,6 +19,7 @@
     BL.updateSupplier = updateSupplier;
     BL.editDepartment = editDepartment;
     BL.getDepartments = getDepartments;
+    BL.markItemsAsDistrebuted = markItemsAsDistrebuted;
 
     var Moment = require('moment-timezone');
     var deferred = require('deferred');
@@ -312,6 +313,21 @@
         }, function (error) {
             d.deferred(error);
         });
+
+        return d.promise;
+    }
+
+    function markItemsAsDistrebuted(items) {
+
+        var d = deferred();
+        
+        // TODO: compleate this function !!!!
+
+        //DAL.getDepartments(items).then(function (result) {
+            d.resolve(result);
+        //}, function (error) {
+        //    d.deferred(error);
+        //});
 
         return d.promise;
     }

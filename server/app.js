@@ -189,6 +189,15 @@ app.get('/api/getDepartments', function (req, res) {
     });
 });
 
+app.post('/api/markItemsAsDistrebuted', function (req, res) {
+    BL.markItemsAsDistrebuted(req.body.items).then(function (result) {
+        res.send(result);
+    }, function (error) {
+        logger.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
+});
+
 
 //var newBranches = 
 

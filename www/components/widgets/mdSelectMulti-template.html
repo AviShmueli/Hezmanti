@@ -1,20 +1,20 @@
-<md-input-container class="md-block" flex>
+<md-input-container class="md-block" flex >
     <label>{{vm.selectLable}}</label>
     <md-select md-no-asterisk aria-label="select" ng-model="vm.selectModel" name="user" multiple>
         <md-select-header>
-            <md-input-container style="margin: 10px 5px -18px 10px;">
-                <input ng-model="vm.searchTerm" type="search" placeholder="Search for a vegetable.." class="demo-header-searchbox md-text">
+            <md-input-container style="margin: 10px 5px -18px 10px; width: 90%;" dir="rtl">
+                <input ng-model="vm.searchTerm" type="text" placeholder="חפש..." class="demo-header-searchbox md-text">
             </md-input-container>
             <br/>
             <div layout="row">
                 <span flex="30"></span>
-                <a style="z-index: 100000;" class="href" dir="rtl" ng-click="vm.clearAll()">clear</a>
+                <a style="z-index: 100000;" class="href" dir="rtl" ng-click="vm.clearAll()">נקה</a>
+                <span style="margin-left: 5px;" flex="5">-</span>
+                <a style="z-index: 100000;" class="href" dir="rtl" ng-click="vm.selectAll()">בחר הכל</a>
                 <span flex="20"></span>
-                <a style="z-index: 100000;" class="href" dir="rtl" ng-click="vm.selectAll()">all</a>
-                <span flex="30"></span>
             </div>
         </md-select-header>
-        <md-option ng-repeat="(key, value) in vm.selectValues | filter: vm.searchTerm" value="{{value.id}}" dir="rtl">
+        <md-option ng-repeat="(key, value) in vm.selectValues | filter: vm.searchTerm" value="{{value.id || value.name}}" dir="rtl">
             {{value.name}}
         </md-option>
     </md-select>

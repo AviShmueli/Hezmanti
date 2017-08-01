@@ -16,10 +16,10 @@
         $mdToast, $mdDialog, $window, distributionContext, lodash) {
 
         var vm = this;
-        vm.tableHeight = $window.innerHeight - 200;
+        vm.tableHeight = $window.innerHeight - 360;
         vm.checkAllTableSum = false;
         vm.downloading = false;
-
+        vm.distributedItemsList = [];
 
         var orderFields = {
             createdDate: 'ת. הזמנה',
@@ -66,10 +66,14 @@
 
                         for (var j = 0; j < order.items.length; j++) {
                             var item = order.items[j];
+                            if ((item.itemSerialNumber === 1001 || item.serialNumber === 1001) && order._id === '5971a92fb3b867001169e4a2') {
+                                var a = 1;
+                            }
                             newOrdersItems.push({
                                 order: orderWithOutItems,
                                 item: item,
-                                sum: 0
+                                sum: 0,
+                                id: order._id + (item.serialNumber || item.itemSerialNumber) + Math.floor(Math.random() * 100)
                             });
                         }
                     }
@@ -98,18 +102,6 @@
         }
 
         vm.refreshDataFromServer = function (ev) {
-
-            // var confirm = $mdDialog.confirm()
-            //     .title('לרענן נתונים מהשרת?')
-            //     .textContent('כל הנתונים על הדף ימחקו')
-            //     .ariaLabel('Lucky day')
-            //     .parent(angular.element(document.querySelector('#dialogsWraper')))
-            //     .targetEvent(ev)
-            //     .ok('רענן')
-            //     .cancel('ביטול');
-            // $mdDialog.show(confirm).then(function () {
-            //     initiateDistributionData();
-            // }, function () {});
             initiateDistributionData();
         }
 
@@ -163,11 +155,17 @@
                             .textContent('קיימים פריטים לא תקינים, נא לבדוק תקינות החלוקה')
                             .hideDelay(3000)
                         );
+                    } else {
+                        downloadExcel();
                     }
                 }, 0);
                 return;
             }
 
+            downloadExcel();
+        }
+
+        var downloadExcel = function () {
             vm.downloading = true;
             var query = {
                 order: vm.query.order
@@ -194,6 +192,7 @@
             });
 
             vm.downloading = false;
+            vm.checkAllTableSum = false;
         }
 
         vm.mapAllItemsBySuppliers = function () {
@@ -216,9 +215,29 @@
                             });
                         }
                     }
+                    vm.distributedItemsList.push(item);
+                    removeItemFromAllItemsList(item);
+                    lodash.remove(vm.ordersItems, function (n) {
+                        return n.id === item.id;
+                    });
                 }
             }
+            markItemsAsDistrebuted();
+
             return suppliersItemsMap;
+        }
+
+        var removeItemFromAllItemsList = function (item) {
+            lodash.remove(allOrderItems, function (n) {
+                return n.id === item.id;
+            });
+            vm.allOrderItemsCount = allOrderItems.length;
+        }
+
+        var markItemsAsDistrebuted = function () {
+            server.markItemsAsDistrebuted(vm.distributedItemsList).then(function (result) {
+                vm.distributedItemsList = [];
+            });
         }
 
         var getDeliveryDate = function (orderDate) {
@@ -237,7 +256,7 @@
             item.sum = 0;
             for (var index = 0; index < vm.suppliers.length; index++) {
                 var element = vm.suppliers[index];
-                item.sum += (item.suppliers[element.id.toString()] || 0);
+                item.sum += (item.suppliers[element.supplierId.toString()] || 0);
             }
         }
 
@@ -245,9 +264,11 @@
 
         /* ---- Filters----- */
 
-        //vm.initialFilter = {
-        //   createdDate: new Date(new Date().setDate(12))
-        //};
+
+        // initial with defult department
+        vm.initialFilter = {
+            departmentId: [1]
+        };
 
         vm.departments = null;
         vm.filter = {};
@@ -265,7 +286,12 @@
                 vm.filter = filter;
             }
 
+            if (originalFilter.hasOwnProperty("departmentId")) {
+                vm.selectedDepartments = originalFilter.departmentId;
+            }
+
             var localFilter = {};
+
 
             /*if (filter.hasOwnProperty("items.itemName")) {
                 localFilter["item"] = {$ : filter["items.itemName"].$regex};
@@ -308,7 +334,31 @@
 
 
         /* ---- Suplier ----- */
-        vm.suppliers = [{
+        vm.selectedDepartments = vm.initialFilter.departmentId;
+        vm.suppliers = []
+        vm.departments = dataContext.getDepartments();
+        $scope.$watch('vm.selectedDepartments', function (selectedDepartments) {
+
+            vm.suppliers = [];
+            selectedDepartments.forEach(function (element) {
+                var department = _.find(vm.departments, function (o) {
+                    return o.id === parseInt(element);
+                });
+                if (department) {
+                    vm.suppliers = vm.suppliers.concat(department.suppliers);
+                    vm.suppliers = lodash.uniqBy(vm.suppliers, 'supplierId');
+                }
+            }, this);
+
+        });
+
+        vm.removeSupplierFromView = function(supplier){
+            lodash.remove(vm.suppliers, function (n) {
+                return n.supplierId === supplier.supplierId;
+            });
+        }
+
+        /*[{
                 name: 'מילועוף',
                 id: 30000,
                 show: true
@@ -323,7 +373,7 @@
                 id: 30050,
                 show: true
             },
-        ];
+        ];*/
 
         vm.addSupplier = function (ev) {
             $mdDialog.show({
@@ -335,7 +385,7 @@
                     clickOutsideToClose: true
                 })
                 .then(function (newSuppliers) {
-                    newSuppliers.forEach(function(element) {
+                    newSuppliers.forEach(function (element) {
                         element["show"] = true;
                     }, this);
                     vm.suppliers = vm.suppliers.concat(newSuppliers);

@@ -214,6 +214,18 @@
             return $http(req);
         }
 
+        var markItemsAsDistrebuted = function (items) {
+            var req = {
+                method: 'POST',
+                url: '/api/markItemsAsDistrebuted',
+                data: {
+                    items: items
+                }
+            };
+
+            return $http(req);
+        }
+
         var service = {
             addOrder: addOrder,
             getCatalog: getCatalog,
@@ -232,7 +244,8 @@
             addSupplier: addSupplier,
             updateSupplier: updateSupplier,
             editDepartment: editDepartment,
-            getDepartments: getDepartments
+            getDepartments: getDepartments,
+            markItemsAsDistrebuted: markItemsAsDistrebuted
         };
 
         return service;

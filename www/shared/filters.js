@@ -71,13 +71,11 @@
                         filtered = [];
                     }
 
-                    if (property === 'freeText') {
-                        // remove this when handeling multi order Ids filtering
-                        filter.freeText = [filter.freeText];
+                    if (property === 'items') {                       
 
                         filter[property].forEach(function (element) {
                             angular.forEach(itemsToWorkOn, function (order) {
-                                if (order.item.itemName && order.item.itemName.indexOf(element) !== -1) {
+                                if (order.item.itemName && order.item.itemName === element) {
                                     filtered.push(order);
                                 }
                             });                           
