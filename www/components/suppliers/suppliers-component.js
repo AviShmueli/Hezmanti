@@ -101,32 +101,7 @@
             return $mdDialog.show({
                 clickOutsideToClose: true,
                 preserveScope: true,
-                template: '<md-dialog dir="rtl" layout-padding>' +
-                    ' <form name="newSupplier">' +
-                    '  <md-dialog-content layout-margin>' +
-                    '     <h2 class="md-title">נא להזין שם ומספר ספק</h2>' +
-                    '     <br/>' +
-                    '     <md-input-container class="md-block" flex>' +
-                    '         <label>שם הספק</label>' +
-                    '         <input ng-model="name" md-no-asterisk name="name" required >' +
-                    '         <div ng-messages="newSupplier.name.$error">' +
-                    '             <div ng-message="required">חובה להזין שם ספק</div>' +
-                    '         </div>' +
-                    '     </md-input-container>' +
-                    '     <md-input-container class="md-block" flex>' +
-                    '         <label>מזהה ספק</label>' +
-                    '         <input ng-model="supplierId" md-no-asterisk name="id" type="number" required >' +
-                    '         <div ng-messages="newSupplier.supplierId.$error">' +
-                    '             <div ng-message="required">חובה להזין מזהה ספק</div>' +
-                    '         </div>' +
-                    '     </md-input-container>' +
-                    '  </md-dialog-content>' +
-                    '  <md-dialog-actions>' +
-                    '     <md-button aria-label="ok" type="submit" ng-click="ok()" class="md-primary">הוסף</md-button>' +
-                    '     <md-button aria-label="cancel" ng-click="cancel()" class="md-primary">בטל</md-button>' +
-                    '  </md-dialog-actions>' +
-                    ' </form>' +
-                    '</md-dialog>',
+                templateUrl: './components/suppliers/newSuppliersDialog-template.html', 
                 controller: function DialogController($scope, $mdDialog) {
                     $scope.cancel = function () {
                         $mdDialog.hide();

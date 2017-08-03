@@ -471,7 +471,8 @@
 
             mongo.collection.find(filter, {
                 branchId: 1,
-                createdDate: 1
+                createdDate: 1,
+                items: 1
             }).toArray(function (err, result) {
                 if (err) {
                     var errorObj = {

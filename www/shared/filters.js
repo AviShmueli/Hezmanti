@@ -106,5 +106,10 @@
                 return filtered;
             };
         })
+        .filter('unique', function(lodash) {
+            return function (arr, field) {
+                return lodash.uniq(arr, function(a) { return a[field]; });
+            };
+});
 
 })();

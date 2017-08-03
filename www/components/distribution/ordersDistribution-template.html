@@ -36,7 +36,7 @@
                                 <th md-column md-order-by="item.itemName">שם פריט</th>
                                 <th md-column md-order-by="item.count">כמות מוזמנת</th>
                                 <th md-column md-order-by="sum">ביקורת</th>
-                                <th md-column ng-repeat="supplier in vm.suppliers | orderBy: 'priority'">
+                                <th md-column ng-repeat="supplier in vm.suppliers | orderBy: 'priority'" ng-if="supplier.show">
                                     
                                     <a class="cursor-pointer" aria-label="add" ng-click="vm.removeSupplierFromView(supplier)"> 
                                         <ng-md-icon icon="remove_circle_outline" size="15"></ng-md-icon>
@@ -61,7 +61,7 @@
                                 <th md-column></th>
                                 <th md-column>{{vm.tableSummary.count}}</th>
                                 <th md-column>{{vm.tableSummary.sum}}</th>
-                                <th md-column ng-repeat="supplier in vm.suppliers | orderBy: 'priority'">
+                                <th md-column ng-repeat="supplier in vm.suppliers | orderBy: 'priority'" ng-if="supplier.show">
                                     {{vm.tableSummary[supplier.supplierId]}}                                   
                                 </th>
                                 <th md-column></th>
@@ -76,7 +76,7 @@
                                 <td md-cell >{{::o.item.itemName}}</td>
                                 <td md-cell >{{::o.item.count}}</td>
                                 <td md-cell ng-class="{'text-green' : o.sum === o.item.count, 'text-red': (vm.checkAllTableSum && o.sum !== o.item.count) || o.sum > o.item.count}">{{o.sum}}</td>
-                                <td md-cell ng-repeat="supplier in vm.suppliers | orderBy: 'priority'"> 
+                                <td md-cell ng-repeat="supplier in vm.suppliers | orderBy: 'priority'" ng-if="supplier.show"> 
                                     <md-input-container style="margin: 0">
                                         <!--max="{{o.item.count - o.sum + o.suppliers[supplier.id.toString()]}}"-->
                                         <input aria-label="input" style="width: 40px;" type="number" name="name{{$index}}" 

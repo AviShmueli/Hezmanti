@@ -273,3 +273,8 @@ md-virtual-repeat-container{
 tr.distribution-table:hover {
     background-color: blanchedalmond;
 }
+
+.dashboard-card-img {
+    width: 25px;
+    margin: 7px;
+}

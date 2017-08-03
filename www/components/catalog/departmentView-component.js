@@ -47,7 +47,8 @@
                 suppliersList.push({
                     name: supplier.name,
                     priority: supplier.priority,
-                    supplierId: supplier.supplierId
+                    supplierId: supplier.supplierId,
+                    show: supplier.show
                 });
             }, this);
             vm.department.suppliers = suppliersList;

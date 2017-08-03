@@ -42,6 +42,7 @@
                             <tr md-row>
                                 <th md-column md-order-by="supplierId">מספר ספק</th>
                                 <th md-column md-order-by="name">שם ספק</th>
+                                <th md-column ng-if="vm.showPriority">show in destrebution page</th>
                                 <th md-column md-order-by="priority" ng-if="vm.showPriority">עדיפות</th>
                                 <th md-column ng-if="vm.showPriority"></th>
                             </tr>
@@ -51,12 +52,19 @@
                                 <td md-cell>{{::supplier.supplierId}}</td>
                                 <td md-cell>{{::supplier.name}}</td>
                                 <td md-cell ng-if="vm.showPriority">
+                                    <md-input-container class="md-block" flex>
+                                        <md-checkbox aria-label="cb" ng-disabled="vm.editMode" name="show" ng-model="supplier.show">                                          
+                                        </md-checkbox>
+                                    </md-input-container>
+                                    
+                                </td>
+                                <td md-cell ng-if="vm.showPriority">
                                     <md-input-container>
-                                        <input ng-disabled="vm.editMode" aria-label="input" style="width: 40px;" type="number" name="name{{$index}}" ng-model="supplier.priority">  
+                                        <input ng-disabled="vm.editMode" aria-label="input" style="width: 40px;" type="number" name="name{{$index}}" ng-model="supplier.priority">
                                     </md-input-container>
                                 </td>
                                 <td md-cell ng-if="vm.showPriority">
-                                   <md-button ng-if="!vm.editMode" ng-click="vm.removeSupplier(supplier)" aria-label="download">
+                                    <md-button ng-if="!vm.editMode" ng-click="vm.removeSupplier(supplier)" aria-label="download">
                                         <ng-md-icon icon="cancel"></ng-md-icon>
                                     </md-button>
                                 </td>
@@ -73,3 +81,13 @@
         </ui-view>
     </main>
 </md-content>
+
+<!--<md-input-container class="md-block" flex>
+        <md-checkbox name="show" ng-model="show">
+          show in destrebution page
+        </md-checkbox>
+      </md-input-container>
+      <md-input-container class="md-block" flex>
+        <label>prority</label>
+        <input type="number" name="prority" ng-model="prority">
+      </md-input-container>-->

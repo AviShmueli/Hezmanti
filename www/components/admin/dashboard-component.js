@@ -12,7 +12,7 @@
             templateUrl: 'components/admin/dashboard-template.html'
         });
 
-    function dashboardController(server, $q, $interval, $location, dataContext) {
+    function dashboardController(server, $q, $interval, $location, dataContext, device) {
 
         var vm = this;
         vm.allBranches = [];
@@ -21,6 +21,9 @@
         vm.branchesMap = {};
         vm.allBranches = dataContext.getNetworksBranchesMap();
         vm.networks = dataContext.getNetworks();
+        vm.departments = dataContext.getDepartments();
+
+        vm.imagesPath = device.getImagesPath();
 
         var setBranchesMap = function () {
             angular.forEach(vm.allBranches, function (obj, key) {
@@ -51,6 +54,7 @@
         var resetAllBranches = function () {
             angular.forEach(vm.branchesMap, function (obj, key) {
                 obj['sendOrder'] = false;
+                obj['departments'] = [];
             });
         }
 
@@ -61,6 +65,12 @@
                 for (var index = 0; index < response.data.length; index++) {
                     var order = response.data[index];
                     vm.branchesMap[order.branchId]['sendOrder'] = true;
+                    if(!vm.branchesMap[order.branchId]['departments']){
+                        vm.branchesMap[order.branchId]['departments'] = [];
+                    }
+                    order.items.forEach(function(item) {
+                        vm.branchesMap[order.branchId]['departments'].push(item.itemDepartmentId);
+                    }, this);
                 }
 
             });
