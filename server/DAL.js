@@ -456,7 +456,7 @@
 
         var d = deferred();
 
-        var filter = {};
+        var filter = {type: "order"};
 
         var date = new Date().toDateString();
         var offset = Moment().tz('Asia/Jerusalem').utcOffset();

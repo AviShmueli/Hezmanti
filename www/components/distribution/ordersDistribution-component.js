@@ -40,7 +40,7 @@
                 }]
             };
             var query = {
-                'order': '-createdDate'
+                'order': '-orderId'
             };
 
             var deferred = $q.defer();

@@ -13,7 +13,7 @@
         });
 
     function dashboardController(server, $q, $interval, $location, dataContext, device) {
-
+        
         var vm = this;
         vm.allBranches = [];
         vm.showLaunchBtn = $location.search().s !== undefined ? false : true;
@@ -65,9 +65,7 @@
                 for (var index = 0; index < response.data.length; index++) {
                     var order = response.data[index];
                     vm.branchesMap[order.branchId]['sendOrder'] = true;
-                    if(!vm.branchesMap[order.branchId]['departments']){
-                        vm.branchesMap[order.branchId]['departments'] = [];
-                    }
+                    vm.branchesMap[order.branchId]['departments'] = [];
                     order.items.forEach(function(item) {
                         vm.branchesMap[order.branchId]['departments'].push(item.itemDepartmentId);
                     }, this);
@@ -85,6 +83,13 @@
         getAllTodayOrders();
 
         $interval(getAllTodayOrders, 10000);
+
+        /* ----- Tabs ---- */
+        vm.selectedDepartment = 0;
+        vm.switchTab = function (department, selectedTab) {
+            vm.selectedDepartment = department;
+            console.log(department);
+        }
     }
 
 }());

@@ -112,16 +112,20 @@
         vm.filter = {};
         vm.totalOrderCount = 0;
         vm.query = {
-            order: '-createdDate',
+            order: '-orderId',
             limit: 10,
             page: 1
         };
 
+        vm.getPage = function(){
+
+        }
 
         vm.getOrders = function (filter, originalFilter) {
             
             if (filter && typeof(filter) !== 'number') {
                 vm.filter = filter;
+                vm.query.page = 1;
             }
 
             //if (departments) {
@@ -163,7 +167,7 @@
                 deferred.resolve();
             });
 
-            vm.filter = {};
+            //vm.filter = {};
         };
 
     }

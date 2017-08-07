@@ -110,6 +110,28 @@
             return function (arr, field) {
                 return lodash.uniq(arr, function(a) { return a[field]; });
             };
-});
+            
+})
+.filter('ordersByDepartment', function ($filter) {
+            return function (braches, department) {
+                var filtered = [];
+                angular.forEach(braches, function (branch) {
+
+                    if(branch.departments && branch.departments.length > 0){
+                        if (branch.departments.indexOf(department.id) !== -1) {
+                            branch.sendOrder = true;
+                            filtered.push(branch);
+                            return;
+                        }
+                        else {
+                            branch.sendOrder = false;
+                        }
+                    }
+
+                    filtered.push(branch);
+                });
+                return filtered;
+            };
+        });
 
 })();

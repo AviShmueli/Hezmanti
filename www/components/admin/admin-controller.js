@@ -6,10 +6,11 @@
         .controller('AdminController', AdminController);
 
     AdminController.$inject = ['$scope', '$mdSidenav', 'device', '$location',
-                               'server', 'dataContext', '$state'];
+        'server', 'dataContext', '$state', 'lodash'
+    ];
 
     function AdminController($scope, $mdSidenav, device, $location,
-                             server, dataContext,  $state) {
+        server, dataContext, $state, _) {
 
         var vm = this;
 
@@ -29,6 +30,7 @@
             $mdSidenav("left").close();
         };
 
+
         vm.menu = [{
             headerText: 'הזמנות',
             defultOpen: false,
@@ -45,11 +47,11 @@
                 mode: 'ordersManager',
                 icon: 'view_quilt'
             }]
-        },{
+        }, {
             headerText: 'תעודות',
             defultOpen: false
-            
-        },{
+
+        }, {
             headerText: 'ספירות מלאי',
             defultOpen: false,
             buttons: [{
@@ -57,7 +59,7 @@
                 mode: 'stockManager',
                 icon: 'line_style'
             }]
-        },{
+        }, {
             headerText: 'סניפים',
             defultOpen: false,
             buttons: [{
@@ -65,7 +67,7 @@
                 mode: 'usersManager',
                 icon: 'people_outline'
             }]
-        },{
+        }, {
             headerText: 'ספקים',
             defultOpen: false,
             buttons: [{
@@ -73,7 +75,7 @@
                 mode: 'suppliersManager',
                 icon: 'view_module'
             }]
-        },{
+        }, {
             headerText: 'קטלוג',
             defultOpen: false,
             buttons: [{
@@ -81,7 +83,23 @@
                 mode: 'departmentsManager',
                 icon: 'view_module'
             }]
-        }]; 
+        }];
+
+        vm.menuItem = _.find(vm.menu, function (menuItem) {
+            if (menuItem.buttons) {
+                var isExcist = _.findIndex(menuItem.buttons, function (button) {
+                    if (button.mode === vm.viewMode) {
+                        vm.subMenuText = button.text;
+                        return true;
+                    }
+                    return false;
+                });
+                if (isExcist !== -1) {
+                    return true;
+                }
+            }
+            return false;
+        });
 
         //* ---- Preper Data ------ */
         var catalog = dataContext.getCatalog();

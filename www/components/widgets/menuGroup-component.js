@@ -34,7 +34,7 @@
         vm.switchViewMode = function (toMode) {
             vm.defultOpen = true;
             $state.params = {};
-            $state.go('admin' ,{mode: toMode});
+            $state.go('admin' ,{mode: toMode.mode});
         }
     }
 })();
