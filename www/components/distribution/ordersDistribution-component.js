@@ -66,9 +66,6 @@
 
                         for (var j = 0; j < order.items.length; j++) {
                             var item = order.items[j];
-                            if ((item.itemSerialNumber === 1001 || item.serialNumber === 1001) && order._id === '5971a92fb3b867001169e4a2') {
-                                var a = 1;
-                            }
                             newOrdersItems.push({
                                 order: orderWithOutItems,
                                 item: item,
@@ -103,6 +100,18 @@
 
         vm.refreshDataFromServer = function (ev) {
             initiateDistributionData();
+        }
+
+        vm.showDistributedItems = function (ev) {
+            var filter = {};
+
+            var deferred = $q.defer();
+            vm.promise = deferred.promise;
+            server.getDistributedItems(filter).then(function (response) {
+                vm.ordersItems = response.data;
+                vm.allOrderItemsCount = vm.ordersItems.length;
+                deferred.resolve();
+            });
         }
 
         var allOrderItems = distributionContext.getDistributionState();
@@ -182,6 +191,10 @@
                     filesHandler.downloadOrderAsCSV(suppliersItemsMap[supplier.id], orderFields, fileName);
                 }
             }
+
+            vm.ordersItems.forEach(function(element) {
+                element["createdDate"] = new Date();    
+            }, this);
 
             server.saveDistribution(vm.ordersItems).then(function (response) {
                 $mdToast.show(
@@ -358,23 +371,6 @@
             });
         }
 
-        /*[{
-                name: 'מילועוף',
-                id: 30000,
-                show: true
-            },
-            {
-                name: 'עוף עוז',
-                id: 30005,
-                show: true
-            },
-            {
-                name: 'עוף טוב',
-                id: 30050,
-                show: true
-            },
-        ];*/
-
         vm.addSupplier = function (ev) {
             $mdDialog.show({
                     controller: 'selectSuppliersController',
@@ -402,10 +398,10 @@
                     var orderItem = vm.ordersItems[index];
                     if (!orderItem.hasOwnProperty("suppliers")) {
                         orderItem["suppliers"] = {};
-                        orderItem.suppliers[supplierId] = Math.ceil(orderItem.item.count * (persent * 0.01));
+                        orderItem.suppliers[supplierId] = Math.round(orderItem.item.count * (persent * 0.01));
 
                     } else {
-                        orderItem.suppliers[supplierId] = Math.floor(orderItem.item.count * (persent * 0.01));
+                        orderItem.suppliers[supplierId] = Math.round(orderItem.item.count * (persent * 0.01));
                     }
                     if (orderItem.suppliers[supplierId] === 0) {
                         delete orderItem.suppliers[supplierId];
@@ -413,6 +409,12 @@
                     vm.updateSum(orderItem);
                 }
             }, 500);
+        }
+
+        var calcPersent = function(count, persent){
+            var result = count * (persent * 0.01);
+
+            Math.ceil(orderItem.item.count * (persent * 0.01));
         }
 
     }

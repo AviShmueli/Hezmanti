@@ -205,21 +205,24 @@
             return $http(req);
         }
 
-        var getDepartments = function () {
-            var req = {
-                method: 'GET',
-                url: '/api/getDepartments'
-            };
-
-            return $http(req);
-        }
-
         var markItemsAsDistrebuted = function (items) {
             var req = {
                 method: 'POST',
                 url: '/api/markItemsAsDistrebuted',
                 data: {
                     items: items
+                }
+            };
+
+            return $http(req);
+        }
+
+        var getDistributedItems = function (filter) {
+            var req = {
+                method: 'GET',
+                url: '/api/getDistributedItems',
+                params: {
+                    filter: filter
                 }
             };
 
@@ -244,8 +247,8 @@
             addSupplier: addSupplier,
             updateSupplier: updateSupplier,
             editDepartment: editDepartment,
-            getDepartments: getDepartments,
-            markItemsAsDistrebuted: markItemsAsDistrebuted
+            markItemsAsDistrebuted: markItemsAsDistrebuted,
+            getDistributedItems: getDistributedItems
         };
 
         return service;

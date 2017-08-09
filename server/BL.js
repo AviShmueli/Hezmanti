@@ -20,6 +20,7 @@
     BL.editDepartment = editDepartment;
     BL.getDepartments = getDepartments;
     BL.markItemsAsDistrebuted = markItemsAsDistrebuted;
+    BL.getDistributedItems = getDistributedItems;
 
     var Moment = require('moment-timezone');
     var deferred = require('deferred');
@@ -218,7 +219,7 @@
         DAL.updateUserLastSeenTime(id, new Date(date)).then(function (result) {
             DAL.getConfigValue("lastCatalogUpdate").then(function (result) {
                 d.resolve(result);
-            });       
+            });
         }, function (error) {
             d.deferred(error);
         });
@@ -242,6 +243,10 @@
     function saveDistribution(distributionList) {
 
         var d = deferred();
+
+        distributionList.forEach(function(element) {
+            element.createdDate = new Date(element.createdDate);
+        }, this);
 
         DAL.saveDistribution(distributionList).then(function (result) {
             d.resolve(result);
@@ -281,7 +286,7 @@
     function updateSupplier(supplier) {
 
         var d = deferred();
-        
+
         DAL.updateSupplier(supplier).then(function (result) {
             d.resolve(result);
         }, function (error) {
@@ -294,7 +299,7 @@
     function editDepartment(department) {
 
         var d = deferred();
-        
+
         DAL.editDepartment(department).then(function (result) {
             d.resolve(result);
         }, function (error) {
@@ -307,7 +312,7 @@
     function getDepartments() {
 
         var d = deferred();
-        
+
         DAL.getDepartments().then(function (result) {
             d.resolve(result);
         }, function (error) {
@@ -320,14 +325,38 @@
     function markItemsAsDistrebuted(items) {
 
         var d = deferred();
-        
+
         // TODO: compleate this function !!!!
 
         //DAL.getDepartments(items).then(function (result) {
-            d.resolve(result);
+        d.resolve();
         //}, function (error) {
         //    d.deferred(error);
         //});
+
+        return d.promise;
+    }
+
+    function getDistributedItems(filter) {
+
+        var d = deferred();
+
+        filter = JSON.parse(filter);
+
+        var date = new Date().toDateString();
+        var offset = Moment().tz('Asia/Jerusalem').utcOffset();
+        var dayStart = Moment(date).tz('Asia/Jerusalem').add(offset, 'm').toDate();
+        var dayEnd = Moment(date).tz('Asia/Jerusalem').add(offset, 'm').add(1, 'd').toDate();
+        filter["createdDate"] = {
+            "$gt": dayStart,
+            "$lt": dayEnd
+        };
+
+        DAL.getDistributedItems(filter).then(function (result) {
+            d.resolve(result);
+        }, function (error) {
+            d.deferred(error);
+        });
 
         return d.promise;
     }

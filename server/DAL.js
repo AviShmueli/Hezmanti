@@ -24,6 +24,7 @@
     DAL.updateSupplier = updateSupplier;
     DAL.editDepartment = editDepartment;
     DAL.getDepartments = getDepartments;
+    DAL.getDistributedItems = getDistributedItems;
 
     var Moment = require('moment-timezone');
     var deferred = require('deferred');
@@ -456,7 +457,9 @@
 
         var d = deferred();
 
-        var filter = {type: "order"};
+        var filter = {
+            type: "order"
+        };
 
         var date = new Date().toDateString();
         var offset = Moment().tz('Asia/Jerusalem').utcOffset();
@@ -500,6 +503,29 @@
                 if (err) {
                     var errorObj = {
                         message: "error while trying to add distributions : ",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(result);
+            });
+        });
+
+        return d.promise;
+    }
+
+    function getDistributedItems(filter) {
+        var d = deferred();
+
+        getCollection('gorme-distribution').then(function (mongo) {
+
+            mongo.collection.find(filter).toArray(function (err, result) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to get distributed items: ",
                         error: err
                     };
                     mongo.db.close();

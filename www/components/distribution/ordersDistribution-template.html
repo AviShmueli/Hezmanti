@@ -11,6 +11,9 @@
                     <div layout="column" flex="20">
                         <md-button aria-label="refresh" class="md-primary" ng-click="vm.refreshDataFromServer($event)"> רענן נתונים מהשרת </md-button>
                     </div >
+                    <div layout="column" flex="20">
+                        <md-button aria-label="refresh" class="md-primary" ng-click="vm.showDistributedItems($event)"> הצג פריטים שחולקו </md-button>
+                    </div >
                 </div>
                 
             </md-card>
@@ -43,7 +46,7 @@
                                     </a>
                                     {{supplier.name}}
                                     <md-input-container style="margin: 0">
-                                        <input aria-label="input" style="width: 35px;" type="number" name="name{{$index}}" 
+                                        <input aria-label="input" style="width: 45px;" type="number" name="name{{$index}}" 
                                                ng-model="o.suppliers[supplier.supplierId.toString()].percent" min="0" max="100"
                                                ng-change="vm.updateAllItems(o.suppliers[supplier.supplierId.toString()].percent, supplier.supplierId)">
                                     </md-input-container> 
@@ -79,7 +82,7 @@
                                 <td md-cell ng-repeat="supplier in vm.suppliers | orderBy: 'priority'" ng-if="supplier.show"> 
                                     <md-input-container style="margin: 0">
                                         <!--max="{{o.item.count - o.sum + o.suppliers[supplier.id.toString()]}}"-->
-                                        <input aria-label="input" style="width: 40px;" type="number" name="name{{$index}}" 
+                                        <input aria-label="input" style="width: 45px;" type="number" name="name{{$index}}" 
                                                ng-model="o.suppliers[supplier.supplierId.toString()]" min="0"
                                                ng-change="vm.updateSum(o)">
                                     </md-input-container> 

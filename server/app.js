@@ -198,6 +198,14 @@ app.post('/api/markItemsAsDistrebuted', function (req, res) {
     });
 });
 
+app.get('/api/getDistributedItems', function (req, res) {
+    BL.getDistributedItems(req.query.filter).then(function (result) {
+        res.send(result);
+    }, function (error) {
+        logger.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
+});
 
 //var newBranches = 
 
