@@ -81,7 +81,7 @@
                                 <td md-cell ng-class="{'text-green' : o.sum === o.item.count, 'text-red': (vm.checkAllTableSum && o.sum !== o.item.count) || o.sum > o.item.count}">{{o.sum}}</td>
                                 <td md-cell ng-repeat="supplier in vm.suppliers | orderBy: 'priority'" ng-if="supplier.show"> 
                                     <md-input-container style="margin: 0">
-                                        <!--max="{{o.item.count - o.sum + o.suppliers[supplier.id.toString()]}}"-->
+                                        <!--max="{{o.item.count - o.sum + o.suppliers[supplier.supplierId.toString()]}}"-->
                                         <input aria-label="input" style="width: 45px;" type="number" name="name{{$index}}" 
                                                ng-model="o.suppliers[supplier.supplierId.toString()]" min="0"
                                                ng-change="vm.updateSum(o)">

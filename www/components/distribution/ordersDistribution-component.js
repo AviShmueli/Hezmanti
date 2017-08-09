@@ -129,6 +129,11 @@
         }
 
         $scope.$watch('vm.ordersItems', function (orders) {
+            
+            if(angular.isUndefined(orders)){
+                return;
+            }
+
             vm.tableSummary = {
                 count: 0,
                 sum: 0
@@ -186,9 +191,9 @@
 
                 var supplier = vm.suppliers[index];
 
-                if (suppliersItemsMap.hasOwnProperty(supplier.id)) {
+                if (suppliersItemsMap.hasOwnProperty(supplier.supplierId)) {
                     var fileName = supplier.name + '_' + $filter('date')(new Date(), 'dd/MM/yyyy');
-                    filesHandler.downloadOrderAsCSV(suppliersItemsMap[supplier.id], orderFields, fileName);
+                    filesHandler.downloadOrderAsCSV(suppliersItemsMap[supplier.supplierId], orderFields, fileName);
                 }
             }
 
@@ -230,11 +235,17 @@
                     }
                     vm.distributedItemsList.push(item);
                     removeItemFromAllItemsList(item);
-                    lodash.remove(vm.ordersItems, function (n) {
-                        return n.id === item.id;
-                    });
+                    
                 }
             }
+
+            vm.distributedItemsList.forEach(function(element) {
+                lodash.remove(vm.ordersItems, function (n) {
+                        return n.id === element.id;
+                    });
+            }, this);
+            
+
             markItemsAsDistrebuted();
 
             return suppliersItemsMap;
@@ -398,23 +409,16 @@
                     var orderItem = vm.ordersItems[index];
                     if (!orderItem.hasOwnProperty("suppliers")) {
                         orderItem["suppliers"] = {};
-                        orderItem.suppliers[supplierId] = Math.round(orderItem.item.count * (persent * 0.01));
-
-                    } else {
-                        orderItem.suppliers[supplierId] = Math.round(orderItem.item.count * (persent * 0.01));
-                    }
+                    } 
+                    
+                    orderItem.suppliers[supplierId] = Math.round(orderItem.item.count * (persent * 0.01));
+                    
                     if (orderItem.suppliers[supplierId] === 0) {
                         delete orderItem.suppliers[supplierId];
                     }
                     vm.updateSum(orderItem);
                 }
             }, 500);
-        }
-
-        var calcPersent = function(count, persent){
-            var result = count * (persent * 0.01);
-
-            Math.ceil(orderItem.item.count * (persent * 0.01));
         }
 
     }
