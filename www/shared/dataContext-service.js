@@ -67,6 +67,7 @@
         }
 
         var getCartItemsList = function () {
+            // TODO: replace Object.values !!!!
             return Object.values(self.$storage.cart);
         }
 

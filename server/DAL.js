@@ -130,7 +130,7 @@
 
         var d = deferred();
 
-        getCollection('gorme-departments').then(function (mongo) {
+        getCollection('gorme-suppliers').then(function (mongo) {
 
             mongo.collection.insert(catalog, function (err, results) {
 

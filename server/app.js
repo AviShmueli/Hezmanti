@@ -207,7 +207,7 @@ app.get('/api/getDistributedItems', function (req, res) {
     });
 });
 
-//var newBranches = 
+//var newBranches =  
 
 //DAL.insertToCatalog(newBranches);
 //DAL.insertNewBranches(newBranches);

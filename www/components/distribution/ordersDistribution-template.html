@@ -29,7 +29,7 @@
 
             <md-card layout-margin>
                 <md-table-container>
-                    <table md-table md-progress="vm.promise" fixed-header table-height="{{vm.tableHeight}}px">
+                    <table navigatable md-table md-progress="vm.promise" fixed-header table-height="{{vm.tableHeight}}px">
                         <thead md-head md-order="vm.query.order">
                             <tr md-row style="height: 36px;">
                                 <th md-column>#</th>
@@ -84,7 +84,8 @@
                                         <!--max="{{o.item.count - o.sum + o.suppliers[supplier.supplierId.toString()]}}"-->
                                         <input aria-label="input" style="width: 45px;" type="number" name="name{{$index}}" 
                                                ng-model="o.suppliers[supplier.supplierId.toString()]" min="0"
-                                               ng-change="vm.updateSum(o)">
+                                               ng-change="vm.updateSum(o)"
+                                               ng-enter>
                                     </md-input-container> 
                                 </td>
                                 <td md-cell></td>

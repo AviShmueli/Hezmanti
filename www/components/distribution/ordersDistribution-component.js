@@ -129,8 +129,8 @@
         }
 
         $scope.$watch('vm.ordersItems', function (orders) {
-            
-            if(angular.isUndefined(orders)){
+
+            if (angular.isUndefined(orders)) {
                 return;
             }
 
@@ -197,8 +197,8 @@
                 }
             }
 
-            vm.ordersItems.forEach(function(element) {
-                element["createdDate"] = new Date();    
+            vm.ordersItems.forEach(function (element) {
+                element["createdDate"] = new Date();
             }, this);
 
             server.saveDistribution(vm.ordersItems).then(function (response) {
@@ -235,16 +235,16 @@
                     }
                     vm.distributedItemsList.push(item);
                     removeItemFromAllItemsList(item);
-                    
+
                 }
             }
 
-            vm.distributedItemsList.forEach(function(element) {
+            vm.distributedItemsList.forEach(function (element) {
                 lodash.remove(vm.ordersItems, function (n) {
-                        return n.id === element.id;
-                    });
+                    return n.id === element.id;
+                });
             }, this);
-            
+
 
             markItemsAsDistrebuted();
 
@@ -376,7 +376,7 @@
 
         });
 
-        vm.removeSupplierFromView = function(supplier){
+        vm.removeSupplierFromView = function (supplier) {
             lodash.remove(vm.suppliers, function (n) {
                 return n.supplierId === supplier.supplierId;
             });
@@ -409,10 +409,10 @@
                     var orderItem = vm.ordersItems[index];
                     if (!orderItem.hasOwnProperty("suppliers")) {
                         orderItem["suppliers"] = {};
-                    } 
-                    
+                    }
+
                     orderItem.suppliers[supplierId] = Math.round(orderItem.item.count * (persent * 0.01));
-                    
+
                     if (orderItem.suppliers[supplierId] === 0) {
                         delete orderItem.suppliers[supplierId];
                     }
@@ -422,5 +422,116 @@
         }
 
     }
+
+    angular.module('app').directive('ngEnter', function () {
+        return function (scope, element, attrs) {
+            element.bind("keydown keypress", function (event) {
+                if (event.which === 13) {
+                    var nextRow = angular.element(event.srcElement).parent().parent().parent().next();
+
+                    event.preventDefault();
+                }
+            });
+        };
+    });
+
+
+    angular
+        .module('app')
+        .directive('navigatable', function () {
+            return function (scope, element, attr) {
+
+                element.bind('keydown keypress', handleNavigation);
+
+
+                function handleNavigation(e) {
+
+                    var arrow = {
+                        left: 37,
+                        up: 38,
+                        right: 39,
+                        down: 40
+                    };
+
+                    // select all on focus
+                    //element.find('input').keydown(function (e) {
+
+                        // shortcut for key other than arrow keys
+                        if (!_.includes([arrow.left, arrow.up, arrow.right, arrow.down], e.which)) {
+                            return;
+                        }
+
+                        var input = e.target;
+                        var td = angular.element(event.srcElement).parent().parent();
+                        var moveTo = null;
+
+                        switch (e.which) {
+
+                            case arrow.left:
+                                {
+                                    if (input.selectionStart == 0) {
+                                        moveTo = td.prev('td:has(input,textarea)');
+                                    }
+                                    break;
+                                }
+                            case arrow.right:
+                                {
+                                    if (input.selectionEnd == input.value.length) {
+                                        moveTo = td.next('td:has(input,textarea)');
+                                    }
+                                    break;
+                                }
+
+                            case arrow.up:
+                            case arrow.down:
+                                {
+
+                                    var tr = td.closest('tr');
+                                    var pos = td[0].cellIndex;
+
+                                    var moveToRow = null;
+                                    if (e.which == arrow.down) {
+                                        moveToRow = tr.next('tr');
+                                    } else if (e.which == arrow.up) {
+                                        moveToRow = tr.prev('tr');
+                                    }
+
+                                    if (moveToRow.length) {
+                                        moveTo = $(moveToRow[0].cells[pos]);
+                                    }
+
+                                    break;
+                                }
+
+                        }
+
+                        if (moveTo && moveTo.length) {
+
+                            e.preventDefault();
+
+                            moveTo.find('input,textarea').each(function (i, input) {
+                                input.focus();
+                                input.select();
+                            });
+
+                        }
+
+                    //});
+
+
+                    var key = e.keyCode ? e.keyCode : e.which;
+                    if (key === 13) {
+                        var focusedElement = $(e.target);
+                        var nextElement = focusedElement.parent().next();
+                        if (nextElement.find('input').length > 0) {
+                            nextElement.find('input').focus();
+                        } else {
+                            nextElement = nextElement.parent().next().find('input').first();
+                            nextElement.focus();
+                        }
+                    }
+                }
+            }
+        });
 
 }());
