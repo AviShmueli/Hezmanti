@@ -285,3 +285,20 @@ input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
+
+.distribution-table{
+    max-width: 100% !important;      
+     border-spacing: 2px !important;  
+}
+
+table.distribution-table th {
+    /* border: black 1px solid; */
+}
+
+table.md-table:not(.md-row-select) th.md-column:nth-child(n+2):nth-last-child(n+2) {
+    padding: 0 30px 0 0 !important; 
+}
+
+.sum-row > th{
+    text-align: center !important;
+}
