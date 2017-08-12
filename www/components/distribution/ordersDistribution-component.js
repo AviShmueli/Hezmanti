@@ -5,7 +5,8 @@
         .module('app')
         .component('ordersDistribution', {
             bindings: {
-                pageMode: '='
+                isDistributedMode: '=',
+                refreshData : '='
             },
             controller: ordersDistributionController,
             controllerAs: 'vm',
@@ -16,10 +17,9 @@
         $mdToast, $mdDialog, $window, distributionContext, lodash) {
 
         var vm = this;
-        vm.tableHeight = $window.innerHeight - 360;
+        vm.tableHeight = $window.innerHeight - 345;
         vm.checkAllTableSum = false;
         vm.downloading = false;
-        vm.distributedItemsList = [];
 
         var orderFields = {
             createdDate: 'ת. הזמנה',
@@ -102,7 +102,7 @@
             initiateDistributionData();
         }
 
-        vm.showDistributedItems = function (ev) {
+        vm.showDistributedItems = function () {
             var filter = {};
 
             var deferred = $q.defer();
@@ -114,8 +114,15 @@
             });
         }
 
-        var allOrderItems = distributionContext.getDistributionState();
+        vm.showDistributionItems = function () {
+            vm.ordersItems = allOrderItems;
+            vm.allOrderItemsCount = vm.ordersItems.length;
+            vm.getOrders(vm.filter, {});
+        }
 
+        var allOrderItems = distributionContext.getDistributionState();
+        var allDistributedItems = distributionContext.getDistributedState()
+        ;
         if (angular.isUndefined(allOrderItems)) {
             allOrderItems = [];
             initiateDistributionData();
@@ -209,6 +216,13 @@
                 );
             });
 
+            allDistributedItems.forEach(function (element) {
+                lodash.remove(vm.ordersItems, function (n) {
+                    return n.id === element.id;
+                });
+            }, this);
+
+
             vm.downloading = false;
             vm.checkAllTableSum = false;
         }
@@ -233,18 +247,11 @@
                             });
                         }
                     }
-                    vm.distributedItemsList.push(item);
+                    allDistributedItems.push(item);
                     removeItemFromAllItemsList(item);
 
                 }
             }
-
-            vm.distributedItemsList.forEach(function (element) {
-                lodash.remove(vm.ordersItems, function (n) {
-                    return n.id === element.id;
-                });
-            }, this);
-
 
             markItemsAsDistrebuted();
 
@@ -259,8 +266,8 @@
         }
 
         var markItemsAsDistrebuted = function () {
-            server.markItemsAsDistrebuted(vm.distributedItemsList).then(function (result) {
-                vm.distributedItemsList = [];
+            server.markItemsAsDistrebuted(allDistributedItems).then(function (result) {
+                //vm.allDistributedItems = [];
             });
         }
 
@@ -421,117 +428,24 @@
             }, 500);
         }
 
-    }
-
-    angular.module('app').directive('ngEnter', function () {
-        return function (scope, element, attrs) {
-            element.bind("keydown keypress", function (event) {
-                if (event.which === 13) {
-                    var nextRow = angular.element(event.srcElement).parent().parent().parent().next();
-
-                    event.preventDefault();
-                }
-            });
-        };
-    });
-
-
-    angular
-        .module('app')
-        .directive('navigatable', function () {
-            return function (scope, element, attr) {
-
-                element.bind('keydown keypress', handleNavigation);
-
-
-                function handleNavigation(e) {
-
-                    var arrow = {
-                        left: 37,
-                        up: 38,
-                        right: 39,
-                        down: 40
-                    };
-
-                    // select all on focus
-                    //element.find('input').keydown(function (e) {
-
-                        // shortcut for key other than arrow keys
-                        if (!_.includes([arrow.left, arrow.up, arrow.right, arrow.down], e.which)) {
-                            return;
-                        }
-
-                        var input = e.target;
-                        var td = angular.element(event.srcElement).parent().parent();
-                        var moveTo = null;
-
-                        switch (e.which) {
-
-                            case arrow.left:
-                                {
-                                    if (input.selectionStart == 0) {
-                                        moveTo = td.prev('td:has(input,textarea)');
-                                    }
-                                    break;
-                                }
-                            case arrow.right:
-                                {
-                                    if (input.selectionEnd == input.value.length) {
-                                        moveTo = td.next('td:has(input,textarea)');
-                                    }
-                                    break;
-                                }
-
-                            case arrow.up:
-                            case arrow.down:
-                                {
-
-                                    var tr = td.closest('tr');
-                                    var pos = td[0].cellIndex;
-
-                                    var moveToRow = null;
-                                    if (e.which == arrow.down) {
-                                        moveToRow = tr.next('tr');
-                                    } else if (e.which == arrow.up) {
-                                        moveToRow = tr.prev('tr');
-                                    }
-
-                                    if (moveToRow.length) {
-                                        moveTo = $(moveToRow[0].cells[pos]);
-                                    }
-
-                                    break;
-                                }
-
-                        }
-
-                        if (moveTo && moveTo.length) {
-
-                            e.preventDefault();
-
-                            moveTo.find('input,textarea').each(function (i, input) {
-                                input.focus();
-                                input.select();
-                            });
-
-                        }
-
-                    //});
-
-
-                    var key = e.keyCode ? e.keyCode : e.which;
-                    if (key === 13) {
-                        var focusedElement = $(e.target);
-                        var nextElement = focusedElement.parent().next();
-                        if (nextElement.find('input').length > 0) {
-                            nextElement.find('input').focus();
-                        } else {
-                            nextElement = nextElement.parent().next().find('input').first();
-                            nextElement.focus();
-                        }
-                    }
-                }
+        $scope.$watch('vm.isDistributedMode', function (mode) {
+            if (mode) {
+                vm.pageMode = 'distributed';
+                vm.showDistributedItems();
+            }
+            else {
+                vm.pageMode = 'distribution';
+                vm.showDistributionItems();
+                
             }
         });
 
+        $scope.$watch('vm.refreshData', function (num) {
+            if (num !== 0) {
+                vm.refreshDataFromServer();                
+            }
+        });
+
+    }
+    
 }());

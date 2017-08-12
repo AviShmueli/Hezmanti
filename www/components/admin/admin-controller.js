@@ -16,7 +16,7 @@
 
         vm.viewMode = $state.params.mode || 'ordersDistribution';
         vm.stateIdParam = $state.params.id;
-
+        vm.refreshDataFromServer = 0;
         vm.imagesPath = device.getImagesPath();
         vm.loadingData = false;
 

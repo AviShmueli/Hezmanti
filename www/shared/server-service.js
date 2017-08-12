@@ -153,7 +153,7 @@
                 method: 'POST',
                 url: '/api/saveDistribution',
                 data: {
-                    distributionList: distributionList
+                    distributionList: JSON.stringify(distributionList)
                 }
             };
 

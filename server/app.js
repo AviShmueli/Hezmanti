@@ -136,7 +136,8 @@ app.get('/api/getAllTodayOrders', function (req, res) {
 });
 
 app.post('/api/saveDistribution', function (req, res) {
-    BL.saveDistribution(req.body.distributionList).then(function (result) {
+    var distributionList = JSON.parse(req.body.distributionList);
+    BL.saveDistribution(distributionList).then(function (result) {
         res.send(result);
     }, function (error) {
         logger.log('error', error.message, error.error);

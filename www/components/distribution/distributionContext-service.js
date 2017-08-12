@@ -19,11 +19,16 @@
         var getDistributionState = function () {
             return self.$storage.distributionState;
         }
+
+        var getDistributedState = function () {
+            return self.$storage.distributedState ||  [];
+        }
         
 
         var service = { 
             saveDistributionState: saveDistributionState,
-            getDistributionState: getDistributionState
+            getDistributionState: getDistributionState,
+            getDistributedState: getDistributedState
         };
 
         return service;

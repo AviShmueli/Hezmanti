@@ -244,8 +244,13 @@
 
         var d = deferred();
 
+
+        var date = new Date();
+        var offset = Moment().tz('Asia/Jerusalem').utcOffset();
+        var currDate = Moment(date).tz('Asia/Jerusalem').add(offset, 'm').toDate();
+
         distributionList.forEach(function(element) {
-            element.createdDate = new Date(element.createdDate);
+            element.createdDate = currDate;
         }, this);
 
         DAL.saveDistribution(distributionList).then(function (result) {
