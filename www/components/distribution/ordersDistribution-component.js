@@ -121,8 +121,8 @@
         }
 
         var allOrderItems = distributionContext.getDistributionState();
-        var allDistributedItems = distributionContext.getDistributedState()
-        ;
+        var allDistributedItems = distributionContext.getDistributedState();
+
         if (angular.isUndefined(allOrderItems)) {
             allOrderItems = [];
             initiateDistributionData();
@@ -240,7 +240,9 @@
                             }
                             suppliersItemsMap[supplierId].push({
                                 createdDate: $filter('date')(item.order.createdDate, 'dd/MM/yyyy'),
-                                deliveryDate: getDeliveryDate(item.order.createdDate),
+                                deliveryDate: item.order.type === 'second-order' ? 
+                                                $filter('date')(item.order.createdDate, 'dd/MM/yyyy') : 
+                                                getDeliveryDate(item.order.createdDate),
                                 branchId: item.order.branchId,
                                 itemSerialNumber: item.item.itemSerialNumber,
                                 count: element
