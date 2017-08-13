@@ -32,14 +32,7 @@
                 vm.expand_icon = 'expand_less';
             }
         }
-
-        if (vm.initialValues) {
-            for (var property in vm.initialValues) {
-                vm.ordersFilter[property] = vm.initialValues[property];
-            }
-        }
-
-        
+    
 
         vm.filter = function () {
 
@@ -226,6 +219,11 @@
         }
 
         $timeout(function () {
+            if (vm.initialValues) {
+                for (var property in vm.initialValues) {
+                    vm.ordersFilter[property] = vm.initialValues[property];
+                }
+            }
             vm.filter();
         }, 0);
 

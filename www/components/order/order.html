@@ -12,10 +12,10 @@
         <span flex></span>
         <p>{{vm.pageText.title}}</p>
         <md-button ng-if="vm.viewMode === 'viewOrder'" class="md-icon-button" ng-click="vm.switchMode('new')" aria-label="Menu">
-            <ng-md-icon icon="arrow_forward" style="fill: white"></ng-md-icon>
+            <md-icon ng-md-icon icon="arrow_forward" style="fill: white"></md-icon>
         </md-button>
         <md-button ng-if="vm.viewMode === 'newOrder'" class="md-icon-button" ng-click="vm.navigateTo('entry')" aria-label="Menu">
-            <ng-md-icon icon="arrow_forward" style="fill: white"></ng-md-icon>
+            <md-icon ng-md-icon icon="arrow_forward" style="fill: white"></md-icon>
         </md-button>
     </div>
 </md-toolbar>
@@ -43,7 +43,7 @@
 
     <md-card style="width: 100%; margin: 0px;" layout-margin ng-if="vm.showSucseesMessage === true && vm.viewMode === 'viewOrder'">
         <md-card-title class="management-filter-card-title">
-            <ng-md-icon icon="assignment_turned_in" class="message-icon" style="fill: green" size="40"></ng-md-icon>
+            <md-icon ng-md-icon icon="assignment_turned_in" class="message-icon" style="fill: green" size="40"></md-icon>
             <md-card-title-text>
                 <h3> {{vm.pageText.sucsessMessage}} </h3>
             </md-card-title-text>
@@ -52,7 +52,7 @@
 
     <md-card style="width: 100%; margin: 0px;" layout-margin ng-if="vm.showErrorMessage === true && vm.viewMode === 'viewOrder'">
         <md-card-title class="management-filter-card-title">
-            <ng-md-icon icon="error" class="message-icon" style="fill: brown" size="40"></ng-md-icon>
+            <md-icon ng-md-icon icon="error" class="message-icon" style="fill: brown" size="40"></md-icon>
             <md-card-title-text>
                 <h3> {{vm.pageText.sucsessMessage}} </h3>
                 <h4>אנא נסה לשלוח שוב</h4>

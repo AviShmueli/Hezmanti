@@ -17,18 +17,20 @@
                 </div>
                 
             </md-card> -->
-            <filter-table card-title="'סינון ופעולות'" on-filter-callback="vm.getOrders" show-download-excel-btn="vm.ordersItems.length > 0"
-                initial-values="vm.initialFilter" download-filterd-table="vm.downloadFilterdTable"></filter-table>
+            <filter-table card-title="'סינון ופעולות'" on-filter-callback="vm.getOrders" 
+                          show-download-excel-btn="vm.ordersItems.length > 0"
+                          initial-values="vm.initialFilter" download-filterd-table="vm.downloadFilterdTable">
+            </filter-table>
 
             <!--<md-card layout-margin>
                  <div id="grid1" ng-grid="vm.gridOptions" class="grid"></div>
             </md-card>      -->
 
             <md-card layout-margin>
-                <md-table-container>
-                    <a style="float: left" class="cursor-pointer" aria-label="add" ng-click="vm.addSupplier($event)">
-                        <ng-md-icon icon="add_circle_outline"></ng-md-icon>
-                    </a>
+                <md-table-container ng-if="!vm.filteringTable">
+                    <!-- <a style="float: left" class="cursor-pointer" aria-label="add" ng-click="vm.addSupplier($event)">
+                        <md-icon ng-md-icon icon="add_circle_outline"></md-icon>
+                    </a> -->
                     <table class="distribution-table" md-table md-progress="vm.promise" fixed-header table-height="{{vm.tableHeight}}px">
                         <thead md-head md-order="vm.query.order">
                             <tr md-row style="height: 36px;">
@@ -42,17 +44,18 @@
                                 <th md-column ng-repeat="supplier in vm.suppliers | orderBy: 'priority'" ng-if="supplier.show">
 
                                     <!-- <a class="cursor-pointer" aria-label="add" ng-click="vm.removeSupplierFromView(supplier)"> 
-                                        <ng-md-icon icon="remove_circle_outline" size="15"></ng-md-icon>
+                                        <md-icon ng-md-icon icon="remove_circle_outline" size="15"></md-icon>
                                     </a>  -->
                                     {{supplier.name}}
                                     <md-input-container style="margin: 0">
                                         <input aria-label="input" style="width: 45px;" type="number" name="name{{$index}}" ng-model="o.suppliers[supplier.supplierId.toString()].percent"
                                             min="0" max="100" ng-change="vm.updateAllItems(o.suppliers[supplier.supplierId.toString()].percent, supplier.supplierId)">
                                     </md-input-container>
+                                       
                                 </th>
                                 <!-- <th md-column>
                                     <a class="cursor-pointer" aria-label="add" ng-click="vm.addSupplier($event)">
-                                        <ng-md-icon icon="add_circle_outline"></ng-md-icon>
+                                        <md-icon ng-md-icon icon="add_circle_outline"></md-icon>
                                     </a>
                                 </th>  -->
                             </tr>
@@ -70,7 +73,7 @@
                             <tr ng-class="{'tb-even': $even}" class="distribution-table" md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="o in vm.ordersItems | orderBy: vm.query.order  track by o.id">
                                 <!-- <td md-cell >{{::$index+1}}</td> -->
                                 <td md-cell>{{::o.order.branchName}}</td>
-                                <td md-cell>{{::o.order.orderId}}</td>
+                                <td md-cell><a ng-click="vm.openOrderDialog(o.order, $event)">{{::o.order.orderId}}</a></td>
                                 <!--<td md-cell >{{::o.item.itemSerialNumber}}</td>-->
                                 <td md-cell>{{::o.item.itemName}}</td>
                                 <td md-cell>{{::o.item.count}}</td>
@@ -93,6 +96,21 @@
                         </tfoot>
                     </table>
                 </md-table-container>
+                <div ng-if="vm.filteringTable">
+                    <md-content md-theme="docs-dark" layout-padding>
+                       
+                        
+                        <div layout="row" layout-sm="column" layout-align="space-around">
+                            <div layout="column">
+                                
+                            
+                            <h4>טוען נתונים...</h4>
+                             <br>
+                            <md-progress-circular md-diameter="96"></md-progress-circular>
+                            </div> 
+                        </div>
+                    </md-content>
+                </div>
             </md-card>
 
             <!--<md-table-pagination md-label="{'of': ' מתוך ', 'page': 'עמוד מספר', 'rowsPerPage': 'מספר שורות בעמוד' }" md-limit="vm.query.limit"

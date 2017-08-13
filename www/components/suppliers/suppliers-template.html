@@ -7,7 +7,7 @@
                     <h2 style="margin-right: 20px;">ספקים</h2>
                     <span flex></span>
                     <!--<md-button  aria-label="button-label" class="md-icon-button">
-                        <ng-md-icon icon="{{vm.edit_icon}}" style="fill: brown" size="30" options='{"rotation": "counterclock"}'></ng-md-icon>
+                        <md-icon ng-md-icon icon="{{vm.edit_icon}}" style="fill: brown" size="30" options='{"rotation": "counterclock"}'></md-icon>
                     </md-button>-->
 
                     <md-fab-speed-dial ng-hide="vm.hidden" md-direction="left" md-open="vm.isOpen" class="md-scale md-fab-top-left" ng-class="{ 'md-hover-full': vm.hover }"
@@ -65,7 +65,7 @@
                                 </td>
                                 <td md-cell ng-if="vm.showPriority">
                                     <md-button ng-if="!vm.editMode" ng-click="vm.removeSupplier(supplier)" aria-label="download">
-                                        <ng-md-icon icon="cancel"></ng-md-icon>
+                                        <md-icon ng-md-icon icon="cancel"></md-icon>
                                     </md-button>
                                 </td>
                             </tr>

@@ -6,7 +6,7 @@
         .component('ordersDistribution', {
             bindings: {
                 isDistributedMode: '=',
-                refreshData : '='
+                refreshData: '='
             },
             controller: ordersDistributionController,
             controllerAs: 'vm',
@@ -17,7 +17,7 @@
         $mdToast, $mdDialog, $window, distributionContext, lodash) {
 
         var vm = this;
-        vm.tableHeight = $window.innerHeight - 345;
+        vm.tableHeight = $window.innerHeight - 325;
         vm.checkAllTableSum = false;
         vm.downloading = false;
 
@@ -28,6 +28,25 @@
             itemSerialNumber: 'פריט/ברקוד',
             count: 'מארזים'
         };
+
+        vm.tableSummary = {
+            count: 0,
+            sum: 0
+        }
+
+        var allOrderItems = distributionContext.getDistributionState();
+        var allDistributedItems = distributionContext.getDistributedState();
+
+        //$timeout(function () {
+        if (angular.isUndefined(allOrderItems)) {
+            allOrderItems = [];
+            initiateDistributionData();
+        } else {
+            vm.ordersItems = allOrderItems;
+            vm.allOrderItemsCount = allOrderItems.length;
+        }
+        // }, 0);
+
 
         /* ---- initiate table ---- */
 
@@ -59,6 +78,12 @@
                         var a = o;
                         return o.order._id === order._id;
                     });
+                    if (isExcist === -1) {
+                        isExcist = lodash.findIndex(allDistributedItems, function (o) {
+                            var a = o;
+                            return o.order._id === order._id;
+                        });
+                    }
                     if (isExcist === -1) {
                         newOrdersCount++;
                         var orderWithOutItems = angular.copy(order);
@@ -92,8 +117,9 @@
                     vm.allOrderItemsCount = allOrderItems.length;
                     vm.ordersItems = allOrderItems; // ??
 
-                    vm.getOrders(vm.filter, {}); // ??
+                    
                 }
+                vm.getOrders(vm.filter, vm.initialFilter); // ??
                 deferred.resolve();
             });
         }
@@ -119,50 +145,6 @@
             vm.allOrderItemsCount = vm.ordersItems.length;
             vm.getOrders(vm.filter, {});
         }
-
-        var allOrderItems = distributionContext.getDistributionState();
-        var allDistributedItems = distributionContext.getDistributedState();
-
-        if (angular.isUndefined(allOrderItems)) {
-            allOrderItems = [];
-            initiateDistributionData();
-        } else {
-            vm.ordersItems = allOrderItems;
-            vm.allOrderItemsCount = allOrderItems.length;
-        }
-        vm.tableSummary = {
-            count: 0,
-            sum: 0
-        }
-
-        $scope.$watch('vm.ordersItems', function (orders) {
-
-            if (angular.isUndefined(orders)) {
-                return;
-            }
-
-            vm.tableSummary = {
-                count: 0,
-                sum: 0
-            };
-
-            orders.forEach(function (order) {
-                vm.tableSummary.count += order.item.count;
-                vm.tableSummary.sum += order.sum || 0;
-                if (order.suppliers) {
-                    for (var key in order.suppliers) {
-                        if (order.suppliers.hasOwnProperty(key)) {
-                            var val = order.suppliers[key];
-                            if (!vm.tableSummary.hasOwnProperty(key)) {
-                                vm.tableSummary[key] = 0;
-                            }
-                            vm.tableSummary[key] += val;
-                        }
-                    }
-                }
-            }, this);
-        }, true);
-
 
         /* ---- download order ---- */
         vm.downloadFilterdTable = function () {
@@ -240,9 +222,8 @@
                             }
                             suppliersItemsMap[supplierId].push({
                                 createdDate: $filter('date')(item.order.createdDate, 'dd/MM/yyyy'),
-                                deliveryDate: item.order.type === 'second-order' ? 
-                                                $filter('date')(item.order.createdDate, 'dd/MM/yyyy') : 
-                                                getDeliveryDate(item.order.createdDate),
+                                deliveryDate: item.order.type === 'secondOrder' ?
+                                    $filter('date')(item.order.createdDate, 'dd/MM/yyyy') : getDeliveryDate(item.order.createdDate),
                                 branchId: item.order.branchId,
                                 itemSerialNumber: item.item.itemSerialNumber,
                                 count: element
@@ -303,6 +284,7 @@
             departmentId: [1]
         };
 
+        vm.filteringTable = true;
         vm.departments = null;
         vm.filter = {};
         vm.totalOrderCount = 0;
@@ -312,6 +294,9 @@
 
         vm.getOrders = function (filter, originalFilter) {
 
+            vm.resetSuppliersPresentValue();
+
+            vm.filteringTable = true;
             var deferred = $q.defer();
             vm.promise = deferred.promise;
 
@@ -360,11 +345,9 @@
             }
 
             //vm.ordersItems = $filter('orderBy')(vm.ordersItems, '-oreder.orderId');
-
+            vm.filteringTable = false;
             deferred.resolve();
         };
-
-
 
         /* ---- Suplier ----- */
         vm.selectedDepartments = vm.initialFilter.departmentId;
@@ -410,6 +393,15 @@
                 });
         }
 
+        vm.resetSuppliersPresentValue = function () {
+            for (var key in vm.suppliers) {
+                if (vm.suppliers.hasOwnProperty(key)) {
+                    var element = vm.suppliers[key];
+                    element.percent = '';    
+                }   
+            }   
+        }
+
         var timer;
         vm.updateAllItems = function (persent, supplierId) {
             $timeout.cancel(timer);
@@ -430,24 +422,81 @@
             }, 500);
         }
 
+        $scope.$watch('vm.ordersItems', function (orders) {
+
+            if (angular.isUndefined(orders)) {
+                return;
+            }
+
+            vm.tableSummary = {
+                count: 0,
+                sum: 0
+            };
+
+            orders.forEach(function (order) {
+                vm.tableSummary.count += order.item.count;
+                vm.tableSummary.sum += order.sum || 0;
+                if (order.suppliers) {
+                    for (var key in order.suppliers) {
+                        if (order.suppliers.hasOwnProperty(key)) {
+                            var val = order.suppliers[key];
+                            if (!vm.tableSummary.hasOwnProperty(key)) {
+                                vm.tableSummary[key] = 0;
+                            }
+                            vm.tableSummary[key] += val;
+                        }
+                    }
+                }
+            }, this);
+        }, true);
+
         $scope.$watch('vm.isDistributedMode', function (mode) {
+            if (angular.isUndefined(mode)) {
+                return;
+            }
             if (mode) {
                 vm.pageMode = 'distributed';
                 vm.showDistributedItems();
-            }
-            else {
+            } else {
                 vm.pageMode = 'distribution';
-                vm.showDistributionItems();
-                
+                vm.filteringTable = true;
+                $timeout(function () {
+                    vm.showDistributionItems();
+                }, 0)
+
             }
         });
 
         $scope.$watch('vm.refreshData', function (num) {
             if (num !== 0) {
-                vm.refreshDataFromServer();                
+                vm.refreshDataFromServer();
             }
         });
 
+        vm.openOrderDialog = function (order, ev) {
+            
+            // need to get all orders items....
+
+            /*$mdDialog.show({
+                    controller: 'ViewOrderDialogController',
+                    templateUrl: './components/order/viewOrderDialog-template.html',
+                    controllerAs: vm,
+                    parent: angular.element(document.body),
+                    targetEvent: ev,
+                    clickOutsideToClose: true,
+                    locals: {
+                        order: order,
+                        showEditBtn: true,
+                        mode: 'order'
+                    }
+                })
+                .then(function (answer) {
+                    //$scope.status = 'You said the information was "' + answer + '".';
+                }, function () {
+                    //$scope.status = 'You cancelled the dialog.';
+                });*/
+        }
+
     }
-    
+
 }());

@@ -9,10 +9,10 @@
             אספקה שניה
           </md-checkbox>
             <md-button ng-if="vm.showDeleteBtn" aria-label="delete" class="md-fab md-mini md-hue-1 md-icon-button" ng-click="vm.cleanCart($event)">
-                <ng-md-icon icon="delete"></ng-md-icon>
+                <md-icon ng-md-icon icon="delete"></md-icon>
             </md-button>
             <md-button ng-if="vm.showEditBtn" aria-label="edit" class="md-fab md-mini md-hue-1 md-icon-button" ng-click="vm.switchMode()">
-                <ng-md-icon icon="{{vm.buttonIcon}}" options='{"rotation": "counterclock"}'></ng-md-icon>
+                <md-icon ng-md-icon icon="{{vm.buttonIcon}}" options='{"rotation": "counterclock"}'></md-icon>
             </md-button> 
         </div>
 
@@ -21,7 +21,7 @@
     </div>
     <md-card style="width: 100%" layout-margin ng-if="vm.items.length < 1">
         <md-card-title class="management-filter-card-title">
-            <ng-md-icon icon="info_outline" class="message-icon" style="fill: brown" size="40"></ng-md-icon>
+            <md-icon ng-md-icon icon="info_outline" class="message-icon" style="fill: brown" size="40"></md-icon>
             <md-card-title-text>
                 <h3> לא נבחרו פריטים ! </h3>
                 <h4>אנא בחר פריטים</h4>
