@@ -83,6 +83,14 @@
                 mode: 'departmentsManager',
                 icon: 'view_module'
             }]
+        }, {
+            headerText: 'ניהול',
+            defultOpen: false,
+            buttons: [{
+                text: 'איפוס נתונים',
+                mode: 'cleanLocalstorage',
+                icon: 'delete'
+            }]
         }];
 
         vm.menuItem = _.find(vm.menu, function (menuItem) {
@@ -102,6 +110,25 @@
         });
 
         //* ---- Preper Data ------ */
+        var suppliersList = dataContext.getSuppliers();
+
+        // if not excist in local sorage, get from server
+        if (!suppliersList) {
+            server.getSuppliers().then(function (result) {
+                dataContext.setSuppliers(result.data);
+            });
+        }
+
+
+        var departments = dataContext.getDepartments();
+
+        // if not excist in local sorage, get from server
+        if (!departments) {
+            server.getDepartments().then(function (result) {
+                dataContext.setDepartments(result.data);
+            });
+        }
+
         var catalog = dataContext.getCatalog();
 
         if (!catalog) {

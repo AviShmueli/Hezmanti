@@ -15,7 +15,7 @@
             templateUrl: 'components/widgets/menuGroup-template.html'
         });
 
-    function menuGroupController($state) {
+    function menuGroupController($state, dataContext, $mdDialog) {
 
         var vm = this;
         vm.showSection = vm.defultOpen || false;
@@ -32,9 +32,28 @@
         }
 
         vm.switchViewMode = function (toMode) {
+            if(toMode.mode === 'cleanLocalstorage'){
+                promptConfirm();
+                return;
+            }
             vm.defultOpen = true;
             $state.params = {};
-            $state.go('admin' ,{mode: toMode.mode});
+            //$state.go('admin' ,{mode: toMode.mode});
+            window.location = '/#/admin/'+ toMode.mode;
+        }
+
+        var promptConfirm = function () {
+            var confirm = $mdDialog.confirm()
+                .title('האם את/ה בטוח שברצונך למחוק את כל הנתונים ?')
+                .parent(angular.element(document.querySelector('#dialogsWraper')))
+                .ariaLabel('Lucky day')
+                .ok('מחק')
+                .cancel('ביטול');
+
+            $mdDialog.show(confirm).then(function () {
+                dataContext.cleanLocalstorage();
+                location.reload();
+            }, function () { });
         }
     }
 })();

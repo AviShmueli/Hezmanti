@@ -304,3 +304,11 @@ table.md-table:not(.md-row-select) th.md-column:nth-child(n+2):nth-last-child(n+
 .sum-row > th{
     text-align: center !important;
 }
+.distribution-input:focus{
+        border: 1px solid rgba(116, 116, 230, 0.5) !important;
+    border-radius: 4px !important;
+    width: 45px !important;
+    
+}
+
+

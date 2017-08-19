@@ -40,6 +40,10 @@
             self.$storage.departments = null;
         }
 
+        var cleanLocalstorage = function () {
+            $localStorage.$reset();
+        }
+
         var getCart = function () {
             return self.$storage.cart || {};
         }
@@ -169,6 +173,7 @@
         }
 
         var service = {
+            cleanLocalstorage: cleanLocalstorage,
             removeItemFromCart: removeItemFromCart,
             updateCart: updateCart,
             getCartCount: getCartCount,

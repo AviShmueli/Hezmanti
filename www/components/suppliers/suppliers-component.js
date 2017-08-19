@@ -27,14 +27,6 @@
             vm.suppliersList = dataContext.getSuppliers();
         }
 
-        // if not excist in local sorage, get from server
-        if (!vm.suppliersList) {
-            server.getSuppliers().then(function (result) {
-                vm.suppliersList = result.data;
-                dataContext.setSuppliers(vm.suppliersList);
-            });
-        }
-
         vm.editMode = true;
         vm.edit_icon = vm.editMode ? 'menu' : 'done';
         vm.editTable = function (from) {

@@ -21,14 +21,6 @@
         
         vm.departments = dataContext.getDepartments();
 
-        // if not excist in local sorage, get from server
-        if (!vm.departments) {
-            server.getDepartments().then(function (result) {
-                vm.departments = result.data;
-                dataContext.setDepartments(vm.departments);
-            });
-        }
-
         vm.goToDepartmentPage = function (department) {
             $state.go('admin' ,{mode: 'departmentsManager', id: department.id});
         }

@@ -37,17 +37,6 @@
         var allOrderItems = distributionContext.getDistributionState();
         var allDistributedItems = distributionContext.getDistributedState();
 
-        //$timeout(function () {
-        if (angular.isUndefined(allOrderItems)) {
-            allOrderItems = [];
-            initiateDistributionData();
-        } else {
-            vm.ordersItems = allOrderItems;
-            vm.allOrderItemsCount = allOrderItems.length;
-        }
-        // }, 0);
-
-
         /* ---- initiate table ---- */
 
         var initiateDistributionData = function () {
@@ -117,7 +106,7 @@
                     vm.allOrderItemsCount = allOrderItems.length;
                     vm.ordersItems = allOrderItems; // ??
 
-                    
+
                 }
                 vm.getOrders(vm.filter, vm.initialFilter); // ??
                 deferred.resolve();
@@ -144,6 +133,14 @@
             vm.ordersItems = allOrderItems;
             vm.allOrderItemsCount = vm.ordersItems.length;
             vm.getOrders(vm.filter, {});
+        }
+
+        if (angular.isUndefined(allOrderItems)) {
+            allOrderItems = [];
+            initiateDistributionData();
+        } else {
+            vm.ordersItems = allOrderItems;
+            vm.allOrderItemsCount = allOrderItems.length;
         }
 
         /* ---- download order ---- */
@@ -270,7 +267,7 @@
             item.sum = 0;
             for (var index = 0; index < vm.suppliers.length; index++) {
                 var element = vm.suppliers[index];
-                item.sum += (item.suppliers[element.supplierId.toString()] || 0);
+                item.sum += parseInt((item.suppliers[element.supplierId.toString()] || 0));
             }
         }
 
@@ -397,9 +394,9 @@
             for (var key in vm.suppliers) {
                 if (vm.suppliers.hasOwnProperty(key)) {
                     var element = vm.suppliers[key];
-                    element.percent = '';    
-                }   
-            }   
+                    element.percent = '';
+                }
+            }
         }
 
         var timer;
@@ -443,7 +440,7 @@
                             if (!vm.tableSummary.hasOwnProperty(key)) {
                                 vm.tableSummary[key] = 0;
                             }
-                            vm.tableSummary[key] += val;
+                            vm.tableSummary[key] += parseInt(val);
                         }
                     }
                 }
@@ -473,8 +470,35 @@
             }
         });
 
+        vm.keyPressed = function (TB, e, row, col) {
+            var idToFind;
+            // go down
+            if (e.keyCode == 40 || e.keyCode == 13) {
+                idToFind = (row + 1) + 'c' + col;
+            }
+            // go up
+            if (e.keyCode == 38) {
+                idToFind = (row - 1) + 'c' + col;
+            }
+            // go left
+            // if (e.keyCode == 37) {
+            //     idToFind = row + 'c' + (col + 1);
+            // }
+            // go right
+            // if (e.keyCode == 39) {
+            //     idToFind = row + 'c' + (col - 1);
+            // }
+
+            var elementToFocus = document.getElementById(idToFind);
+            if(elementToFocus){
+                elementToFocus.focus();
+            }
+
+            e.preventDefault();
+        }
+
         vm.openOrderDialog = function (order, ev) {
-            
+
             // need to get all orders items....
 
             /*$mdDialog.show({

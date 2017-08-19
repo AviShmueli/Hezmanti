@@ -1,15 +1,15 @@
 <md-toolbar flex>
   <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
-      <md-button ng-if="vm.viewMode === 'ordersDistribution'" aria-label="refresh" class="md-primary md-raised" ng-click="vm.refreshDataFromServer = vm.refreshDataFromServer + 1">
-        <md-icon ng-md-icon icon="refresh"></md-icon>
-        <span style="font-size: 18px;">ריענון הזמנות חדשות</span>
-      </md-button>
-      
-      <span ng-if="vm.viewMode === 'ordersDistribution'">פריטים לחלוקה</span>
-      <md-switch ng-if="vm.viewMode === 'ordersDistribution'" style="margin: 3px;" class="md-secondery" name="special" ng-model="vm.distrebutedDataMode">
-        פריטים שחולקו
-      </md-switch>
-      
+    <md-button ng-if="vm.viewMode === 'ordersDistribution'" aria-label="refresh" class="md-primary md-raised" ng-click="vm.refreshDataFromServer = vm.refreshDataFromServer + 1">
+      <md-icon ng-md-icon icon="refresh"></md-icon>
+      <span style="font-size: 18px;">ריענון הזמנות חדשות</span>
+    </md-button>
+
+    <span ng-if="vm.viewMode === 'ordersDistribution'">פריטים לחלוקה</span>
+    <md-switch ng-if="vm.viewMode === 'ordersDistribution'" style="margin: 3px;" class="md-secondery" name="special" ng-model="vm.distrebutedDataMode">
+      פריטים שחולקו
+    </md-switch>
+
 
     <div ng-if="vm.viewMode !== 'ordersDistribution'">
       <md-button class="md-icon-button" aria-label="Menu">
@@ -83,7 +83,15 @@
 </md-content>
 
 <md-content ng-if="vm.loadingData" layout-padding md-scroll-y style="height: 90%">
-
-  Loading...
-
+  <div>
+    <md-content md-theme="docs-dark" layout-padding>
+      <div layout="row" layout-sm="column" layout-align="space-around">
+        <div layout="column">
+          <h4>טוען נתונים...</h4>
+          <br>
+          <md-progress-circular md-diameter="96"></md-progress-circular>
+        </div>
+      </div>
+    </md-content>
+  </div>
 </md-content>
