@@ -37,6 +37,8 @@
         var allOrderItems = distributionContext.getDistributionState();
         var allDistributedItems = distributionContext.getDistributedState();
 
+        var currDistributedItems = [];
+
         /* ---- initiate table ---- */
 
         var initiateDistributionData = function () {
@@ -55,7 +57,8 @@
 
             var deferred = $q.defer();
             vm.promise = deferred.promise;
-
+            vm.filteringTable = true;
+            
             server.getAllOrders(query, filter).then(function (response) {
                 var orders = response.data;
 
@@ -118,15 +121,18 @@
         }
 
         vm.showDistributedItems = function () {
-            var filter = {};
+            // var filter = {};
 
-            var deferred = $q.defer();
-            vm.promise = deferred.promise;
-            server.getDistributedItems(filter).then(function (response) {
-                vm.ordersItems = response.data;
-                vm.allOrderItemsCount = vm.ordersItems.length;
-                deferred.resolve();
-            });
+            // var deferred = $q.defer();
+            // vm.promise = deferred.promise;
+            // server.getDistributedItems(filter).then(function (response) {
+            //     vm.ordersItems = response.data;
+            //     vm.allOrderItemsCount = vm.ordersItems.length;
+            //     deferred.resolve();
+            // });
+
+            vm.ordersItems = allDistributedItems;
+            vm.allOrderItemsCount = vm.ordersItems.length;
         }
 
         vm.showDistributionItems = function () {
@@ -192,7 +198,7 @@
             // save the items in DB
             // TODO: BUG - send to server only the items that in the files that currently downloading
             //             and call server only if the list contains values
-            server.saveDistribution(vm.ordersItems).then(function (response) {
+            server.saveDistribution(currDistributedItems).then(function (response) {
                 $mdToast.show(
                     $mdToast.simple()
                     .textContent('הנתונים נשמרו בהצלחה!')
@@ -201,7 +207,7 @@
             });
 
             // remove the distributed itms from the page
-            allDistributedItems.forEach(function (element) {
+            currDistributedItems.forEach(function (element) {
                 lodash.remove(vm.ordersItems, function (n) {
                     return n.id === element.id;
                 });
@@ -212,6 +218,8 @@
                 vm.allOrderItemsCount = allOrderItems.length;
             }, this);
 
+            allDistributedItems = allDistributedItems.concat(currDistributedItems);
+            currDistributedItems = [];
 
             vm.downloading = false;
             vm.checkAllTableSum = false;
@@ -238,7 +246,7 @@
                             });
                         }
                     }
-                    allDistributedItems.push(item);
+                    currDistributedItems.push(item);
                 }
             }
             markItemsAsDistrebuted();
@@ -247,7 +255,7 @@
         }
 
         var markItemsAsDistrebuted = function () {
-            server.markItemsAsDistrebuted(allDistributedItems).then(function (result) {
+            server.markItemsAsDistrebuted(currDistributedItems).then(function (result) {
                 //vm.allDistributedItems = [];
             });
         }
@@ -328,6 +336,7 @@
                 }
 
                 // filter unhendeled items & second orders
+                // TODO: BUG - filter according to state, if this is distributed state search on allDistributed list
                 vm.ordersItems = $filter('filter')(allOrderItems, localFilter, true);
 
                 // filter by date
