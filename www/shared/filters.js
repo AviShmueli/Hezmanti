@@ -50,7 +50,7 @@
                                 if (order.item.itemDepartmentId === parseInt(element)) {
                                     filtered.push(order);
                                 }
-                            });                           
+                            });
                         }, this);
                         itemsToWorkOn = filtered;
                         filtered = [];
@@ -65,20 +65,20 @@
                                 if (order.order.orderId === parseInt(element)) {
                                     filtered.push(order);
                                 }
-                            });                           
+                            });
                         }, this);
                         itemsToWorkOn = filtered;
                         filtered = [];
                     }
 
-                    if (property === 'items') {                       
+                    if (property === 'items') {
 
                         filter[property].forEach(function (element) {
                             angular.forEach(itemsToWorkOn, function (order) {
                                 if (order.item.itemName && order.item.itemName === element) {
                                     filtered.push(order);
                                 }
-                            });                           
+                            });
                         }, this);
                         itemsToWorkOn = filtered;
                         filtered = [];
@@ -106,25 +106,36 @@
                 return filtered;
             };
         })
-        .filter('unique', function(lodash) {
+        .filter('unique', function (lodash) {
             return function (arr, field) {
-                return lodash.uniq(arr, function(a) { return a[field]; });
+                return lodash.uniq(arr, function (a) {
+                    return a[field];
+                });
             };
-            
-})
-.filter('ordersByDepartment', function ($filter) {
+
+        })
+        .filter('ordersByDepartment', function ($filter) {
             return function (braches, department) {
                 var filtered = [];
                 angular.forEach(braches, function (branch) {
-
-                    if(branch.departments && branch.departments.length > 0){
-                        if (branch.departments.indexOf(department.id) !== -1) {
+                    if (department === 'all') {
+                        if (branch.departments && branch.departments.length > 0) {
                             branch.sendOrder = true;
                             filtered.push(branch);
                             return;
-                        }
-                        else {
+                        } else {
                             branch.sendOrder = false;
+                        }
+                    } else {
+                        if (branch.departments && branch.departments.length > 0) {
+
+                            if (branch.departments.indexOf(department.id) !== -1) {
+                                branch.sendOrder = true;
+                                filtered.push(branch);
+                                return;
+                            } else {
+                                branch.sendOrder = false;
+                            }
                         }
                     }
 

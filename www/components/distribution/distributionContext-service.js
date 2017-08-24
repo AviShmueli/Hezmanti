@@ -16,6 +16,10 @@
             self.$storage.distributionState = state;
         }
 
+        var saveDistributedState = function (state) {
+            self.$storage.distributedState = state;
+        }
+
         var getDistributionState = function () {
             return self.$storage.distributionState;
         }
@@ -27,6 +31,7 @@
 
         var service = { 
             saveDistributionState: saveDistributionState,
+            saveDistributedState: saveDistributedState,
             getDistributionState: getDistributionState,
             getDistributedState: getDistributedState
         };

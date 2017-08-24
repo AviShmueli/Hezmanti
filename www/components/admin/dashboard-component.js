@@ -88,7 +88,6 @@
         vm.selectedDepartment = 0;
         vm.switchTab = function (department, selectedTab) {
             vm.selectedDepartment = department;
-            console.log(department);
         }
     }
 

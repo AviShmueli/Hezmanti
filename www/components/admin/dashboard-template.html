@@ -8,6 +8,9 @@
                 ng-repeat="department in vm.departments | orderBy: 'name'" label="{{department.name}}">
                
         </md-tab>
+        <md-tab md-border-bottom md-on-select="vm.switchTab('all', -1)"
+                label="הכל">
+        </md-tab>
     </md-tabs>
 
     <div >
@@ -21,9 +24,9 @@
                     <div style="width: 200px;display: inline-flex;padding: 15px;" ng-repeat="branch in vm.allBranches[network.id] | ordersByDepartment:vm.selectedDepartment |orderBy:'name'" md-colspan-gt-sm="1" md-rowspan-gt-sm="1">
                         <div class="md-item-text md-whiteframe-z3" flex style="padding: 0 10px;margin: 20px; background-color:  #F44336; text-align: center;" ng-class="{'brunch-good' : branch.sendOrder === true}">
                             <h3>{{branch.name}}</h3>
-                            <!--<div>
+                            <div ng-if="vm.selectedDepartment === 'all'">
                                  <img ng-repeat="departmentId in branch.departments | unique:'departmentId'" class="dashboard-card-img" ng-src="{{::vm.imagesPath + '/assets/images/departments/' + departmentId + '.png'}}">
-                            </div>-->
+                            </div>
                         </div>
                     </div>
                 </md-grid-list>
