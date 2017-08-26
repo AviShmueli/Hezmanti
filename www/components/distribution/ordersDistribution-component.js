@@ -39,6 +39,9 @@
 
         var currDistributedItems = [];
 
+
+        var catalog = dataContext.getCatalog();
+
         /* ---- initiate table ---- */
 
         var initiateDistributionData = function () {
@@ -90,6 +93,25 @@
                                 sum: 0,
                                 id: order._id + (item.serialNumber || item.itemSerialNumber) + Math.floor(Math.random() * 100)
                             });
+                        }
+
+                        for (var department in catalog) {
+                            if (catalog.hasOwnProperty(department)) {
+                                var departmentItems = catalog[department];
+                                departmentItems.forEach(function (item) {
+                                    var itm = _.find(newOrdersItems, function (o) {
+                                        return o.item.serialNumber === item.serialNumber;
+                                    });
+                                    if (!itm) {
+                                        newOrdersItems.push({
+                                            order: orderWithOutItems,
+                                            item: item,
+                                            sum: 0,
+                                            id: order._id + (item.serialNumber || item.itemSerialNumber) + Math.floor(Math.random() * 100)
+                                        });
+                                    }
+                                }, this);
+                            }
                         }
                     }
                 }
@@ -336,8 +358,7 @@
                 // TODO: BUG - filter according to state, if this is distributed state search on allDistributed list
                 if (vm.pageMode === 'distribution') {
                     vm.ordersItems = $filter('filter')(allOrderItems, localFilter, true);
-                }
-                else{
+                } else {
                     vm.ordersItems = $filter('filter')(allDistributedItems, localFilter, true);
                 }
 
