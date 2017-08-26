@@ -13,13 +13,14 @@
             templateUrl: 'components/distribution/ordersDistribution-template.html'
         });
 
-    function ordersDistributionController($scope, server, $q, filesHandler, $filter, $timeout, dataContext,
+    function ordersDistributionController($rootScope, $scope, server, $q, filesHandler, $filter, $timeout, dataContext,
         $mdToast, $mdDialog, $window, distributionContext, lodash) {
 
         var vm = this;
         vm.tableHeight = $window.innerHeight - 325;
         vm.checkAllTableSum = false;
         vm.downloading = false;
+        var lastOrderId = distributionContext.getLastOrderId();
 
         var orderFields = {
             createdDate: 'ת. הזמנה',
@@ -48,6 +49,7 @@
             // TODO: insert to the filter the id of the last order that exict in local sorage,
             //       and filter by this id to get only the orders that not in the local storage.
             var filter = {
+                'orderId': {'$gt': lastOrderId},
                 '$or': [{
                     "type": 'order'
                 }, {
@@ -63,7 +65,17 @@
             vm.filteringTable = true;
 
             server.getAllOrders(query, filter).then(function (response) {
+                
                 var orders = response.data;
+
+                if (orders.length < 1) {
+                    vm.filteringTable = false;
+                    deferred.resolve();
+                    return;
+                }
+
+                lastOrderId = orders[0].orderId;
+                distributionContext.setLastOrderId(lastOrderId);
 
                 var newOrdersCount = 0;
                 var newOrdersItems = [];
@@ -85,8 +97,10 @@
                         var orderWithOutItems = angular.copy(order);
                         delete orderWithOutItems.items;
 
+                        var ordersDepartments = [];
                         for (var j = 0; j < order.items.length; j++) {
                             var item = order.items[j];
+                            ordersDepartments.push(item.itemDepartmentId);
                             newOrdersItems.push({
                                 order: orderWithOutItems,
                                 item: item,
@@ -95,7 +109,7 @@
                             });
                         }
 
-                        for (var department in catalog) {
+                        for (var department in ordersDepartments) {
                             if (catalog.hasOwnProperty(department)) {
                                 var departmentItems = catalog[department];
                                 departmentItems.forEach(function (item) {
@@ -105,7 +119,7 @@
                                     if (!itm) {
                                         newOrdersItems.push({
                                             order: orderWithOutItems,
-                                            item: item,
+                                            item: {count: 0, itemDepartmentId: item.departmentId, itemName: item.name, itemSerialNumber: item.serialNumber, unit: item.unit},
                                             sum: 0,
                                             id: order._id + (item.serialNumber || item.itemSerialNumber) + Math.floor(Math.random() * 100)
                                         });
@@ -133,13 +147,14 @@
                     vm.ordersItems = allOrderItems;
                 }
 
-                vm.getOrders(vm.filter, vm.initialFilter);
+                vm.filterTable(vm.filter, vm.initialFilter);
                 deferred.resolve();
             });
         }
 
         vm.refreshDataFromServer = function (ev) {
             initiateDistributionData();
+            distributionContext.cleanOldDistributedData();
         }
 
         vm.showDistributedItems = function () {
@@ -154,13 +169,13 @@
             // });
             vm.ordersItems = allDistributedItems;
             vm.allOrderItemsCount = vm.ordersItems.length;
-            vm.getOrders(vm.filter, {});
+            vm.filterTable(vm.filter, {});
         }
 
         vm.showDistributionItems = function () {
             vm.ordersItems = allOrderItems;
             vm.allOrderItemsCount = vm.ordersItems.length;
-            vm.getOrders(vm.filter, {});
+            vm.filterTable(vm.filter, {});
         }
 
         if (angular.isUndefined(allOrderItems)) {
@@ -311,7 +326,8 @@
 
         // initial with defult department
         vm.initialFilter = {
-            departmentId: [1]
+            departmentId: [1],
+            orderItems: true
         };
 
         vm.filteringTable = true;
@@ -322,7 +338,7 @@
             order: '-order.orderId'
         };
 
-        vm.getOrders = function (filter, originalFilter) {
+        vm.filterTable = function (filter, originalFilter) {
 
             vm.resetSuppliersPresentValue();
 

@@ -20,6 +20,18 @@
                 var filtered = [];
                 var itemsToWorkOn = orderItems;
                 for (var property in filter) {
+                    
+                    if (property === 'orderItems' && filter[property]) {
+
+                        angular.forEach(itemsToWorkOn, function (order) {
+                            if (order.item.count > 0) {
+                                filtered.push(order);
+                            }
+                        });
+                        itemsToWorkOn = filtered;
+                        filtered = [];
+                    }
+
                     if (property === 'networkId') {
                         filter[property].forEach(function (element) {
                             angular.forEach(itemsToWorkOn, function (order) {
@@ -83,10 +95,6 @@
                         itemsToWorkOn = filtered;
                         filtered = [];
                     }
-
-                    // if (filter.departmentId) {
-                    //     order.items = $filter('departmentsItems')(order.items, filter.departmentId);
-                    // }
                 }
 
                 return itemsToWorkOn;

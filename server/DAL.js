@@ -475,8 +475,11 @@
             mongo.collection.find(filter, {
                 branchId: 1,
                 createdDate: 1,
-                items: 1
-            }).toArray(function (err, result) {
+                items: 1,
+                orderId: true
+            }, {"sort": [
+                ["orderId", "desc"]
+            ]}).toArray(function (err, result) {
                 if (err) {
                     var errorObj = {
                         message: "error while trying to get All orders count: ",

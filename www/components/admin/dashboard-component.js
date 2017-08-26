@@ -12,8 +12,8 @@
             templateUrl: 'components/admin/dashboard-template.html'
         });
 
-    function dashboardController(server, $q, $interval, $location, dataContext, device) {
-        
+    function dashboardController($rootScope, server, $q, $interval, $location, dataContext, device) {
+
         var vm = this;
         vm.allBranches = [];
         vm.showLaunchBtn = $location.search().s !== undefined ? false : true;
@@ -62,15 +62,22 @@
 
         var getAllTodayOrders = function () {
             server.getAllTodayOrders().then(function (response) {
-                for (var index = 0; index < response.data.length; index++) {
-                    var order = response.data[index];
-                    vm.branchesMap[order.branchId]['sendOrder'] = true;
-                    vm.branchesMap[order.branchId]['departments'] = [];
-                    order.items.forEach(function(item) {
-                        vm.branchesMap[order.branchId]['departments'].push(item.itemDepartmentId);
-                    }, this);
-                }
+                if (response.data.length > 0) {
+                    
+                    // TODO: in order to show inidication about how mutch new orders there are that the user havent seen,
+                    //       store in localstorage the orderId of the first order in the list,
+                    //       then add watch on the value in the ordersDistribution component and if the value is diffrent 
+                    //       show indication to the user
 
+                    for (var index = 0; index < response.data.length; index++) {
+                        var order = response.data[index];
+                        vm.branchesMap[order.branchId]['sendOrder'] = true;
+                        vm.branchesMap[order.branchId]['departments'] = [];
+                        order.items.forEach(function (item) {
+                            vm.branchesMap[order.branchId]['departments'].push(item.itemDepartmentId);
+                        }, this);
+                    }
+                }
             });
             var date = new Date().getDate();
             if (date !== vm.lastUpdateDate) {

@@ -1,29 +1,9 @@
 <md-content flex md-scroll-y class="background-color-transparent" dir="rtl">
     <main flex>
         <ui-view layout="column" layout-fill>
-
-
-            <!-- <md-card>
-                <div layout="row" flex>
-                    <div layout="column" flex="80" layout-padding>
-                        <span>מציג {{vm.ordersItems.length}} מתוך {{vm.allOrderItemsCount}} פריטים</span>
-                    </div>
-                    <div layout="column" flex="20">
-                        <md-button aria-label="refresh" class="md-primary" ng-click="vm.refreshDataFromServer($event)"> רענן נתונים מהשרת </md-button>
-                    </div >
-                    <div layout="column" flex="20">
-                        <md-button aria-label="refresh" class="md-primary" ng-click="vm.showDistributedItems($event)"> הצג פריטים שחולקו </md-button>
-                    </div >
-                </div>
-                
-            </md-card> -->
-            <filter-table card-title="'סינון ופעולות'" on-filter-callback="vm.getOrders" show-download-excel-btn="vm.ordersItems.length > 0"
+            <filter-table card-title="'סינון ופעולות'" on-filter-callback="vm.filterTable" show-download-excel-btn="vm.ordersItems.length > 0"
                 initial-values="vm.initialFilter" download-filterd-table="vm.downloadFilterdTable">
             </filter-table>
-
-            <!--<md-card layout-margin>
-                 <div id="grid1" ng-grid="vm.gridOptions" class="grid"></div>
-            </md-card>      -->
 
             <md-card layout-margin>
                 <md-table-container ng-if="!vm.filteringTable">
@@ -114,7 +94,7 @@
             </md-card>
 
             <!--<md-table-pagination md-label="{'of': ' מתוך ', 'page': 'עמוד מספר', 'rowsPerPage': 'מספר שורות בעמוד' }" md-limit="vm.query.limit"
-                    md-limit-options="[5, 10, 15, 20]" md-page="vm.ordersItems.length" md-total="{{vm.allOrderItemsCount}}" md-on-paginate="vm.getOrders"
+                    md-limit-options="[5, 10, 15, 20]" md-page="vm.ordersItems.length" md-total="{{vm.allOrderItemsCount}}" md-on-paginate="vm.filterTable"
                     md-page-select></md-table-pagination>-->
 
 

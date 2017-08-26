@@ -33,22 +33,28 @@
 
             <div layout-gt-xs="row" layout="column">
                 
-                <md-select-multi class="multi-select-container" flex="30" select-lable="'מחלקה'" select-model="vm.ordersFilter.departmentId" select-values="vm.departments"></md-select-multi>
+                <md-select-multi style="max-width: 25%;" class="multi-select-container" flex="25" select-lable="'מחלקה'" select-model="vm.ordersFilter.departmentId" select-values="vm.departments"></md-select-multi>
 
                 <md-select-multi style="max-width: 25%;" flex="30" select-lable="'פריטים'" select-model="vm.ordersFilter.items" select-values="vm.itemsToFilter"></md-select-multi>
 
             <!-- </div>
             <div layout-gt-xs="row" layout="column"> -->
-                <md-input-container class="md-block" flex="20">
-                    <md-switch style="margin: 3px;" class="md-primary" name="special" ng-model="vm.ordersFilter.unhandledItems" required>
-                        פריטים שלא טופלו
-                    </md-switch>
+                <md-input-container class="md-block" flex="15">
+                    <md-checkbox style="margin: 3px;" class="md-primary" name="special" ng-model="vm.ordersFilter.orderItems" required>
+                        פריטים מוזמנים
+                    </md-checkbox>
                 </md-input-container>
 
-                <md-input-container class="md-block" flex="20">
-                    <md-switch style="margin: 3px;" class="md-primary" name="special" ng-model="vm.ordersFilter.showSecondOrders" required>
+                <md-input-container class="md-block" flex="15">
+                    <md-checkbox style="margin: 3px;" class="md-primary" name="special" ng-model="vm.ordersFilter.unhandledItems" required>
+                        פריטים שלא טופלו
+                    </md-checkbox>
+                </md-input-container>
+
+                <md-input-container class="md-block" flex="15">
+                    <md-checkbox style="margin: 3px;" class="md-primary" name="special" ng-model="vm.ordersFilter.showSecondOrders" required>
                         אספקה שניה
-                    </md-switch>
+                    </md-checkbox>
                 </md-input-container>
             </div>
         </div>

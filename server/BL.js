@@ -118,7 +118,14 @@
         }
 
         if (filter.hasOwnProperty('orderId')) {
-            filter.orderId = parseInt(filter.orderId);
+            if (isNaN(filter.orderId)) {
+                filter.orderId = {
+                    '$gt' : parseInt(filter.orderId.$gt)
+                }
+            }
+            else{
+                filter.orderId = parseInt(filter.orderId);
+            }
         }
 
         if (filter.hasOwnProperty('branchId')) {
@@ -175,7 +182,14 @@
         }
 
         if (filter.hasOwnProperty('orderId')) {
-            filter.orderId = parseInt(filter.orderId);
+            if (isNaN(filter.orderId)) {
+                filter.orderId = {
+                    '$gt' : parseInt(filter.orderId.$gt)
+                }
+            }
+            else{
+                filter.orderId = parseInt(filter.orderId);
+            }
         }
 
         DAL.getAllOrdersCount(filter).then(function (result) {
