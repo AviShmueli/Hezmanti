@@ -39,6 +39,10 @@
                 mode: 'ordersDistribution',
                 icon: 'blur_linear'
             }, {
+                text: 'שיריון',
+                mode: 'reserve',
+                icon: 'merge_type'
+            }, {
                 text: 'מצב הזמנה',
                 mode: 'ordersStatus',
                 icon: 'timeline'

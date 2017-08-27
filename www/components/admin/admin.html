@@ -70,6 +70,7 @@
 
   <suppliers ng-if="vm.viewMode === 'suppliersManager'"></suppliers>
   <dashboard ng-if="vm.viewMode === 'ordersStatus'"></dashboard>
+  <reserve ng-if="vm.viewMode === 'reserve'"></reserve>
   <users-manager ng-if="vm.viewMode === 'usersManager'"></users-manager>
   <orders-manager ng-if="vm.viewMode === 'ordersManager'" page-mode="'order'"></orders-manager>
   <orders-manager ng-if="vm.viewMode === 'stockManager'" page-mode="'stock'"></orders-manager>

@@ -3,24 +3,24 @@
 
     angular
         .module('app')
-        .component('ordersDistribution', {
+        .component('reserve', {
             bindings: {
                 isDistributedMode: '=',
                 refreshData: '='
             },
-            controller: ordersDistributionController,
+            controller: reserveController,
             controllerAs: 'vm',
-            templateUrl: 'components/distribution/ordersDistribution-template.html'
-        });
+            templateUrl: 'components/reserve/reserve-template.html'
+        }); 
 
-    function ordersDistributionController($rootScope, $scope, server, $q, filesHandler, $filter, $timeout, dataContext,
-        $mdToast, $mdDialog, $window, distributionContext, lodash) {
+    function reserveController($rootScope, $scope, server, $q, filesHandler, $filter, $timeout, dataContext,
+        $mdToast, $mdDialog, $window, reserveContext, lodash) {
 
         var vm = this;
         vm.tableHeight = $window.innerHeight - 325;
         vm.checkAllTableSum = false;
         vm.downloading = false;
-        var lastOrderId = distributionContext.getLastOrderId();
+        var lastOrderId = reserveContext.getLastOrderId();
 
         var orderFields = {
             createdDate: 'ת. הזמנה',
@@ -34,9 +34,9 @@
             count: 0,
             sum: 0
         }
-        var pageMode = 'distribution';
-        var allOrderItems = distributionContext.getDistributionState();
-        var allDistributedItems = distributionContext.getDistributedState();
+        var pageMode = 'reserve';
+        var reserveState = reserveContext.getReserveState();
+        var allDistributedItems = reserveContext.getDistributedState();
 
         var currDistributedItems = [];
 
@@ -45,7 +45,7 @@
 
         /* ---- initiate table ---- */
 
-        var initiateDistributionData = function () {
+        var initiateReserveData = function () {
             // TODO: insert to the filter the id of the last order that exict in local sorage,
             //       and filter by this id to get only the orders that not in the local storage.
             var filter = {
@@ -75,7 +75,7 @@
                 }
 
                 lastOrderId = orders[0].orderId;
-                distributionContext.setLastOrderId(lastOrderId);
+                reserveContext.setLastOrderId(lastOrderId);
 
                 var newOrdersCount = 0;
                 var newOrdersItems = [];
@@ -83,7 +83,7 @@
 
                     var order = orders[index];
 
-                    var isExcist = lodash.findIndex(allOrderItems, function (o) {
+                    var isExcist = lodash.findIndex(reserveState, function (o) {
                         var a = o;
                         return o.order._id === order._id;
                     });
@@ -140,11 +140,11 @@
                         .hideDelay(3000)
                     );
 
-                    allOrderItems = allOrderItems.concat(newOrdersItems);
+                    reserveState = reserveState.concat(newOrdersItems);
 
-                    distributionContext.saveDistributionState(allOrderItems);
-                    vm.allOrderItemsCount = allOrderItems.length;
-                    vm.ordersItems = allOrderItems;
+                    reserveContext.saveReserveState(reserveState);
+                    vm.reserveStateCount = reserveState.length;
+                    vm.ordersItems = reserveState;
                 }
 
                 vm.filterTable(vm.filter, vm.initialFilter);
@@ -153,8 +153,8 @@
         }
 
         vm.refreshDataFromServer = function (ev) {
-            initiateDistributionData();
-            distributionContext.cleanOldDistributedData();
+            initiateReserveData();
+            reserveContext.cleanOldDistributedData();
         }
 
         vm.showDistributedItems = function () {
@@ -164,26 +164,26 @@
             // vm.promise = deferred.promise;
             // server.getDistributedItems(filter).then(function (response) {
             //     vm.ordersItems = response.data;
-            //     vm.allOrderItemsCount = vm.ordersItems.length;
+            //     vm.reserveStateCount = vm.ordersItems.length;
             //     deferred.resolve();
             // });
             vm.ordersItems = allDistributedItems;
-            vm.allOrderItemsCount = vm.ordersItems.length;
+            vm.reserveStateCount = vm.ordersItems.length;
             vm.filterTable(vm.filter, {});
         }
 
-        vm.showDistributionItems = function () {
-            vm.ordersItems = allOrderItems;
-            vm.allOrderItemsCount = vm.ordersItems.length;
+        vm.showReserveItems = function () {
+            vm.ordersItems = reserveState;
+            vm.reserveStateCount = vm.ordersItems.length;
             vm.filterTable(vm.filter, {});
         }
 
-        if (angular.isUndefined(allOrderItems)) {
-            allOrderItems = [];
-            initiateDistributionData();
+        if (angular.isUndefined(reserveState)) {
+            reserveState = [];
+            initiateReserveData();
         } else {
-            vm.ordersItems = allOrderItems;
-            vm.allOrderItemsCount = allOrderItems.length;
+            vm.ordersItems = reserveState;
+            vm.reserveStateCount = reserveState.length;
         }
 
         /* ---- download order ---- */
@@ -235,7 +235,7 @@
                 }, this);
 
                 // save the items in DB
-                server.saveDistribution(currDistributedItems).then(function (response) {
+                server.saveReserve(currDistributedItems).then(function (response) {
                     $mdToast.show(
                         $mdToast.simple()
                         .textContent('הנתונים נשמרו בהצלחה!')
@@ -249,14 +249,14 @@
                         return n.id === element.id;
                     });
 
-                    lodash.remove(allOrderItems, function (n) {
+                    lodash.remove(reserveState, function (n) {
                         return n.id === element.id;
                     });
-                    vm.allOrderItemsCount = allOrderItems.length;
+                    vm.reserveStateCount = reserveState.length;
                 }, this);
 
                 allDistributedItems = allDistributedItems.concat(currDistributedItems);
-                distributionContext.saveDistributedState(allDistributedItems);
+                reserveContext.saveDistributedState(allDistributedItems);
                 currDistributedItems = [];
             }
 
@@ -371,8 +371,8 @@
                 }
 
                 // filter unhendeled items & second orders
-                if (vm.pageMode === 'distribution') {
-                    vm.ordersItems = $filter('filter')(allOrderItems, localFilter, true);
+                if (vm.pageMode === 'reserve') {
+                    vm.ordersItems = $filter('filter')(reserveState, localFilter, true);
                 } else {
                     vm.ordersItems = $filter('filter')(allDistributedItems, localFilter, true);
                 }
@@ -501,17 +501,17 @@
 
         $scope.$watch('vm.isDistributedMode', function (mode) {
             if (angular.isUndefined(mode)) {
-                vm.pageMode = 'distribution';
+                vm.pageMode = 'reserve';
                 return;
             }
             if (mode) {
                 vm.pageMode = 'distributed';
                 vm.showDistributedItems();
             } else {
-                vm.pageMode = 'distribution';
+                vm.pageMode = 'reserve';
                 vm.filteringTable = true;
                 $timeout(function () {
-                    vm.showDistributionItems();
+                    vm.showReserveItems();
                 }, 0)
 
             }
