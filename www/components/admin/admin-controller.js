@@ -42,10 +42,6 @@
                 mode: 'ordersDistribution',
                 icon: 'blur_linear'
             }, {
-                text: 'שיריון JOS',
-                mode: 'josSiryun',
-                icon: 'merge_type'
-            }, {
                 text: 'שיריון',
                 mode: 'reserve',
                 icon: 'merge_type'
@@ -149,7 +145,7 @@
        
         if (!catalog) {
             vm.loadingData = true;
-            console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAA');
+            
             server.getCatalog().then(function (response) {
                 vm.items = response.data;
                 var departmentsMap = {};
