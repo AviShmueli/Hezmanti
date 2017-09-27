@@ -56,7 +56,7 @@
                                                    class="distribution-input"
                                                    
                                                    aria-label="input" style="width: 35px;" 
-                                                   type="text" name="name{{$index}}" 
+                                                   type="text" name="name{{$index}}{{pIndex}}" 
                                                    ng-model="o.supp[supplier.supplierId.toString()][0].haluka"
                                                 min="0" ng-change="vm.updateSum(o,supplier.supplierId.toString())" ng-enter>
                                      

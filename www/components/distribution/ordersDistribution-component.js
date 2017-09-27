@@ -23,11 +23,12 @@
         console.log('ordersDistribution 000');
         var lastOrderId = distributionContext.getLastOrderId();
 
-        /* jos refersh page
+        /*// jos refersh page
         var c=0;
         
         $interval(function(){
-        console.log('ccc=',c);
+        //$scope.$apply();
+        console.log('ccc=',c,$scope.$$phase);
         c++;
         },10000);
         */
