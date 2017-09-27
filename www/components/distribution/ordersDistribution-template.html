@@ -66,7 +66,7 @@
                                         <!--max="{{o.item.count - o.sum + o.suppliers[supplier.supplierId.toString()]}}"-->
                                         <input id="{{pIndex}}c{{$index}}" 
                                                class="distribution-input"
-                                               
+                                               ng-keyup="vm.keyPressed(pIndex + 'c' + $index,$event, pIndex, $index)" 
                                                aria-label="input" style="width: 45px;" 
                                                type="text" name="name{{$index}}" 
                                                ng-model="o.suppliers[supplier.supplierId.toString()]"
