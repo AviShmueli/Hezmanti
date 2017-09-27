@@ -15,12 +15,13 @@
 
     function reserveController($rootScope, $scope, server, $q, filesHandler, $filter, $timeout, dataContext,
         $mdToast, $mdDialog, $window, reserveContext, lodash) {
-
+            console.log('reserve component');
         var vm = this;
+        vm.f14 = 0;
         vm.tableHeight = $window.innerHeight - 325;
         vm.checkAllTableSum = false;
         vm.downloading = false;
-        var lastOrderId = reserveContext.getLastOrderId();
+        var lastOrderId =123;// reserveContext.getLastOrderId();
 
         var orderFields = {
             createdDate: 'ת. הזמנה',
@@ -36,7 +37,9 @@
         }
         var pageMode = 'reserve';
         var reserveState = reserveContext.getReserveState();
-        var allDistributedItems = reserveContext.getDistributedState();
+        console.log('state in beginnnnnnnnnnnnnnnnnnnnnnnnn',reserveState);
+       // reserveContext.cleanOldDistributedData();//jos
+      //  var allDistributedItems = reserveContext.getDistributedState();
 
         var currDistributedItems = [];
 
@@ -46,6 +49,7 @@
         /* ---- initiate table ---- */
 
         var initiateReserveData = function () {
+            console.log('reserve component 1');
             // TODO: insert to the filter the id of the last order that exict in local sorage,
             //       and filter by this id to get only the orders that not in the local storage.
             var filter = {
@@ -65,21 +69,46 @@
             vm.filteringTable = true;
 
             server.getAllOrders(query, filter).then(function (response) {
-                
+                console.log('reserve component 2');
                 var orders = response.data;
 
-                if (orders.length < 1) {
-                    vm.filteringTable = false;
-                    deferred.resolve();
-                    return;
+              //  if (orders.length < 1) {
+              //      vm.filteringTable = false;
+              //      deferred.resolve();
+              //      return;
+              //  }
+
+              //  lastOrderId = orders[0].orderId;
+         /*       reserveContext.setLastOrderId(lastOrderId);
+                var newJosItems = [];
+               for (var department in vm.departments) {
+                    if (catalog.hasOwnProperty(department)) {
+                        var departmentItems = catalog[department];
+                        departmentItems.forEach(function (item) {
+                           
+                            newJosItems.push({
+                                    
+                                    item: {count: 0, itemDepartmentId: item.departmentId, itemName: item.name, itemSerialNumber: item.serialNumber, unit: item.unit},
+                                    sum: 0,
+                                    id:  (item.serialNumber || item.itemSerialNumber) + Math.floor(Math.random() * 100)
+                                });
+                           
+                        });
+                    
+                    }
+                   
                 }
 
-                lastOrderId = orders[0].orderId;
-                reserveContext.setLastOrderId(lastOrderId);
+                console.log("cccccccccccccccccccccccccccccccccccccccccccc",newJosItems);
 
+*/
+
+
+
+           // console.log("cccccccccccccccccccccccccccccccccccccccccccc",vm.departments);
                 var newOrdersCount = 0;
                 var newOrdersItems = [];
-                for (var index = 0; index < orders.length; index++) {
+         /*       for (var index = 0; index < orders.length; index++) {
 
                     var order = orders[index];
 
@@ -87,11 +116,11 @@
                         var a = o;
                         return o.order._id === order._id;
                     });
-                    if (isExcist === -1) {
-                        isExcist = lodash.findIndex(allDistributedItems, function (o) {
-                            return o.order._id === order._id;
-                        });
-                    }
+                   // if (isExcist === -1) {
+                   //     isExcist = lodash.findIndex(allDistributedItems, function (o) {
+                   //         return o.order._id === order._id;
+                   //     });
+                   // }
                     if (isExcist === -1) {
                         newOrdersCount++;
                         var orderWithOutItems = angular.copy(order);
@@ -129,7 +158,7 @@
                         }
                     }
                 }
-
+*/
                 if (newOrdersCount > 0) {
                     var toastMessage = newOrdersCount > 1 ?
                         newOrdersCount + ' הזמנות חדשות התווספו בהצלחה' :
@@ -139,7 +168,7 @@
                         .textContent(toastMessage)
                         .hideDelay(3000)
                     );
-
+                    console.log('bad!!!   state adddddddddddddddddddddddddddddddddddddddddd');
                     reserveState = reserveState.concat(newOrdersItems);
 
                     reserveContext.saveReserveState(reserveState);
@@ -153,13 +182,14 @@
         }
 
         vm.refreshDataFromServer = function (ev) {
+            console.log('reserve component 3');
             initiateReserveData();
-            reserveContext.cleanOldDistributedData();
+          //  reserveContext.cleanOldDistributedData();
         }
 
         vm.showDistributedItems = function () {
             // var filter = {};
-
+            console.log('reserve component 4');
             // var deferred = $q.defer();
             // vm.promise = deferred.promise;
             // server.getDistributedItems(filter).then(function (response) {
@@ -173,21 +203,27 @@
         }
 
         vm.showReserveItems = function () {
+            console.log('reserve component 5');
             vm.ordersItems = reserveState;
             vm.reserveStateCount = vm.ordersItems.length;
             vm.filterTable(vm.filter, {});
         }
 
         if (angular.isUndefined(reserveState)) {
+            console.log('reserve component 6');
+            console.log('77777777777777777 0');
             reserveState = [];
             initiateReserveData();
         } else {
-            vm.ordersItems = reserveState;
+            
+         //jos why?????   vm.ordersItems = reserveState;
+            console.log('77777777777777777 1',vm.ordersItems );
             vm.reserveStateCount = reserveState.length;
         }
 
         /* ---- download order ---- */
         vm.downloadFilterdTable = function () {
+            console.log('reserve component 8');
             if (!vm.checkAllTableSum) {
                 vm.checkAllTableSum = true;
                 $timeout(function () {
@@ -208,63 +244,10 @@
             downloadExcel();
         }
 
-        var downloadExcel = function () {
-            vm.downloading = true;
-            var query = {
-                order: vm.query.order
-            }
-
-            // map all items by suppliers
-            var suppliersItemsMap = vm.mapAllItemsBySuppliers();
-
-            // for each supplier download file
-            for (var index = 0; index < vm.suppliers.length; index++) {
-
-                var supplier = vm.suppliers[index];
-
-                if (suppliersItemsMap.hasOwnProperty(supplier.supplierId)) {
-                    var fileName = supplier.name + '_' + $filter('date')(new Date(), 'dd/MM/yyyy');
-                    filesHandler.downloadOrderAsCSV(suppliersItemsMap[supplier.supplierId], orderFields, fileName);
-                }
-            }
-
-            if (currDistributedItems && currDistributedItems.length > 0) {
-
-                currDistributedItems.forEach(function (element) {
-                    element["createdDate"] = new Date();
-                }, this);
-
-                // save the items in DB
-                server.saveReserve(currDistributedItems).then(function (response) {
-                    $mdToast.show(
-                        $mdToast.simple()
-                        .textContent('הנתונים נשמרו בהצלחה!')
-                        .hideDelay(3000)
-                    );
-                });
-
-                // remove the distributed itms from the page
-                currDistributedItems.forEach(function (element) {
-                    lodash.remove(vm.ordersItems, function (n) {
-                        return n.id === element.id;
-                    });
-
-                    lodash.remove(reserveState, function (n) {
-                        return n.id === element.id;
-                    });
-                    vm.reserveStateCount = reserveState.length;
-                }, this);
-
-                allDistributedItems = allDistributedItems.concat(currDistributedItems);
-                reserveContext.saveDistributedState(allDistributedItems);
-                currDistributedItems = [];
-            }
-
-            vm.downloading = false;
-            vm.checkAllTableSum = false;
-        }
+        
 
         vm.mapAllItemsBySuppliers = function () {
+            console.log('reserve component 10');
             var suppliersItemsMap = {};
             for (var index = 0; index < vm.ordersItems.length; index++) {
                 var item = vm.ordersItems[index];
@@ -294,12 +277,14 @@
         }
 
         var markItemsAsDistrebuted = function () {
+            console.log('reserve component 11');
             server.markItemsAsDistrebuted(currDistributedItems).then(function (result) {
                 //vm.allDistributedItems = [];
             });
         }
 
         var getDeliveryDate = function (orderDate) {
+            console.log('reserve component 12');
             orderDate = new Date(orderDate);
             var day = orderDate.getDay();
             var deliveryDate = new Date(orderDate);
@@ -311,12 +296,17 @@
             return $filter('date')(deliveryDate, 'dd/MM/yyyy');
         }
 
-        vm.updateSum = function (item) {
-            item.sum = 0;
-            for (var index = 0; index < vm.suppliers.length; index++) {
-                var element = vm.suppliers[index];
-                item.sum += parseInt((item.suppliers[element.supplierId.toString()] || 0));
-            }
+        vm.updateSum = function (lineitem,sup) {
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>reserve component 13',lineitem,sup);
+            //var haluka1 = lineitem.supp[sup][0].haluka;
+            //lineitem.supp[sup][0].husman = Math.round(parseInt(lineitem.totorder) * parseInt(lineitem.supp[sup][0].haluka) / 100);
+            
+            //lineitem.count = 12;
+
+           // for (var index = 0; index < vm.suppliers.length; index++) {
+           //     var element = vm.suppliers[index];
+           //     item.sum += parseInt((item.suppliers[element.supplierId.toString()] || 0));
+           // }
         }
 
 
@@ -339,60 +329,127 @@
         };
 
         vm.filterTable = function (filter, originalFilter) {
+            console.log('in filter  14')
+          //  vm.resetSuppliersPresentValue();
 
-            vm.resetSuppliersPresentValue();
-
-            //vm.filteringTable = true;
+            
             var deferred = $q.defer();
             vm.promise = deferred.promise;
             $timeout(function () {
                 if (filter) {
                     vm.filter = filter;
                 }
-
+                
                 if (originalFilter.hasOwnProperty("departmentId")) {
                     vm.selectedDepartments = originalFilter.departmentId;
                 }
 
                 var localFilter = {};
 
-                if (filter.hasOwnProperty("unhandledItems") && filter.unhandledItems) {
-                    localFilter["sum"] = 0;
-                }
+            //    if (filter.hasOwnProperty("unhandledItems") && filter.unhandledItems) {
+            //        localFilter["sum"] = 0;
+            //    }
 
-                if (filter.hasOwnProperty("type") && filter.type === "secondOrder") {
-                    localFilter["order"] = {
-                        type: "secondOrder"
-                    };
-                } else {
+            //    if (filter.hasOwnProperty("type") && filter.type === "secondOrder") {
+            //        localFilter["order"] = {
+            //            type: "secondOrder"
+            //        };
+            //    } else {
                     localFilter["order"] = {
                         type: "order"
                     };
-                }
-
-                // filter unhendeled items & second orders
-                if (vm.pageMode === 'reserve') {
-                    vm.ordersItems = $filter('filter')(reserveState, localFilter, true);
-                } else {
-                    vm.ordersItems = $filter('filter')(allDistributedItems, localFilter, true);
-                }
-
+            //    }
+            // filter unhendeled items & second orders
+                // ################# jos put all table here with date
+              //  if (vm.pageMode === 'reserve') {
+                   
+                  //  console.log('#############@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#####333 14 00',vm.ordersItems.length,reserveState);
+                 //   vm.ordersItems = $filter('filter')(reserveState, localFilter, true);
+                 //  console.log('#############@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#####333 14 01',vm.ordersItems.length,reserveState);
+              //  } else {
+              //      vm.ordersItems = $filter('filter')(allDistributedItems, localFilter, true);
+             //   }
+               
                 // filter by date
                 if (filter.hasOwnProperty("createdDate")) {
+                    
+                    vm.ordersItems = reserveState;
+
+
                     var filterdDate = filter.createdDate;
                     var startDate = new Date(filterdDate.getFullYear(), filterdDate.getMonth(), filterdDate.getDate());
                     var endDate = new Date(filterdDate.getFullYear(), filterdDate.getMonth(), filterdDate.getDate() + 1);
-                    vm.ordersItems = $filter('dateFilter')(vm.ordersItems, startDate, endDate);
-                }
+                    vm.ordersItems = $filter('JosdateFilter')(vm.ordersItems, startDate, endDate);
+                    
+               
+                    if (vm.ordersItems.length === 0) {
+                        
+                        var newJosItems = [];
+                        for (var department in vm.departments) {
+                            
+                           if (department == 7) {//<<<<<<<<<<<<<<<<<<<<<<<<<<fix it jos
+                            var dep1 = vm.departments[department];
+                            var supmap = {};
+                            var sup1=[];
+                            for (var j = 0; j < dep1.suppliers.length; j++) {
+                                supmap[dep1.suppliers[j].supplierId] = [];
+                                   supmap[dep1.suppliers[j].supplierId].push({
+                                       suppId:dep1.suppliers[j].supplierId,
+                                       haluka: 0,
+                                       siryun: 0,
+                                       husman: 0,
+                                   });
 
-                if (Object.keys(originalFilter).length !== 0) {
-                    vm.ordersItems = $filter('distributionDataFilter')(vm.ordersItems, originalFilter);
-                }
+                            }
 
-                //vm.ordersItems = $filter('orderBy')(vm.ordersItems, '-oreder.orderId');
+
+                      
+                             var departmentItems = catalog[1];//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<fix it jos
+                         
+                             departmentItems.forEach(function (item) {
+
+                                 newJosItems.push({
+                                         createdDate: filterdDate,
+                                         item: {count: 0, itemDepartmentId: item.departmentId, itemName: item.name, itemSerialNumber: item.serialNumber, unit: item.unit},
+                                         sum: 0,
+                                         totsiryun: 0,
+                                         totorder: 0,
+                                         tothaluka: 0,
+                                         tothoser: 0,
+                                         totodef: 0,
+                                         supp: supmap,
+                                         id:  (item.serialNumber || item.itemSerialNumber) + Math.floor(Math.random() * 100)
+                                     });
+                                     
+                                
+                             });
+                         
+                       
+                        
+                        }
+                    }
+     
+                     vm.ordersItems = newJosItems;
+                     
+                     reserveState = reserveState.concat(newJosItems);
+                     
+                     reserveContext.saveReserveState(reserveState);
+                   //  reserveContext.saveReserveState(reserveState);
+                                       //  vm.reserveStateCount = reserveState.length;
+                                       //  vm.ordersItems = reserveState;
+                    }
+                    vm.f14 = 1;
+                }
+              //  if (Object.keys(originalFilter).length !== 0) {
+                  //  vm.ordersItems = $filter('distributionDataFilter')(vm.ordersItems, originalFilter);
+              //  }
+           //    vm.ordersItems = $filter('orderBy')(vm.ordersItems, '-oreder.orderId');
                 vm.filteringTable = false;
+                //o.suppliers[supplier.supplierId.toString()]
                 deferred.resolve();
             }, 0);
+           
+
             return vm.promise;
         };
 
@@ -400,8 +457,9 @@
         vm.selectedDepartments = vm.initialFilter.departmentId;
         vm.suppliers = []
         vm.departments = dataContext.getDepartments();
-        $scope.$watch('vm.selectedDepartments', function (selectedDepartments) {
 
+        $scope.$watch('vm.selectedDepartments', function (selectedDepartments) {
+            console.log('reserve component 15');
             vm.suppliers = [];
             selectedDepartments.forEach(function (element) {
                 var department = _.find(vm.departments, function (o) {
@@ -417,6 +475,7 @@
 
         // currently not suported
         vm.removeSupplierFromView = function (supplier) {
+            console.log('reserve component 16');
             lodash.remove(vm.suppliers, function (n) {
                 return n.supplierId === supplier.supplierId;
             });
@@ -443,6 +502,7 @@
         }
 
         vm.resetSuppliersPresentValue = function () {
+            console.log('reserve component 17');
             for (var key in vm.suppliers) {
                 if (vm.suppliers.hasOwnProperty(key)) {
                     var element = vm.suppliers[key];
@@ -453,6 +513,7 @@
 
         var timer;
         vm.updateAllItems = function (persent, supplierId) {
+            console.log('reserve component 18');
             $timeout.cancel(timer);
             timer = $timeout(function () {
                 for (var index = 0; index < vm.ordersItems.length; index++) {
@@ -472,7 +533,43 @@
         }
 
         $scope.$watch('vm.ordersItems', function (orders) {
-
+            console.log('reserve component 19   ');
+            if (vm.f14 == 1) {
+                vm.f14 =0;
+             //   console.log('reserve component 19  in  f14=');
+                //######################################### orders update
+                var filterdDate = vm.filter.createdDate;
+                var allOrderItems = reserveContext.getDistributionState();
+                var startDate = new Date(filterdDate.getFullYear(), filterdDate.getMonth(), filterdDate.getDate());
+                var endDate = new Date(filterdDate.getFullYear(), filterdDate.getMonth(), filterdDate.getDate() + 1);
+                var orders1 = $filter('dateFilter')(allOrderItems, startDate, endDate);
+                console.log('reserve component 19  in  f14=',orders1,orders1.length,orders.length);
+                for (var i = 0;i < orders.length;i++){
+                    var item1 = orders[i].item;
+                    for (var sup1 in orders[i].supp) {
+                        orders[i].supp[sup1][0].husman = 0;
+                    }
+                    //console.log('reserve component 19  in  f14=',orders1,item1);
+                    var tot1=0;
+                    var sumhus1=0;
+                    for (var j=0 ; j < orders1.length; j++) {
+                       // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>oid=',item1,orders1[j].order.orderId,j);
+                        if (orders1[j].item.itemSerialNumber === item1.itemSerialNumber) {
+                              //console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>14',item1);
+                               tot1 += orders1[j].item.count ;
+                                for (var sup1 in orders1[j].suppliers) {
+                                    //console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> suppppppppppppppppppp14',orders1[j].suppliers[sup1]);
+                                    if (parseInt(orders1[j].suppliers[sup1]) > 0) {
+                                        sumhus1 += parseInt(orders1[j].suppliers[sup1]);
+                                        orders[i].supp[sup1][0].husman += parseInt(orders1[j].suppliers[sup1]);
+                                    }
+                                }
+                        }
+                    }
+                    orders[i].totorder = tot1 ;
+                    orders[i].tothaluka = sumhus1 ;
+                }
+            }
             if (angular.isUndefined(orders)) {
                 return;
             }
@@ -482,7 +579,7 @@
                 sum: 0
             };
 
-            orders.forEach(function (order) {
+         /*   orders.forEach(function (order) {
                 vm.tableSummary.count += order.item.count;
                 vm.tableSummary.sum += order.sum || 0;
                 if (order.suppliers) {
@@ -496,10 +593,11 @@
                         }
                     }
                 }
-            }, this);
+            }, this);*/
         }, true);
 
         $scope.$watch('vm.isDistributedMode', function (mode) {
+            console.log('reserve component 20');
             if (angular.isUndefined(mode)) {
                 vm.pageMode = 'reserve';
                 return;
@@ -518,6 +616,7 @@
         });
 
         $scope.$watch('vm.refreshData', function (num) {
+            console.log('reserve component 21');
             if (num !== 0) {
                 vm.refreshDataFromServer();
             }

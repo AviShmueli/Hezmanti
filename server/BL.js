@@ -27,7 +27,6 @@
     var DAL = require('./DAL');
 
     function getAllBranches() {
-
         var d = deferred();
 
         DAL.getAllBranches().then(function (result) {

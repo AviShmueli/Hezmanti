@@ -13,7 +13,7 @@
         });
 
     function dashboardController($rootScope, server, $q, $interval, $location, dataContext, device) {
-
+        console.log('dashboard component');
         var vm = this;
         vm.allBranches = [];
         vm.showLaunchBtn = $location.search().s !== undefined ? false : true;
@@ -88,7 +88,7 @@
 
         resetAllBranches();
         getAllTodayOrders();
-
+        //josh time
         $interval(getAllTodayOrders, 10000);
 
         /* ----- Tabs ---- */

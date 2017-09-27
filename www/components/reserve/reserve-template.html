@@ -1,102 +1,102 @@
-<md-content flex md-scroll-y class="background-color-transparent" dir="rtl">
+<md-content flex  md-scroll-y  class="background-color-transparent" dir="rtl">
     <main flex>
         <ui-view layout="column" layout-fill>
-            <filter-table card-title="'סינון ופעולות'" on-filter-callback="vm.filterTable" show-download-excel-btn="vm.ordersItems.length > 0"
+            <filter-table card-title="'סינון ופעולות'" on-filter-callback="vm.filterTable" 
                 initial-values="vm.initialFilter" download-filterd-table="vm.downloadFilterdTable">
             </filter-table>
 
             <md-card layout-margin>
-                <md-table-container ng-if="!vm.filteringTable">
-                    <!-- <a style="float: left" class="cursor-pointer" aria-label="add" ng-click="vm.addSupplier($event)">
-                        <md-icon ng-md-icon icon="add_circle_outline"></md-icon>
-                    </a> -->
-                    <table class="distribution-table" md-table md-progress="vm.promise" fixed-header table-height="{{vm.tableHeight}}px">
-                        <thead md-head md-order="vm.query.order">
+                <md-table-container >
+                    
+                    <table  border=1 md-table !fixed-header !table-height="{{vm.tableHeight}}px">
+                        <thead md-head >
                             <tr md-row style="height: 36px;">
-                                <!-- <th md-column>#</th> -->
-                                <th md-column md-order-by="order.branchName">סניף</th>
-                                <th md-column md-order-by="order.orderId">מספר הזמנה</th>
-                                <!--<th md-column md-order-by="item.itemSerialNumber">קוד פריט</th>-->
                                 <th md-column md-order-by="item.itemName">שם פריט</th>
-                                <th md-column md-order-by="item.count">כמות מוזמנת</th>
-                                <th md-column md-order-by="sum">ביקורת</th>
-                                <th md-column ng-repeat="supplier in vm.suppliers | orderBy: 'priority'" ng-if="supplier.show">
-
-                                    <!-- <a class="cursor-pointer" aria-label="add" ng-click="vm.removeSupplierFromView(supplier)"> 
-                                        <md-icon ng-md-icon icon="remove_circle_outline" size="15"></md-icon>
-                                    </a>  -->
-                                    {{supplier.name}}
-                                    <md-input-container style="margin: 0">
-                                        <input aria-label="input" style="width: 45px;" type="number" name="name{{$index}}" ng-model="supplier.percent" min="0" max="100"
-                                            ng-change="vm.updateAllItems(supplier.percent, supplier.supplierId)">
-                                    </md-input-container>
-
-                                </th>
-                                <!-- <th md-column>
-                                    <a class="cursor-pointer" aria-label="add" ng-click="vm.addSupplier($event)">
-                                        <md-icon ng-md-icon icon="add_circle_outline"></md-icon>
-                                    </a>
-                                </th>  -->
+                                <th md-column >סהכ כמות משוריינת</th>
+                                <th md-column >סהכ כמות מוזמנת</th>
+                                <th md-column >סהכ כמות חלוקה</th>
+                                <th md-column >חוסר</th>
+                                <th md-column>עודף</th>
+                                <th md-column  colspan="3" ng-repeat="supplier in vm.suppliers | orderBy: 'priority'" ng-if="supplier.show">{{supplier.name}}</th>
                             </tr>
-                            <tr class="sum-row" md-row style="height: 20px;">
-                                <th md-column colspan="3"></th>
-                                <th md-column style="text-align: center !important;">{{vm.tableSummary.count}}</th>
-                                <th md-column style="text-align: center !important;">{{vm.tableSummary.sum}}</th>
-                                <th md-column style="text-align: center !important;" ng-repeat="supplier in vm.suppliers | orderBy: 'priority'" ng-if="supplier.show">
-                                    {{vm.tableSummary[supplier.supplierId]}}
-                                </th>
-                                <!-- <th md-column></th> -->
+                            <tr  md-row style="height: 20px;">
+                                <th md-column colspan=6 ></th>
+                                   
+                                    <th md-column ng-repeat-start="supplier in vm.suppliers | orderBy: 'priority'" ng-if="supplier.show" >
+                                           % חלוקה
+                                      </th>
+                                      <th md-column style="text-align: center !important;" ng-if="supplier.show"> שיריון</th>
+                                      <th md-column ng-repeat-end  style="text-align: center !important;" ng-if="supplier.show">  הוזמן</th>
                             </tr>
                         </thead>
                         <tbody md-body>
-                            <tr ng-class="{'tb-even': $even}" class="distribution-table" md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="(pIndex, o) in vm.ordersItems | orderBy: vm.query.order  track by o.id">
-                                <!-- <td md-cell >{{::$index+1}}</td> -->
-                                <td md-cell>{{::o.order.branchName}}</td>
-                                <td md-cell><a ng-click="vm.openOrderDialog(o.order, $event)">{{::o.order.orderId}}</a></td>
-                                <!--<td md-cell >{{::o.item.itemSerialNumber}}</td>-->
+                             
+                            <tr ng-class="{'tb-even': $even}" md-row ng-repeat="(pIndex, o) in vm.ordersItems ">
+                              
                                 <td md-cell>{{::o.item.itemName}}</td>
-                                <td md-cell>{{::o.item.count}}</td>
-                                <td md-cell ng-class="{'text-green' : o.sum === o.item.count, 'text-red': (vm.checkAllTableSum && o.sum !== o.item.count) || o.sum > o.item.count}">{{o.sum}}</td>
-                                <td md-cell ng-repeat="supplier in vm.suppliers | orderBy: 'priority'" ng-if="supplier.show">
-                                    <md-input-container style="margin: 0">
-                                        <!--max="{{o.item.count - o.sum + o.suppliers[supplier.supplierId.toString()]}}"-->
-                                        <input id="{{pIndex}}c{{$index}}" 
-                                               class="distribution-input"
-                                               ng-keyup="vm.keyPressed(pIndex + 'c' + $index,$event, pIndex, $index)" 
-                                               aria-label="input" style="width: 45px;" 
-                                               type="text" name="name{{$index}}" 
-                                               ng-model="o.suppliers[supplier.supplierId.toString()]"
-                                            min="0" ng-change="vm.updateSum(o)" ng-enter>
-                                    </md-input-container>
-                                </td>
+                                <td md-cell>
+                                    
+                                                <input id="{{pIndex}}c{{$index}}" class="distribution-input"                                                      
+                                                    aria-label="input" 
+                                                    type="text" name="siryun{{$index}}"  style="width: 35px;" 
+                                                   
+                                                    ng-model="o.totsiryun"
+                                                    min="0"   ng-enter>
+                                    </td>
+                            
+                              
+                                <td md-cell>{{o.totorder}}</td>
+                                <td md-cell>{{o.tothaluka}}</td>
+                                <td md-cell>{{  (o.totsiryun > o.tothaluka) && (o.tothaluka > 0) ?  o.totsiryun - o.tothaluka : 0   }}</td>
+                                <td md-cell ng-class="{ 'text-red': (o.totsiryun < o.tothaluka)}"> {{(o.totsiryun < o.tothaluka) && (o.tothaluka > 0) ? o.tothaluka-o.totsiryun : 0 }}</td>
+                                <td md-cell ng-repeat-start="supplier in vm.suppliers | orderBy: 'priority'" ng-if="supplier.show">
+                                       
+                                            
+                                            <input id="{{pIndex}}c{{$index}}" 
+                                                   class="distribution-input"
+                                                   
+                                                   aria-label="input" style="width: 35px;" 
+                                                   type="text" name="name{{$index}}" 
+                                                   ng-model="o.supp[supplier.supplierId.toString()][0].haluka"
+                                                min="0" ng-change="vm.updateSum(o,supplier.supplierId.toString())" ng-enter>
+                                     
+                                      
+                                    </td>
+                                    <td md-cell  ng-if="supplier.show">
+                                          
+                                              
+                                                <input id="{{pIndex}}d{{$index}}" 
+                                                       class="distribution-input"
+                                                     
+                                                       aria-label="input" style="width: 35px;" 
+                                                       type="text" name="name{{$index}}" 
+                                                       ng-model="o.supp[supplier.supplierId.toString()][0].siryun"
+                                                    min="0" ng-change="vm.updateSum(o,supplier.supplierId.toString())" ng-enter>
+                                         
+                                          
+                                        </td>
+                                        <td md-cell ng-repeat-end ng-if="supplier.show">
+                                               
+                                            {{o.supp[supplier.supplierId.toString()][0].husman}}
+                                                   
+                                             
+                                              
+                                            </td>
+                                         
+                               
+                               
+                               
+
                                 <!-- <td md-cell></td> -->
                             </tr>
                         </tbody>
-                        <tfoot md-foot>
-                            <tr md-row style="height: 30px">
-                                <td md-cell><strong>מציג </strong><span> {{vm.ordersItems.length}} מתוך {{vm.allOrderItemsCount}} פריטים</span></td>
-                                <td md-cell colspan="6"></td>
-                            </tr>
-                        </tfoot>
+                        
                     </table>
                 </md-table-container>
-                <div ng-if="vm.filteringTable" >
-                    <md-content md-theme="docs-dark" layout-padding>
-                        <div layout="row" layout-sm="column" layout-align="space-around">
-                            <div layout="column" style="height: 190px;">
-                                <h4 dir="rtl">טוען נתונים...</h4>
-                                <br>
-                                <md-progress-circular md-diameter="96"></md-progress-circular>
-                            </div>
-                        </div>
-                    </md-content>
-                </div>
+              
             </md-card>
 
-            <!--<md-table-pagination md-label="{'of': ' מתוך ', 'page': 'עמוד מספר', 'rowsPerPage': 'מספר שורות בעמוד' }" md-limit="vm.query.limit"
-                    md-limit-options="[5, 10, 15, 20]" md-page="vm.ordersItems.length" md-total="{{vm.allOrderItemsCount}}" md-on-paginate="vm.filterTable"
-                    md-page-select></md-table-pagination>-->
-
+          
 
         </ui-view>
     </main>

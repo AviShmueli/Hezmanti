@@ -16,12 +16,13 @@
         });
 
     function menuGroupController($state, dataContext, $mdDialog) {
-
+        console.log('menuGroup component');
         var vm = this;
         vm.showSection = vm.defultOpen || false;
 
         vm.expand_icon = vm.showSection ? 'expand_less' : 'expand_more';
         vm.toggleSection = function () {
+            console.log('menuGroup component 1');
             if (vm.showSection === true) {
                 vm.showSection = false;
                 vm.expand_icon = 'expand_more';
@@ -32,6 +33,7 @@
         }
 
         vm.switchViewMode = function (toMode) {
+            console.log('menuGroup component 11',toMode);
             if(toMode.mode === 'cleanLocalstorage'){
                 promptConfirm();
                 return;
@@ -43,6 +45,7 @@
         }
 
         var promptConfirm = function () {
+            console.log('menuGroup component 2');
             var confirm = $mdDialog.confirm()
                 .title('האם את/ה בטוח שברצונך למחוק את כל הנתונים ?')
                 .parent(angular.element(document.querySelector('#dialogsWraper')))

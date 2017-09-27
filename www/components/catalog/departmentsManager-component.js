@@ -16,7 +16,7 @@
 
     function DepartmentsManagerController(dataContext, device, $state, server) {
         var vm = this;
-
+        console.log('departmentsManager component');
         vm.imagesPath = device.getImagesPath();
         
         vm.departments = dataContext.getDepartments();

@@ -8,27 +8,38 @@
     reserveContext.$inject = ['$localStorage', 'moment'];
 
     function reserveContext($localStorage, moment) {
-        
+        console.log('reserveContext service');
         var self = this;
         self.$storage = $localStorage;
 
         var saveReserveState = function (state) {
+            console.log('==========================SAVE was call===');
             self.$storage.reserveState = state;
         }
+
+        var getDistributionState = function () {
+           // console.log('distribution service 4',self.$storage.distributionState);
+            return self.$storage.distributionState;
+        }
+
+
 
         var saveDistributedState = function (state) {
             self.$storage.distributedState = state;
         }
 
         var getReserveState = function () {
+          //  self.$storage.reserveState =[];
+            console.log('=================================getReserveState===',self.$storage.reserveState);
             return self.$storage.reserveState;
         }
 
-        var getDistributedState = function () {
-            return self.$storage.distributedState ||  [];
-        }
+     //   var getDistributedState = function () {
+       //     console.log('==============================getDistributedState===',self.$storage.distributedState)
+     //       return self.$storage.distributedState ||  [];
+      //  }
 
-        var cleanOldDistributedData = function () {
+     /*   var cleanOldDistributedData = function () {
             var today = moment();
             for (var index = 0; index < self.$storage.distributedState.length; index++) {
                 var element = self.$storage.distributedState[index];
@@ -39,24 +50,25 @@
                 }
             }
         }
+*/
+     //   var getLastOrderId = function () {
+     //       return self.$storage.lastOrderId ||  0;
+     //   }
 
-        var getLastOrderId = function () {
-            return self.$storage.lastOrderId ||  0;
-        }
-
-        var setLastOrderId = function (val) {
-            self.$storage.lastOrderId = val;
-        }
+     //   var setLastOrderId = function (val) {
+     //       self.$storage.lastOrderId = val;
+     //   }
         
 
         var service = { 
             saveReserveState: saveReserveState,
             saveDistributedState: saveDistributedState,
             getReserveState: getReserveState,
-            getDistributedState: getDistributedState,
-            cleanOldDistributedData: cleanOldDistributedData,
-            getLastOrderId: getLastOrderId,
-            setLastOrderId: setLastOrderId
+            getDistributionState: getDistributionState
+         //   getDistributedState: getDistributedState
+         //   cleanOldDistributedData: cleanOldDistributedData,
+         //   getLastOrderId: getLastOrderId,
+         //   setLastOrderId: setLastOrderId
         };
 
         return service;

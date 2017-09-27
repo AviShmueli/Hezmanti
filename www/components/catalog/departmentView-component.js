@@ -16,7 +16,7 @@
 
     function DepartmentViewController($scope, dataContext, device, _, server) {
         var vm = this;
-
+        console.log('departmentView component');
         vm.imagesPath = device.getImagesPath();
 
         

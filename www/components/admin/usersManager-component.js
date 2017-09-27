@@ -15,7 +15,7 @@
     function usersManagerController(server, $q, dataContext) {
 
         var vm = this;
-
+        console.log('usersManager component');
         vm.expand_icon = vm.showTasksFilter ? 'expand_less' : 'expand_more';
         vm.toggleFilterSection = function () {
             //var svgMorpheus = new SVGMorpheus('#expand_more_icon svg');

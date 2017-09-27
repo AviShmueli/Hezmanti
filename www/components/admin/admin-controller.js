@@ -13,6 +13,7 @@
         server, dataContext, $state, _) {
 
         var vm = this;
+       
 
         vm.viewMode = $state.params.mode || 'ordersDistribution';
         vm.stateIdParam = $state.params.id;
@@ -23,13 +24,15 @@
         vm.showSideNav = $location.search().s !== undefined ? false : true;
 
         vm.toggleSidenav = function (menuId) {
+           
             $mdSidenav(menuId).toggle();
         };
 
         vm.closeSidenav = function () {
+           
             $mdSidenav("left").close();
         };
-
+        console.log ('AdminController  1 ',vm);
 
         vm.menu = [{
             headerText: 'הזמנות',
@@ -38,6 +41,10 @@
                 text: 'חלוקת הזמנות לספקים',
                 mode: 'ordersDistribution',
                 icon: 'blur_linear'
+            }, {
+                text: 'שיריון JOS',
+                mode: 'josSiryun',
+                icon: 'merge_type'
             }, {
                 text: 'שיריון',
                 mode: 'reserve',
@@ -98,6 +105,7 @@
         }];
 
         vm.menuItem = _.find(vm.menu, function (menuItem) {
+            console.log('AdminController 3',menuItem);
             if (menuItem.buttons) {
                 var isExcist = _.findIndex(menuItem.buttons, function (button) {
                     if (button.mode === vm.viewMode) {
@@ -115,28 +123,33 @@
 
         //* ---- Preper Data ------ */
         var suppliersList = dataContext.getSuppliers();
-
+        
         // if not excist in local sorage, get from server
         if (!suppliersList) {
             server.getSuppliers().then(function (result) {
+               
                 dataContext.setSuppliers(result.data);
             });
         }
 
 
         var departments = dataContext.getDepartments();
+       
+
 
         // if not excist in local sorage, get from server
         if (!departments) {
             server.getDepartments().then(function (result) {
+              
                 dataContext.setDepartments(result.data);
             });
         }
 
         var catalog = dataContext.getCatalog();
-
+       
         if (!catalog) {
             vm.loadingData = true;
+            console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAA');
             server.getCatalog().then(function (response) {
                 vm.items = response.data;
                 var departmentsMap = {};

@@ -1,0 +1,99 @@
+<md-content flex md-scroll-y class="background-color-transparent" dir="rtl"    >
+    <main flex>
+        <ui-view layout="column"  layout-fill  >
+              
+                <filter-table card-title="'סינון ופעולות'" on-filter-callback="vm.filterTable" show-download-excel-btn="vm.ordersItems.length > 0"
+                        initial-values="vm.initialFilter" download-filterd-table="vm.downloadFilterdTable">
+                    </filter-table>
+            <md-card layout-margin  >
+              
+                   
+                  
+                    <table class="distribution-table"  md-table md-progress="vm.promise" fixed-header table-height="{{vm.tableHeight}}px">
+                        <thead md-head >
+                            <tr md-row style="height: 36px;">
+                                <!-- <th md-column>#</th> -->
+                                <th md-column >שם פריט</th>
+                                <th md-column >סהכ כמות משוריינת</th>
+                                <th md-column >סהכ כמות מוזמנת</th>
+                                <th md-column >סהכ כמות חלוקה</th>
+                                <th md-column >חוסר</th>
+                                <th md-column>עודף</th>
+                                
+                                <th md-column ng-repeat-start="supplier in vm.all_myo " > {{supplier.supname}} <bR> % חלוקה
+                                  
+                                </th>
+                                
+                                 <th md-column  ><br>שיריון</th>
+                                 <th ng-repeat-end md-column  ><br>הוזמן</th>
+                            </tr>
+                           
+                           
+                        </thead>
+                        <tbody md-body>
+                              <tr  ng-class="{'tb-even': $even}"  md-row md-select="item" md-select-id="name" md-auto-select ng-repeat="(pIndex, o) in vm.all_myit">
+                                    <!-- <td md-cell >{{::$index+1}}</td> -->
+                                    <td md-cell   style="width: 145px;" >{{::o.item}}</td>
+                                    <td md-cell>
+                                            <md-input-container >
+                                                    <input id="{{pIndex}}c{{$index}}" class="distribution-input"                                                      
+                                                        aria-label="input" 
+                                                        type="text" name="siryun{{$index}}" 
+                                                       
+                                                        ng-model="o.totsiryun"
+                                                        min="0"   ng-enter>
+                                                </md-input-container></td>
+                                   
+                                    <td md-cell>
+                                            <md-input-container >
+                                                    <input id="{{pIndex}}c{{$index}}" class="distribution-input"                                                      
+                                                        aria-label="input" 
+                                                        type="text" name="order{{$index}}" 
+                                                        ng-change="vm.updateLineOrder(o.id)"
+                                                        ng-model="o.totorder"
+                                                        min="0"   ng-enter>
+                                                </md-input-container></td>
+                                   
+                                      
+                                    <td md-cell>{{o.tothaluka}}</td>
+                                    <td md-cell>{{  (o.totsiryun > o.tothaluka) && (o.tothaluka > 0) ?  o.totsiryun - o.tothaluka : 0   }}</td>
+                                    <td md-cell>{{  (o.totsiryun < o.tothaluka) && (o.tothaluka > 0) ?  o.totsiryun - o.tothaluka : 0   }}</td>
+
+                                    <td md-cell ng-repeat-start="supplier in vm.all_myo ">
+                                        <md-input-container style="margin: 0">
+                                            <input id="{{pIndex}}c{{$index}}" 
+                                                class="distribution-input"
+                                                
+                                                aria-label="input" style="width: 45px;" 
+                                                type="text" name="{{$pIndex}}name{{supplier.supip}}" 
+                                                ng-model="supplier.items[o.id].haluka"
+                                                ng-change="vm.updateLineHaluka(supplier,o.id)"
+                                                min="0"   ng-enter>
+                                        </md-input-container>
+                                    </td>
+                                    <td md-cell>
+                                            <md-input-container style="margin: 0">
+                                             
+                                                <input id="{{pIndex}}c{{$index}}" 
+                                                    class="distribution-input"
+                                                 
+                                                    aria-label="input" style="width: 45px;" 
+                                                    type="text" name="{{$pIndex}}name{{supplier.supip}}" 
+                                                    ng-model="supplier.items[o.id].siryun"
+                                                    ng-change="vm.updateLine(supplier,o.id)"
+                                                    min="0"   ng-enter>
+                                            </md-input-container>
+                                        </td>
+                                    <td ng-repeat-end  md-cell >{{supplier.items[o.id].husman}}</td>
+                                          
+                                </tr>
+                            </tbody>
+                       
+                    </table>
+              
+                
+            </md-card>
+
+        </ui-view>
+    </main>
+</md-content>

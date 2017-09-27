@@ -1,6 +1,6 @@
 (function () {
     'use strict';
-
+    
     angular
         .module('app')
         .config(config)
@@ -12,7 +12,8 @@
     function config($stateProvider, $urlRouterProvider, $mdThemingProvider, $httpProvider,
                     $mdDateLocaleProvider, moment, LogglyLoggerProvider) {
 
-        LogglyLoggerProvider.inputToken('77e961f4-4296-4ee1-9521-2961b83aed0a').sendConsoleErrors(true).includeUserAgent(true);
+                            console.log("In app.config");
+   //josh     LogglyLoggerProvider.inputToken('77e961f4-4296-4ee1-9521-2961b83aed0a').sendConsoleErrors(true).includeUserAgent(true);
 
 
         $mdDateLocaleProvider.formatDate = function(date) {
@@ -53,7 +54,7 @@
             controller: "HistoryController",
             controllerAs: "vm"
         });
-
+       
         $stateProvider.state("admin", {
             url: "/admin/:mode?id",
             templateUrl: "components/admin/admin.html",

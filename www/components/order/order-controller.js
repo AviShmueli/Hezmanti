@@ -16,7 +16,7 @@
         stockContext) {
 
         var vm = this;
-
+            console.log('OrderController');
         vm.navigateTo = function (to) {
             $location.path('/' + to);
         }

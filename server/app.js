@@ -33,6 +33,8 @@ server.listen(process.env.PORT || 5007, function (err) {
 
 
 app.get('/api/getAllBranches', function (req, res) {
+    console.log("aaa");
+    logger.log('error', 'TEsting');
     BL.getAllBranches().then(function (result) {
         res.send(result);
     }, function (error) {
@@ -118,6 +120,7 @@ app.get('/api/getAllOrders', function (req, res) {
 });
 
 app.get('/api/checkBranchCode', function (req, res) {
+    console.log("/api/checkBranchCode",req.query.code);
     BL.checkBranchCode(req.query.code).then(function (result) {
         res.send(result);
     }, function (error) {

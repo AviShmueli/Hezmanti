@@ -25,7 +25,7 @@
 
     function viewOrderController($rootScope, $scope, server, $state, $interval,
         $log, device, dataContext, $location, $filter, $mdDialog) {
-
+            console.log('viewOrder component');
         var vm = this;
         vm.editMode = false;
         vm.buttonIcon = 'edit';

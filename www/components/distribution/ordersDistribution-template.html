@@ -1,9 +1,13 @@
 <md-content flex md-scroll-y class="background-color-transparent" dir="rtl">
     <main flex>
         <ui-view layout="column" layout-fill>
+        
             <filter-table card-title="'סינון ופעולות'" on-filter-callback="vm.filterTable" show-download-excel-btn="vm.ordersItems.length > 0"
                 initial-values="vm.initialFilter" download-filterd-table="vm.downloadFilterdTable">
             </filter-table>
+
+
+
 
             <md-card layout-margin>
                 <md-table-container ng-if="!vm.filteringTable">
@@ -62,7 +66,7 @@
                                         <!--max="{{o.item.count - o.sum + o.suppliers[supplier.supplierId.toString()]}}"-->
                                         <input id="{{pIndex}}c{{$index}}" 
                                                class="distribution-input"
-                                               ng-keyup="vm.keyPressed(pIndex + 'c' + $index,$event, pIndex, $index)" 
+                                               
                                                aria-label="input" style="width: 45px;" 
                                                type="text" name="name{{$index}}" 
                                                ng-model="o.suppliers[supplier.supplierId.toString()]"

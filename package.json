@@ -24,6 +24,7 @@
     "express-session": "^1.14.0",
     "google-libphonenumber": "^2.0.13",
     "gulp": "^3.9.1",
+    "gulp-install": "^1.1.0",
     "gulp-nodemon": "^2.2.1",
     "json2xls": "^0.1.2",
     "loggly": "^1.1.1",

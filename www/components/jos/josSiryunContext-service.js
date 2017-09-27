@@ -3,40 +3,39 @@
 
     angular
         .module('app')
-        .service('distributionContext', distributionContext);
+        .service('josSiryunContext', josSiryunContext);
 
-    distributionContext.$inject = ['$localStorage', 'moment'];
+        josSiryunContext.$inject = ['$localStorage', 'moment'];
 
-    function distributionContext($localStorage, moment) {
+    function josSiryunContext($localStorage, moment) {
         
         var self = this;
+        console.log('josSiryunContext service ');
         self.$storage = $localStorage;
 
-        console.log('distribution service 1');
         var saveDistributionState = function (state) {
-            console.log('distribution service 2',state);
+            console.log('josSiryunContext service 1');
             self.$storage.distributionState = state;
         }
 
         var saveDistributedState = function (state) {
-            console.log('distribution service 3',state);
+            console.log('josSiryunContext service 2');
             self.$storage.distributedState = state;
         }
 
         var getDistributionState = function () {
-            console.log('distribution service 4',self.$storage.distributionState);
+            console.log('josSiryunContext service 3');
             return self.$storage.distributionState;
         }
 
         var getDistributedState = function () {
-            console.log('distribution service 5',self.$storage.distributedState);
+            console.log('josSiryunContext service 4');
             return self.$storage.distributedState ||  [];
         }
 
         var cleanOldDistributedData = function () {
+            console.log('josSiryunContext service 5');
             var today = moment();
-            console.log('distribution service 6',today);
-            
             for (var index = 0; index < self.$storage.distributedState.length; index++) {
                 var element = self.$storage.distributedState[index];
                 if (today.diff(element.createdDate, 'days') > 2) {
@@ -48,25 +47,15 @@
         }
 
         var getLastOrderId = function () {
-            console.log('distribution service 7',self.$storage.lastOrderId );
+            console.log('josSiryunContext service 6');
             return self.$storage.lastOrderId ||  0;
         }
 
         var setLastOrderId = function (val) {
-            console.log('distribution service 8',val);
+            console.log('josSiryunContext service 7');
             self.$storage.lastOrderId = val;
         }
         
-        var getReserveState = function () {
-            //  self.$storage.reserveState =[];
-              console.log('=================================getReserveState===',self.$storage.reserveState);
-              return self.$storage.reserveState;
-          }
-
-
-
-
-
 
         var service = { 
             saveDistributionState: saveDistributionState,
@@ -74,7 +63,6 @@
             getDistributionState: getDistributionState,
             getDistributedState: getDistributedState,
             cleanOldDistributedData: cleanOldDistributedData,
-            getReserveState: getReserveState,
             getLastOrderId: getLastOrderId,
             setLastOrderId: setLastOrderId
         };
