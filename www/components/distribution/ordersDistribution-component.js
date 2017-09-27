@@ -510,7 +510,8 @@
                     orderItem.suppliers[supplierId] = Math.round(orderItem.item.count * (persent * 0.01));
 
                     if (orderItem.suppliers[supplierId] === 0) {
-                        delete orderItem.suppliers[supplierId];
+                       // delete orderItem.suppliers[supplierId];
+                       orderItem.suppliers[supplierId] = 0;
                     }
                     vm.updateSum(orderItem);
                 }
