@@ -518,6 +518,10 @@
 
         $scope.$watch('vm.ordersItems', function (orders) {
             console.log('#####################ordersDistribution 22',orders);
+
+
+
+            
             //orders[0].suppliers['30004'] = 12;
             if (angular.isUndefined(orders)) {
                 return;
