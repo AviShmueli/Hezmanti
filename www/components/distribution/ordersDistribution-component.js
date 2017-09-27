@@ -497,7 +497,7 @@
 
         var timer;
         vm.updateAllItems = function (persent, supplierId) {
-            console.log('ordersDistribution 20');
+            console.log('ordersDistribution 20',persent);
             $timeout.cancel(timer);
             timer = $timeout(function () {
                 console.log('ordersDistribution 21');
@@ -513,6 +513,11 @@
                        // delete orderItem.suppliers[supplierId];
                        orderItem.suppliers[supplierId] = 0;
                     }
+                    if (angular.isUndefined(persent) || persent === null) {
+                        delete orderItem.suppliers[supplierId];
+                     //   orderItem.suppliers[supplierId] = 0;
+                     }
+                  
                     vm.updateSum(orderItem);
                 }
             }, 500);
