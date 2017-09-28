@@ -60,7 +60,7 @@
                                 <!--<td md-cell >{{::o.item.itemSerialNumber}}</td>-->
                                 <td md-cell>{{::o.item.itemName}}</td>
                                 <td md-cell>{{::o.item.count}}</td>
-                                <td md-cell ng-class="{'text-green' : o.sum === o.item.count, 'text-red': (vm.checkAllTableSum && o.sum !== o.item.count) || o.sum > o.item.count}">{{o.sum}}</td>
+                                <td md-cell ng-class="{'text-green' : (o.sum > 0) , 'text-red': (o.sum < 0) }">{{o.sum}}</td>
                                 <td md-cell ng-repeat="supplier in vm.suppliers | orderBy: 'priority'" ng-if="supplier.show">
                                     <md-input-container style="margin: 0">
                                         <!--max="{{o.item.count - o.sum + o.suppliers[supplier.supplierId.toString()]}}"-->

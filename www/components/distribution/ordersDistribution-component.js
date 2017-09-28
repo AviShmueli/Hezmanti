@@ -350,6 +350,7 @@
                 var element = vm.suppliers[index];
                 item.sum += parseInt((item.suppliers[element.supplierId.toString()] || 0));
             }
+            item.sum = item.item.count - item.sum;
         
         }
 
@@ -586,7 +587,7 @@
                                     }
                                    
                                 }
-                                orders[i].sum = sum1;
+                                orders[i].sum = orders[i].item.count -  sum1;
                             }
                         }
                         // orders[i].totorder = tot1 ;
