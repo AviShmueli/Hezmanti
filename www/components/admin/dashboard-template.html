@@ -1,36 +1,38 @@
-<md-content md-scroll-y dir="rtl" >
-    <md-button ng-if="vm.showLaunchBtn" aria-label="button-label" style="margin: 0; line-height: 0; min-width: auto;" ng-click="vm.openInNewTab()"> 
+<md-content md-scroll-y dir="rtl">
+    <md-button ng-if="vm.showLaunchBtn" aria-label="button-label" style="margin: 0; line-height: 0; min-width: auto;" ng-click="vm.openInNewTab()">
         <md-icon ng-md-icon icon="launch"></md-icon>
     </md-button>
 
     <md-tabs md-dynamic-height>
-        <md-tab md-border-bottom md-on-select="vm.switchTab(department, $index)"
-                ng-repeat="department in vm.departments | orderBy: 'name'" label="{{department.name}}">
-               
+        <md-tab md-border-bottom md-on-select="vm.switchTab('all', -1)" label="הכל">
         </md-tab>
-        <md-tab md-border-bottom md-on-select="vm.switchTab('all', -1)"
-                label="הכל">
+        <md-tab md-border-bottom md-on-select="vm.switchTab(department, $index)" ng-repeat="department in vm.departments | orderBy: 'name'"
+            label="{{department.name}}">
         </md-tab>
+
     </md-tabs>
 
-    <div >
-        <div ng-repeat="network in vm.networks" >
+    <div>
+        <div ng-repeat="network in vm.networks">
             <h3 style="margin-right: 15px;">{{network.name}}</h3>
-            
-                <md-grid-list md-cols-gt-md="6" md-cols-gt-lg="8" md-cols-xl="10" md-cols="4" md-cols-md="4" md-cols-xs="4" 
-                            md-row-height="140px" 
-                            md-gutter-gt-md="1px" md-gutter-md="1px" md-gutter="2px"
-                            style="display: initial;">
-                    <div style="width: 200px;display: inline-flex;padding: 15px;" ng-repeat="branch in vm.allBranches[network.id] | ordersByDepartment:vm.selectedDepartment |orderBy:'name'" md-colspan-gt-sm="1" md-rowspan-gt-sm="1">
-                        <div class="md-item-text md-whiteframe-z3" flex style="padding: 0 10px;margin: 20px; background-color:  #F44336; text-align: center;" ng-class="{'brunch-good' : branch.sendOrder === true}">
+
+            <md-grid-list md-cols-gt-md="6" md-cols-gt-lg="8" md-cols-xl="10" md-cols="4" md-cols-md="4" md-cols-xs="4" md-row-height="140px"
+                md-gutter-gt-md="1px" md-gutter-md="1px" md-gutter="2px" style="display: initial;">
+                <div style="width: 200px;display: inline-flex;padding: 15px;" ng-repeat="branch in vm.allBranches[network.id] | ordersByDepartment:vm.selectedDepartment |orderBy:'name'"
+                    md-colspan-gt-sm="1" md-rowspan-gt-sm="1">
+                    <div class="md-item-text md-whiteframe-z3" flex style="padding: 0 10px;margin: 20px; background-color:  #F44336; text-align: center;"
+                        ng-class="{'brunch-good' : branch.sendOrder === true}">
+                        <div layout="row" layout-align="space-around center">
                             <h3>{{branch.name}}</h3>
-                            <div ng-if="vm.selectedDepartment === 'all'">
-                                 <img ng-repeat="departmentId in branch.departments | unique:'departmentId'" class="dashboard-card-img" ng-src="{{::vm.imagesPath + '/assets/images/departments/' + departmentId + '.png'}}">
-                            </div>
+                            <img ng-if="branch.secondOrder" class="dashboard-card-img" ng-src="{{::vm.imagesPath + '/assets/images/clock.png'}}">
+                        </div>
+                        <div ng-if="vm.selectedDepartment === 'all'">
+                            <img ng-repeat="departmentId in branch.departments | unique:'departmentId'" class="dashboard-card-img" ng-src="{{::vm.imagesPath + '/assets/images/departments/' + departmentId + '.png'}}">
                         </div>
                     </div>
-                </md-grid-list>
-            
+                </div>
+            </md-grid-list>
+
             <md-divider></md-divider>
         </div>
     </div>

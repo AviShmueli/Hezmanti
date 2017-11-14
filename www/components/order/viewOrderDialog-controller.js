@@ -27,6 +27,7 @@
         }
 
         $scope.updateOrder = function () {
+
             server.updateOrder($scope.order).then(function (result) {
                 $mdToast.show(
                     $mdToast.simple()

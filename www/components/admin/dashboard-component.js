@@ -12,7 +12,7 @@
             templateUrl: 'components/admin/dashboard-template.html'
         });
 
-    function dashboardController($rootScope, server, $q, $interval, $location, dataContext, device) {
+    function dashboardController($rootScope, server, $q, $interval, $location, dataContext, device, $timeout) {
 
         var vm = this;
         vm.allBranches = [];
@@ -54,6 +54,7 @@
         var resetAllBranches = function () {
             angular.forEach(vm.branchesMap, function (obj, key) {
                 obj['sendOrder'] = false;
+                obj['secondOrder'] = false;
                 obj['departments'] = [];
             });
         }
@@ -76,6 +77,9 @@
                         order.items.forEach(function (item) {
                             vm.branchesMap[order.branchId]['departments'].push(item.itemDepartmentId);
                         }, this);
+                        if(order.type && order.type === 'secondOrder'){
+                            vm.branchesMap[order.branchId]['secondOrder'] = true;
+                        }
                     }
                 }
             });

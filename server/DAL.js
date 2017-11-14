@@ -263,9 +263,9 @@
 
         delete order._id;
 
+        order.createdDate = new Date(order.createdDate);
+
         getCollection('gorme-orders').then(function (mongo) {
-
-
 
             mongo.collection.findAndModify({
                     _id: new ObjectID(orderId)
@@ -458,7 +458,11 @@
         var d = deferred();
 
         var filter = {
-            type: "order"
+            '$or': [{
+                "type": 'order'
+            }, {
+                "type": 'secondOrder'
+            }]
         };
 
         var date = new Date().toDateString();
@@ -476,7 +480,8 @@
                 branchId: 1,
                 createdDate: 1,
                 items: 1,
-                orderId: true
+                orderId: true,
+                type: 1
             }, {"sort": [
                 ["orderId", "desc"]
             ]}).toArray(function (err, result) {
