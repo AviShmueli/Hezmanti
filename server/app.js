@@ -18,10 +18,17 @@ var bodyParser = require('body-parser');
 
 var port = process.env.PORT || 5007;
 
-app.use(bodyParser.urlencoded({
-    extended: false
-}));
+// jos move before for test
 app.use(bodyParser.json());
+
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+
+
+//jos app.use(bodyParser.urlencoded({
+//    extended: false
+//}));
+
 app.use(express.static('./www'));
 app.use(express.static('./bower_components'));
 app.use(express.static('./node_modules'));
@@ -33,7 +40,7 @@ server.listen(process.env.PORT || 5007, function (err) {
 
 
 app.get('/api/getAllBranches', function (req, res) {
-    console.log("aaa");
+   
     logger.log('error', 'TEsting');
     BL.getAllBranches().then(function (result) {
         res.send(result);
@@ -44,6 +51,7 @@ app.get('/api/getAllBranches', function (req, res) {
 });
 
 app.get('/api/getCatalog', function (req, res) {
+   
     BL.getCatalog().then(function (result) {
         res.send(result);
     }, function (error) {
@@ -96,7 +104,75 @@ app.post('/api/updateOrder', function (req, res) {
         res.status(500).send(error);
     });
 });
+//################################## jos add
 
+app.post('/api/insertSiryun', function (req, res) {
+    BL.insertSiryun(req.body.siryun).then(function (result) {
+        res.send(result);
+    }, function (error) {
+        logger.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
+});
+app.post('/api/insertSiryunOrder', function (req, res) {
+    BL.insertSiryunOrder(req.body.siryun).then(function (result) {
+        res.send(result);
+    }, function (error) {
+        logger.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
+});
+app.get('/api/getSiryun', function (req, res) {
+    BL.getSiryun(req.query.cre_date,req.query.deps1).then(function(result){
+        res.send(result);
+    }, function(error){
+        logger.log('error', error.message , error.error);
+        res.status(500).send(error); 
+    });
+});
+app.get('/api/getSiryunOrder', function (req, res) {
+    BL.getSiryunOrder(req.query.cre_date,req.query.deps1).then(function(result){
+        res.send(result);
+    }, function(error){
+        logger.log('error', error.message , error.error);
+        res.status(500).send(error); 
+    });
+});
+app.get('/api/getJosOrders', function (req, res) {
+    BL.getJosOrders(req.query.cre_date,req.query.fromOrder).then(function(result){
+        res.send(result);
+    }, function(error){
+        logger.log('error', error.message , error.error);
+        res.status(500).send(error); 
+    });
+});
+
+app.post('/api/updateSiryun', function (req, res) {
+    BL.updateSiryun(req.body.siryun, req.body.cre_date,req.body.deps1).then(function (result) {
+        res.send(result);
+    }, function (error) {
+        logger.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
+});
+app.post('/api/updateSiryunOrder', function (req, res) {
+    BL.updateSiryunOrder(req.body.siryun, req.body.cre_date,req.body.deps1).then(function (result) {
+        res.send(result);
+    }, function (error) {
+        logger.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
+});
+app.get('/api/getJorders', function (req, res) {
+    BL.getJorders(req.query.cre_date).then(function (result) {
+        //console.log('api res',result)
+        res.send(result);
+    }, function (error) {
+        logger.log('error', error.message, error.error);
+        res.status(500).send(error);
+    });
+});
+//################################## jos add
 app.get('/api/getAllOrdersCount', function (req, res) {
 
     var filter = JSON.parse(req.query.filter);
@@ -120,7 +196,6 @@ app.get('/api/getAllOrders', function (req, res) {
 });
 
 app.get('/api/checkBranchCode', function (req, res) {
-    console.log("/api/checkBranchCode",req.query.code);
     BL.checkBranchCode(req.query.code).then(function (result) {
         res.send(result);
     }, function (error) {

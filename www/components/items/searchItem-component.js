@@ -15,7 +15,6 @@
     function searchItemController(server, $q, $timeout) {
 
         var vm = this;
-        console.log('searchItem component');
         vm.searchIcon = 'search';
         vm.showProgress = false;
         vm.searchString = '';

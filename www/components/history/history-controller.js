@@ -13,7 +13,6 @@
         $location, $rootScope) {
 
         var vm = this;
-        console.log('HistoryController');
         var user = dataContext.getUser();
         var filter = {
             'branchId': user.branch.serialNumber

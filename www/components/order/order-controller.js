@@ -16,7 +16,6 @@
         stockContext) {
 
         var vm = this;
-            console.log('OrderController');
         vm.navigateTo = function (to) {
             $location.path('/' + to);
         }
@@ -140,7 +139,6 @@
         }
 
         var getDeliveryDate = function () {
-
             var day = new Date().getDay();
             var deliveryDate = new Date();
             if (day === 5) {

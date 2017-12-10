@@ -10,9 +10,7 @@
     function server($http, dataContext) {
 
         var self = this;
-        console.log("server-services");
         var getOrder = function (orderId) {
-            console.log("server-services 1");
             var req = {
                 method: 'GET',
                 url: '/api/getOrder',
@@ -25,7 +23,6 @@
         }
 
         var addOrder = function (order) {
-            console.log("server-services 2");
             var req = {
                 method: 'POST',
                 url: '/api/addOrder',
@@ -38,7 +35,6 @@
         }
 
         var updateOrder = function (order, items) {
-            console.log("server-services 3");
             var req = {
                 method: 'POST',
                 url: '/api/updateOrder',
@@ -51,8 +47,100 @@
             return $http(req);
         }
 
+
+        // #############jos add######################################
+        var insertSiryun = function (siryun) {
+            var req = {
+                method: 'POST',
+                url: '/api/insertSiryun',
+                data: {
+                    siryun: siryun
+                }
+            };
+
+            return $http(req);
+        }
+        var insertSiryunOrder = function (siryun) {
+            var req = {
+                method: 'POST',
+                url: '/api/insertSiryunOrder',
+                data: {
+                    siryun: siryun
+                }
+            };
+
+            return $http(req);
+        }
+
+        var getSiryun = function (cre_date, deps1) {
+            var req = {
+                method: 'GET',
+                url: '/api/getSiryun',
+                params: {
+                    cre_date: cre_date,
+                    deps1: deps1
+                }
+            };
+
+            return $http(req);
+        }
+        var getSiryunOrder = function (cre_date, deps1) {
+            var req = {
+                method: 'GET',
+                url: '/api/getSiryunOrder',
+                params: {
+                    cre_date: cre_date,
+                    deps1: deps1
+                }
+            };
+
+            return $http(req);
+        }
+        var getJosOrders = function (cre_date,fromOrder) {
+            var req = {
+                method: 'GET',
+                url: '/api/getJosOrders',
+                params: {
+                    cre_date: cre_date,
+                    fromOrder: fromOrder
+                }
+            };
+
+            return $http(req);
+        }
+        var updateSiryun = function (siryun, cre_date, deps1) {
+            var req = {
+                method: 'POST',
+                url: '/api/updateSiryun',
+                data: {
+                    siryun: siryun,
+                    cre_date: cre_date,
+                    deps1: deps1
+                }
+            };
+
+            return $http(req);
+        }
+        var updateSiryunOrder = function (siryun, cre_date,deps1) {
+            var req = {
+                method: 'POST',
+                url: '/api/updateSiryunOrder',
+                data: {
+                    siryun: siryun,
+                    cre_date: cre_date,
+                    deps1: deps1
+                }
+            };
+
+            return $http(req);
+        }
+
+        
+
+        // #############jos add######################################
+
+
         var updateUserLastSeenTime = function (id, date) {
-            console.log("server-services 4");
             var req = {
                 method: 'POST',
                 url: '/api/updateUserLastSeenTime',
@@ -66,7 +154,6 @@
         }
 
         var getAllBranches = function () {
-            console.log("server-services 5");
             var req = {
                 method: 'GET',
                 url: '/api/getAllBranches'
@@ -76,7 +163,6 @@
         }
 
         var getDepartments = function () {
-            console.log("server-services 6");
             var req = {
                 method: 'GET',
                 url: '/api/getDepartments'
@@ -86,7 +172,6 @@
         }
 
         var getCatalog = function () {
-            console.log("server-services 7");
             var req = {
                 method: 'GET',
                 url: '/api/getCatalog'
@@ -96,7 +181,6 @@
         }
 
         var searchItems = function (searchString) {
-            console.log("server-services 8");
             var req = {
                 method: 'GET',
                 url: '/api/searchItems',
@@ -109,7 +193,6 @@
         }
 
         var getAllOrders = function (query, filter) {
-            console.log("server-services 9 query=",query,"  filter=",filter);
             var req = {
                 method: 'GET',
                 url: '/api/getAllOrders',
@@ -125,7 +208,6 @@
         }
 
         var getAllOrdersCount = function (filter) {
-            console.log("server-services 10");
             var req = {
                 method: 'GET',
                 url: '/api/getAllOrdersCount',
@@ -138,7 +220,6 @@
         }
 
         var checkBranchCode = function (code) {
-            console.log("server-services 11");
             var req = {
                 method: 'GET',
                 url: '/api/checkBranchCode',
@@ -146,12 +227,10 @@
                     code: code
                 }
             };
-            console.log("server-services 11 req=",req);
             return $http(req);
         }
 
         var getAllTodayOrders = function () {
-            console.log("server-services 12");
             var req = {
                 method: 'GET',
                 url: '/api/getAllTodayOrders'
@@ -161,7 +240,6 @@
         }
 
         var saveDistribution = function (distributionList) {
-            console.log("server-services 13");
             var req = {
                 method: 'POST',
                 url: '/api/saveDistribution',
@@ -174,7 +252,6 @@
         }
 
         var getSuppliers = function () {
-            console.log("server-services 14");
             var req = {
                 method: 'GET',
                 url: '/api/getSuppliers'
@@ -184,7 +261,6 @@
         }
 
         var addSupplier = function (supplier) {
-            console.log("server-services 15");
             var req = {
                 method: 'POST',
                 url: '/api/addSupplier',
@@ -197,7 +273,6 @@
         }
 
         var updateSupplier = function (supplier) {
-            console.log("server-services 16");
             var req = {
                 method: 'POST',
                 url: '/api/addSupplier',
@@ -210,7 +285,6 @@
         }
 
         var editDepartment = function (department) {
-            console.log("server-services 17");
             var req = {
                 method: 'POST',
                 url: '/api/editDepartment',
@@ -223,7 +297,6 @@
         }
 
         var markItemsAsDistrebuted = function (items) {
-            console.log("server-services 18");
             var req = {
                 method: 'POST',
                 url: '/api/markItemsAsDistrebuted',
@@ -236,7 +309,6 @@
         }
 
         var getDistributedItems = function (filter) {
-            console.log("server-services 19");
             var req = {
                 method: 'GET',
                 url: '/api/getDistributedItems',
@@ -256,6 +328,15 @@
             getAllOrders: getAllOrders,
             getOrder: getOrder,
             updateOrder: updateOrder,
+
+            
+            insertSiryun: insertSiryun,
+            insertSiryunOrder: insertSiryunOrder,
+            getSiryun: getSiryun,
+            getSiryunOrder: getSiryunOrder,
+            getJosOrders: getJosOrders,
+            updateSiryun: updateSiryun,
+            updateSiryunOrder: updateSiryunOrder,
             getAllOrdersCount: getAllOrdersCount,
             checkBranchCode: checkBranchCode,
             getDepartments: getDepartments,

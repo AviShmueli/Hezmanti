@@ -21,11 +21,9 @@
         var vm = this;
         vm.ordersFilter = {};
         var filter = {};
-        console.log('filterTable component');
         
         vm.expand_icon = vm.showTasksFilter ? 'expand_less' : 'expand_more';
         vm.toggleFilterSection = function () {
-            console.log('filterTable component 1');
             if (vm.showTasksFilter === true) {
                 vm.showTasksFilter = false;
                 vm.expand_icon = 'expand_more';
@@ -37,7 +35,6 @@
     
 
         vm.filter = function () {
-          //  console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@filterTable component 2 before',filter,);
             var includeNetwork = true;
             if (vm.ordersFilter.hasOwnProperty('branchId') && vm.ordersFilter.branchId.length > 0 && vm.ordersFilter.hasOwnProperty('networkId')) {
                 includeNetwork = false;
@@ -87,20 +84,7 @@
                     }
                 }
             }
-        //    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@filterTable component 2 after for ',filter,vm.items);
-            // handel the free text input
-            /*if (vm.ordersFilter.items !== undefined && vm.ordersFilter.items !== '') {
-                filter['items.itemName'] = {
-                    "$regex": vm.ordersFilter.items,
-                    "$options": "i"
-                };
-            } else {
-                delete vm.ordersFilter['items'];
-            }*/
-
-            // handel the date input
             if (vm.ordersFilter.createdDate !== undefined && vm.ordersFilter.createdDate !== null && vm.ordersFilter.createdDate !== '') {
-                //var date = vm.createdDate.toLocaleDateString().split('/');
 
                 filter['createdDate'] = vm.ordersFilter.createdDate;
             } else {
@@ -117,14 +101,12 @@
             if (vm.ordersFilter.showSecondOrders) {
                 filter["type"] = "secondOrder";
             }
-          //  console.log('@@@@@@@@@@@@@@@@@@@@filterTable component 2 after all',filter,vm.ordersFilter);
             vm.onFilterCallback(filter, vm.ordersFilter);
 
             filter = {};
         };
 
         $scope.$watch('vm.ordersFilter.networkId', function (orders) {
-        //    console.log('@@@@@@@@@@@@@@@@@filterTable  vm.ordersFilter.networkId 4',orders);
             if (!vm.ordersFilter.networkId || vm.ordersFilter.networkId.length < 1) {
                 vm.branchesToFilter = vm.branches;
             }
@@ -139,13 +121,10 @@
         });
 
         $scope.$watch('vm.ordersFilter.departmentId', function (orders) {
-           // console.log('@@@@@@@@@@@@@@@@@@@filterTable  vm.ordersFilter.departmentId 5',orders);
             if (!vm.ordersFilter.departmentId || vm.ordersFilter.departmentId.length < 1) {
-                console.log('filterTable  vm.ordersFilter.departmentId 5 if',orders);
                 vm.itemsToFilter = vm.items;
             }
             else{
-                console.log('filterTable  vm.ordersFilter.departmentId 5 else',orders);
                 var listToReturn = [];
                 for (var index = 0; index < vm.ordersFilter.departmentId.length; index++) {
                     var element = vm.ordersFilter.departmentId[index];
@@ -156,14 +135,12 @@
         });
 
         vm.clean = function () {
-            console.log('filterTable  6 ');
             vm.ordersFilter = {};
         }
 
         /* --- arnge data --- */
 
         var setItemsList = function (catalog) {
-            console.log('filterTable  7 0  ');
             var itemsList = [];
 
             for (var d in catalog) {
@@ -172,7 +149,6 @@
                     itemsList = itemsList.concat(items);
                 }
             }
-         //   console.log('filterTable  7 ',itemsList);
             return itemsList;
         }
 
@@ -187,7 +163,6 @@
 
         if (!vm.branches || !vm.networks || !vm.networksBranchesMap) {
             server.getAllBranches().then(function (response) {
-                console.log('filterTable  8 ',response);
                 var branchesMap = {};
                 var networksMap = {};
                 var networksBranchesMap = {};
@@ -218,9 +193,6 @@
                 vm.branches = Object.values(branchesMap);
                 vm.networks = Object.values(networksMap);
                 vm.networksBranchesMap = networksBranchesMap;
-                console.log('filterTable  8  vm.branches>>>',vm.branches);
-                console.log('filterTable  8  vm.networks>>>',vm.networks);
-                console.log('filterTable  8  vm.networksBranchesMap>>>',vm.networksBranchesMap);
                 dataContext.setBranches(vm.branches);
                 dataContext.setNetworks(vm.networks);
                 dataContext.setNetworksBranchesMap(vm.networksBranchesMap);
@@ -228,7 +200,6 @@
         }
 
         $timeout(function () {
-          //  console.log('@@@@@@@@@@@@@@@@@@@@filterTable  9 ');
             if (vm.initialValues) {
                 for (var property in vm.initialValues) {
                     vm.ordersFilter[property] = vm.initialValues[property];

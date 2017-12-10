@@ -1,103 +1,12 @@
-<md-content flex  md-scroll-y  class="background-color-transparent" dir="rtl">
-    <main flex>
-        <ui-view layout="column" layout-fill>
-            <filter-table card-title="'סינון ופעולות'" on-filter-callback="vm.filterTable" 
-                initial-values="vm.initialFilter" download-filterd-table="vm.downloadFilterdTable">
-            </filter-table>
-
-            <md-card layout-margin>
-                <md-table-container >
-                    
-                    <table  border=1 md-table !fixed-header !table-height="{{vm.tableHeight}}px">
-                        <thead md-head >
-                            <tr md-row style="height: 36px;">
-                                <th md-column md-order-by="item.itemName">שם פריט</th>
-                                <th md-column >סהכ כמות משוריינת</th>
-                                <th md-column >סהכ כמות מוזמנת</th>
-                                <th md-column >סהכ כמות חלוקה</th>
-                                <th md-column >חוסר</th>
-                                <th md-column>עודף</th>
-                                <th md-column  colspan="3" ng-repeat="supplier in vm.suppliers | orderBy: 'priority'" ng-if="supplier.show">{{supplier.name}}</th>
-                            </tr>
-                            <tr  md-row style="height: 20px;">
-                                <th md-column colspan=6 ></th>
-                                   
-                                    <th md-column ng-repeat-start="supplier in vm.suppliers | orderBy: 'priority'" ng-if="supplier.show" >
-                                           % חלוקה
-                                      </th>
-                                      <th md-column style="text-align: center !important;" ng-if="supplier.show"> שיריון</th>
-                                      <th md-column ng-repeat-end  style="text-align: center !important;" ng-if="supplier.show">  הוזמן</th>
-                            </tr>
-                        </thead>
-                        <tbody md-body>
-                             
-                            <tr ng-class="{'tb-even': $even}" md-row ng-repeat="(pIndex, o) in vm.ordersItems ">
-                              
-                                <td md-cell>{{::o.item.itemName}}</td>
-                                <td md-cell>
-                                    
-                                                <input id="{{pIndex}}c{{$index}}" class="distribution-input"                                                      
-                                                    aria-label="input" 
-                                                    type="text" name="siryun{{$index}}"  style="width: 35px;" 
-                                                   
-                                                    ng-model="o.totsiryun"
-                                                    min="0"   ng-enter>
-                                    </td>
-                            
-                              
-                                <td md-cell>{{o.totorder}}</td>
-                                <td md-cell>{{o.tothaluka}}</td>
-                                <td md-cell>{{  (o.totsiryun > o.tothaluka) && (o.tothaluka > 0) ?  o.totsiryun - o.tothaluka : 0   }}</td>
-                                <td md-cell ng-class="{ 'text-red': (o.totsiryun < o.tothaluka)}"> {{(o.totsiryun < o.tothaluka) && (o.tothaluka > 0) ? o.tothaluka-o.totsiryun : 0 }}</td>
-                                <td md-cell ng-repeat-start="supplier in vm.suppliers | orderBy: 'priority'" ng-if="supplier.show">
-                                       
-                                            
-                                            <input id="{{pIndex}}c{{$index}}" 
-                                                   class="distribution-input"
-                                                   
-                                                   aria-label="input" style="width: 35px;" 
-                                                   type="text" name="name{{$index}}{{pIndex}}" 
-                                                   ng-model="o.supp[supplier.supplierId.toString()][0].haluka"
-                                                min="0" ng-change="vm.updateSum(o,supplier.supplierId.toString())" ng-enter>
-                                     
-                                      
-                                    </td>
-                                    <td md-cell  ng-if="supplier.show">
-                                          
-                                              
-                                                <input id="{{pIndex}}d{{$index}}" 
-                                                       class="distribution-input"
-                                                     
-                                                       aria-label="input" style="width: 35px;" 
-                                                       type="text" name="name{{$index}}" 
-                                                       ng-model="o.supp[supplier.supplierId.toString()][0].siryun"
-                                                    min="0" ng-change="vm.updateSum(o,supplier.supplierId.toString())" ng-enter>
-                                         
-                                          
-                                        </td>
-                                        <td md-cell ng-repeat-end ng-if="supplier.show">
-                                               
-                                            {{o.supp[supplier.supplierId.toString()][0].husman}}
-                                                   
-                                             
-                                              
-                                            </td>
-                                         
-                               
-                               
-                               
-
-                                <!-- <td md-cell></td> -->
-                            </tr>
-                        </tbody>
-                        
-                    </table>
-                </md-table-container>
-              
-            </md-card>
-
-          
-
-        </ui-view>
-    </main>
-</md-content>
+<div ng-if="!vm.load1" >
+       
+    <div class="dx-viewport" >
+            <div ng-if="vm.dataLoading">
+                    <center><b>.....   מעבד נתונים - נא להמתין   </b></center>
+            </div>
+        <div id="gridContainer" dx-data-grid="vm.dg"></div>
+    </div>
+</div>
+<!--<div ng-if="vm.load1" >
+        <h4 dir="rtl">                        טוען נתונים...                      </h4>
+</div> -->

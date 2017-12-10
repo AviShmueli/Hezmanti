@@ -12,7 +12,6 @@
     function config($stateProvider, $urlRouterProvider, $mdThemingProvider, $httpProvider,
                     $mdDateLocaleProvider, moment, LogglyLoggerProvider) {
 
-                            console.log("In app.config");
    //josh     LogglyLoggerProvider.inputToken('77e961f4-4296-4ee1-9521-2961b83aed0a').sendConsoleErrors(true).includeUserAgent(true);
 
 

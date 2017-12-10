@@ -1,17 +1,17 @@
 <md-toolbar flex>
   <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
-    <md-button ng-if="vm.viewMode === 'ordersDistribution'" aria-label="refresh" class="md-primary md-raised" ng-click="vm.refreshDataFromServer = vm.refreshDataFromServer + 1">
+    <md-button ng-if="vm.viewMode === 'JOSordersDistribution'" aria-label="refresh" class="md-primary md-raised" ng-click="vm.refreshDataFromServer = vm.refreshDataFromServer + 1">
       <md-icon ng-md-icon icon="refresh"></md-icon>
       <span style="font-size: 18px;">ריענון הזמנות חדשות</span>
     </md-button>
 
-    <span ng-if="vm.viewMode === 'ordersDistribution'">פריטים לחלוקה</span>
-    <md-switch ng-if="vm.viewMode === 'ordersDistribution'" style="margin: 3px;" class="md-secondery" name="special" ng-model="vm.distrebutedDataMode">
+    <span ng-if="vm.viewMode === 'JOSordersDistribution'">פריטים לחלוקה</span>
+    <md-switch ng-if="vm.viewMode === 'JOSordersDistribution'" style="margin: 3px;" class="md-secondery" name="special" ng-model="vm.distrebutedDataMode">
       פריטים שחולקו
     </md-switch>
 
 
-    <div ng-if="vm.viewMode !== 'ordersDistribution'">
+    <div ng-if="vm.viewMode !== 'JOSordersDistribution'">
       <md-button class="md-icon-button" aria-label="Menu">
         <md-icon ng-md-icon icon="more_vert" class="fill-white"></md-icon>
       </md-button>

@@ -12,7 +12,6 @@
 
     function StocktakingController($rootScope, $scope, server, $state, $interval,
         $log, device, dataContext, $location, stockContext) {
-            console.log('StocktakingController');
         var vm = this;
 
         vm.navigateTo = function(to){

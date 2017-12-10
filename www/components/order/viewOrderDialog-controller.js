@@ -6,7 +6,6 @@
         .controller('ViewOrderDialogController', ViewOrderDialogController);
 
     function ViewOrderDialogController($scope, $mdDialog, $mdToast, server, order, showEditBtn, mode) {
-        console.log('ViewOrderDialogController');
         $scope.hide = function () {
             $mdDialog.hide();
         }

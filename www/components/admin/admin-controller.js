@@ -32,7 +32,6 @@
            
             $mdSidenav("left").close();
         };
-        console.log ('AdminController  1 ',vm);
 
         vm.menu = [{
             headerText: 'הזמנות',
@@ -101,7 +100,6 @@
         }];
 
         vm.menuItem = _.find(vm.menu, function (menuItem) {
-            console.log('AdminController 3',menuItem);
             if (menuItem.buttons) {
                 var isExcist = _.findIndex(menuItem.buttons, function (button) {
                     if (button.mode === vm.viewMode) {

@@ -12,6 +12,15 @@
     DAL.getAllOrders = getAllOrders;
     DAL.getOrder = getOrder;
     DAL.updateOrder = updateOrder;
+
+    DAL.getJorders = getJorders;
+    DAL.insertSiryun = insertSiryun;
+    DAL.insertSiryunOrder = insertSiryunOrder;
+    DAL.getSiryun = getSiryun;
+    DAL.getSiryunOrder = getSiryunOrder;
+    DAL.getJosOrders = getJosOrders;
+    DAL.updateSiryun = updateSiryun;
+    DAL.updateSiryunOrder = updateSiryunOrder;
     DAL.getAllOrdersCount = getAllOrdersCount;
     DAL.checkBranchCode = checkBranchCode;
     DAL.changeBranchCode = changeBranchCode;
@@ -262,6 +271,8 @@
         var orderId = order._id;
 
         delete order._id;
+        
+        order.createdDate = new Date(order.createdDate);
 
         getCollection('gorme-orders').then(function (mongo) {
 
@@ -294,7 +305,222 @@
 
         return d.promise;
     }
+// #################################### jos add
 
+function insertSiryun(siryun) {
+    var d = deferred();
+
+    getCollection('gorme-siryun').then(function (mongo) {
+
+        mongo.collection.insert(siryun, function (err, result) {
+            if (err) {
+                var errorObj = {
+                    message: "error while trying to add Order: ",
+                    error: err
+                };
+                mongo.db.close();
+                d.reject(errorObj);
+            }
+
+            mongo.db.close();
+            d.resolve(result);
+        });
+    });
+
+    return d.promise;
+}
+function insertSiryunOrder(siryun) {
+    var d = deferred();
+
+    getCollection('gorme-siryun_order').then(function (mongo) {
+
+        mongo.collection.insert(siryun, function (err, result) {
+            if (err) {
+                var errorObj = {
+                    message: "error while trying to add Order: ",
+                    error: err
+                };
+                mongo.db.close();
+                d.reject(errorObj);
+            }
+
+            mongo.db.close();
+            d.resolve(result);
+        });
+    });
+
+    return d.promise;
+}
+
+function getSiryun(cre_date,deps1) {
+    var d = deferred();
+
+    getCollection('gorme-siryun').then(function (mongo) {
+        mongo.collection.findOne({
+            deps : parseInt(deps1), 
+            createDate : cre_date,
+            
+        }, function (err, result) {
+            if (err) {
+                var errorObj = {
+                    message: "error while trying to get Order: ",
+                    error: err
+                };
+                mongo.db.close();
+                d.reject(errorObj);
+            }
+
+            mongo.db.close();
+            d.resolve(result);
+        });
+    });
+
+    return d.promise;
+}
+function getSiryunOrder(cre_date,deps1) {
+    var d = deferred();
+
+    getCollection('gorme-siryun_order').then(function (mongo) {
+        mongo.collection.findOne({
+            deps : parseInt(deps1), 
+            createDate : cre_date,
+        }, function (err, result) {
+            if (err) {
+                var errorObj = {
+                    message: "error while trying to get Order: ",
+                    error: err
+                };
+                mongo.db.close();
+                d.reject(errorObj);
+            }
+
+            mongo.db.close();
+            d.resolve(result);
+        });
+    });
+
+    return d.promise;
+}
+function getJosOrders(cre_date,fromOrder) {
+    var d = deferred();
+    //var filter1 = { createdDate: { $gte: new Date(cre_date) , $lt: cre_date} }
+    
+    var todate=new Date(cre_date);
+    var fo = parseInt(fromOrder);
+    todate.setDate(todate.getDate() + 1);
+    getCollection('gorme-orders').then(function (mongo) {
+    mongo.collection.find({
+            'createdDate': { $gte: new Date(cre_date) , $lt: todate},
+            'orderId' : { $gt : fo},
+            'type' : { $ne : 'stock'}
+          
+        }).toArray(function (err, result) {
+            if (err) {
+                var errorObj = {
+                    message: "error while trying to get Order: ",
+                    error: err
+                };
+                mongo.db.close();
+                d.reject(errorObj);
+            }
+
+            mongo.db.close();
+            d.resolve(result);
+        });
+    });
+
+    return d.promise;
+}
+function getJorders(cre_date) {
+    var d = deferred();
+
+    getCollection('gorme-orderstest').then(function (mongo) {
+
+        mongo.collection.find({
+            branchId : 106,
+        }, function (err, result) {
+            if (err) {
+                var errorObj = {
+                    message: "error while trying to get Order: ",
+                    error: err
+                };
+                mongo.db.close();
+                d.reject(errorObj);
+            }
+            mongo.db.close();
+            d.resolve(result);
+        });
+    });
+
+    return d.promise;
+}
+
+
+function updateSiryun(siryun,cre_date,deps1) {
+    var d = deferred();
+
+    var siryunId = siryun._id;
+
+    delete siryun._id;
+
+    getCollection('gorme-siryun').then(function (mongo) {
+
+        mongo.collection.findAndModify(
+            {  createDate: cre_date, deps : parseInt(deps1)  },
+            [],
+            { $set: siryun }, 
+            { new: true},
+            function (err, results) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to update Siryun :",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(results);
+            });
+    });
+
+    return d.promise;
+}
+function updateSiryunOrder(siryun,cre_date,deps1) {
+    var d = deferred();
+
+    var siryunId = siryun._id;
+
+    delete siryun._id;
+
+    getCollection('gorme-siryun_order').then(function (mongo) {
+
+        mongo.collection.findAndModify(
+            {  createDate: cre_date, deps : parseInt(deps1)  },
+            [],
+            { $set: siryun }, 
+            { new: true},
+            function (err, results) {
+                if (err) {
+                    var errorObj = {
+                        message: "error while trying to update Siryun :",
+                        error: err
+                    };
+                    mongo.db.close();
+                    d.reject(errorObj);
+                }
+
+                mongo.db.close();
+                d.resolve(results);
+            });
+    });
+
+    return d.promise;
+}
+
+
+// #################################### 
     function getAllOrders(filter, options) {
         var d = deferred();
 
@@ -458,7 +684,11 @@
         var d = deferred();
 
         var filter = {
-            type: "order"
+            '$or': [{
+                "type": 'order'
+            }, {
+                "type": 'secondOrder'
+            }]
         };
 
         var date = new Date().toDateString();
@@ -476,7 +706,8 @@
                 branchId: 1,
                 createdDate: 1,
                 items: 1,
-                orderId: true
+                orderId: true,
+                type: 1
             }, {"sort": [
                 ["orderId", "desc"]
             ]}).toArray(function (err, result) {

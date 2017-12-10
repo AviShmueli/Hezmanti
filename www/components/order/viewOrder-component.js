@@ -25,7 +25,6 @@
 
     function viewOrderController($rootScope, $scope, server, $state, $interval,
         $log, device, dataContext, $location, $filter, $mdDialog) {
-            console.log('viewOrder component');
         var vm = this;
         vm.editMode = false;
         vm.buttonIcon = 'edit';
@@ -83,7 +82,6 @@
         }
 
         var getDeliveryDate = function () {
-
             var day = new Date().getDay();
             var deliveryDate = new Date();
             if (day === 5) {
@@ -94,7 +92,7 @@
             return $filter('date')(deliveryDate, 'dd/MM');
         }
 
-        if (vm.showSecondOrder) {              
+        if (vm.showSecondOrder) {             
             $scope.$watch(
                 "vm.isSecondOrder",
                 function handleFooChange(newValue, oldValue) {

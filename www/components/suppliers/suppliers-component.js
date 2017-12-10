@@ -21,7 +21,6 @@
         vm.query = {
             order: 'name',
         }
-        console.log('suppliers component');
         // get from local storage
         if (!vm.suppliersList) {
             vm.suppliersList = dataContext.getSuppliers();

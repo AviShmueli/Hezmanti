@@ -14,7 +14,8 @@
             'ngSanitize',
             'anguFixedHeaderTable',
             'ngLodash',
-            'nvd3'
+            'nvd3',
+            'dx'
         ]);
 
 })();

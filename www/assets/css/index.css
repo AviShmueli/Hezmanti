@@ -291,10 +291,10 @@ input::-webkit-inner-spin-button {
      border-spacing: 2px !important;  
 }
 
-table.distribution-table th {
+/*table.distribution-table th {
     /* border: black 1px solid; */
 }
-
+*/
 
 table.md-table:not(.md-row-select) td.md-cell:nth-child(n+2):nth-last-child(n+2), 
 table.md-table:not(.md-row-select) th.md-column:nth-child(n+2):nth-last-child(n+2){
@@ -311,4 +311,25 @@ table.md-table:not(.md-row-select) th.md-column:nth-child(n+2):nth-last-child(n+
     
 }
 
+.dx-datagrid-header-panel .dx-toolbar {
+    margin: 5;
+    padding: 10px;
+    background-color: #5186C3;
+    height: 60px;
+    
+}
+/* jos add 
+.dx-datagrid-header-panel .dx-toolbar-items-container  {
+    height: 70px;
+}
+.dx-datagrid-header-panel .dx-toolbar-items-container {
+    background-color: #B77933;
+}
+/*
+.dx-datagrid-header-panel .dx-selectbox {
+     margin: 17px 10px;
+}
 
+.dx-datagrid-header-panel .dx-button {
+     margin: 17px 0;
+}*/

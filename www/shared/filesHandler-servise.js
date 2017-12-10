@@ -10,10 +10,8 @@
     function filesHandler(FileSaver, Blob) {
 
         var scope = this;
-        console.log('fileHandler-services');
 
         var downloadOrderAsCSV = function (orderList, fileds, fileName) {
-            console.log('fileHandler-services 1');
             scope.reportFields = fileds;
             scope.filename = fileName;
 
@@ -22,7 +20,6 @@
         }
 
         var convertObjListToStrData = function (objList) {
-            console.log('fileHandler-services 2');
             scope.fields = [];
             scope.header = [];
             scope.separator = ',';
@@ -43,7 +40,6 @@
         }
 
         var downloadFile = function (strData) {
-            console.log('fileHandler-services 3');
             var blob = new Blob([strData], {
                 type: "text/plain;charset=utf-8"
             });
@@ -52,7 +48,6 @@
         }
 
         function _bodyData(data) {
-            console.log('fileHandler-services 4');
             var body = "";
             angular.forEach(data, function (dataItem) {
                 var rowItems = [];
@@ -95,12 +90,10 @@
         }
 
         function _convertToExcel(body) {
-            console.log('fileHandler-services 5');
             return scope.header.join(scope.separator) + '\n' + body;
         }
 
         function _objectToString(object) {
-            console.log('fileHandler-services 6');
             var output = '';
             angular.forEach(object, function (value, key) {
                 output += key + ':' + value + ' ';

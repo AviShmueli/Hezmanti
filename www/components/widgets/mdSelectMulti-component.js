@@ -18,7 +18,6 @@
 
 
         var vm = this;
-        console.log('mdSelectMulti component');
         if (!vm.selectModel) {
             vm.selectModel = [];
         }

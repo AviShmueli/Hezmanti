@@ -17,686 +17,1315 @@
         $mdToast, $mdDialog, $window, distributionContext, lodash,$interval) {
 
         var vm = this;
-        vm.tableHeight = $window.innerHeight - 325;
-        vm.checkAllTableSum = false;
-        vm.downloading = false;
-        console.log('ordersDistribution 000');
-        var lastOrderId = distributionContext.getLastOrderId();
-
-        /*// jos refersh page
-        var c=0;
-        
-        $interval(function(){
-        //$scope.$apply();
-        console.log('ccc=',c,$scope.$$phase);
-        c++;
-        },10000);
-        */
-
-
-        var orderFields = {
-            createdDate: 'ת. הזמנה',
-            deliveryDate: 'ת. אספקה',
-            branchId: 'מחסן',
-            itemSerialNumber: 'פריט/ברקוד',
-            count: 'מארזים'
-        };
-
-        vm.tableSummary = {
-            count: 0,
-            sum: 0
-        }
         var pageMode = 'distribution';
-        var allOrderItems = distributionContext.getDistributionState();
-        console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',allOrderItems);
-        var allDistributedItems = distributionContext.getDistributedState();
-        console.log('ordersDistribution 1 1 allOrderItems',allOrderItems);
-        console.log('ordersDistribution 1 2 allDistributedItems ',allDistributedItems );
-        var currDistributedItems = [];
-
-
+        vm.dataLoading = false;
+        vm.grid1 = null; //pointer to grid
+        vm.jossel = null;
+        vm.dist_order=null; //main db for grid
         
+        vm.work_table=null; //working grid table
+        vm.select_dept=99;
+        vm.filter = null;
+        vm.rule1=null;
+        vm.rule2=null;
+        vm.f_rules1 = {};
+        vm.f_rules2 = {};
+        vm.toolb = null;
 
-
-        var catalog = dataContext.getCatalog();
-
-        /* ---- initiate table ---- */
-
-        var initiateDistributionData = function () {
-            console.log('ordersDistribution 2');
-            // TODO: insert to the filter the id of the last order that exict in local sorage,
-            //       and filter by this id to get only the orders that not in the local storage.
-            var filter = {
-                'orderId': {'$gt': lastOrderId},
-                '$or': [{
-                    "type": 'order'
-                }, {
-                    "type": 'secondOrder'
-                }]
-            };
-            var query = {
-                'order': '-orderId'
-            };
-
-            var deferred = $q.defer();
-            vm.promise = deferred.promise;
-            vm.filteringTable = true;
-            console.log('ordersDistribution 3 0',query,filter);
-            server.getAllOrders(query, filter).then(function (response) {
-                console.log('ordersDistribution 3',response);
+        vm.dg = null; // grid setting
+        vm.toolmenu=[]; // toolbar menu
+        vm.columns = null; // grid columns
+        vm.summ = null;
+        vm.load1 = true;
+        //vm.work_r = [];
+        // build tool menu
+        vm.toolmenu.push({
+            value : 99,
+            text: 'עוף + הודו'
+        });
+        vm.toolmenu.push({
+            value : 6,
+            text: 'דגים'
+        });
+        vm.toolmenu.push({
+            value : 3,
+            text: 'עוף והודו ארוז מהדרין'
+        });
+        // ############################ Main Program begin here  get from db today
+        var cre_date1= $filter('date')(new Date(), 'dd/MM/yyyy'); // working default date
+        server.getSiryunOrder(cre_date1, 99 ).then(function (result) {
+            
+           
+            var r = result.data;   
+            if (r == '') {            //not found -  build new date
+                cre_new_date(cre_date1);
+            }
+            else {
                 
-                var orders = response.data;
+                new_date(r);
+            }
+        }); 
+        // ############################ update header percent
+        vm.jostest = function (a1, b1) {
+            if (a1.length == 3){
+                var numa1= parseInt(a1);
+                //var dept_cata = vm.dist_order.cat[vm.select_dept];
+                var dept_cata = vm.work_table;
+                var tArr = {};
+                for(var i = 0 ; i <  dept_cata.length ; i++){
+                    var p =  dept_cata[i];
+                    var key = p.itemSerialNumber + '-' + p.orderId;
+                    tArr[key] = p;         
+                }
+                var gridData = new DevExpress.data.DataSource({
+                    store: dept_cata,
+                    paginate : false
+                });
+                var filterExpr =vm.grid1.getCombinedFilter();
+                gridData.filter(filterExpr);
+                gridData.load().done(function (result) {
+                    for (i = 0; i < result.length; i++) {
+                        var key = result[i].itemSerialNumber + '-' +result[i].orderId;
+                        var p = tArr[key];
+                        if (a1 == '---') {
+                            p[b1.dataField] =  null;
+                        }
+                        else {
+                            p[b1.dataField] =  Math.round( p.count * (numa1 * 0.01));
+                        }
+                    }
+                });
+                // updatedb
+               // vm.dataLoading = true;
+               vm.toolb[4].options.disabled = false;
+              //  updatesiryun_husman2(false);
+            }
+        }
+        // ############################ jos replace new date db       
+        var  new_date = function(db1){
+            vm.dist_order = db1;
+            //josdb(vm.select_dept);
+            josdb(99)
+            josgrid();
+            
+        }
+        
+        // ############################ Create new date for siryun + mongo
+        var cre_new_date = function(cre_date) {
+            vm.dist_order=null;
+            vm.work_table=null; 
+           
 
-                if (orders.length < 1) {
-                    vm.filteringTable = false;
-                    deferred.resolve();
+            var date_arr = cre_date.split("/")
+            var date11 = date_arr[2] + '-' + date_arr[1] + '-' + date_arr[0]+"T00:00:00.000Z";
+            // get all new orders
+            server.getJosOrders(date11, 0 ).then(function (result) {
+                var r = result.data; 
+                if (r.length == 0 ){ // no orders
+                    cre_columns();
+                    josgrid();
+                    vm.grid1.deleteColumn(8);
+                    vm.dataLoading = false;
                     return;
                 }
-
-                lastOrderId = orders[0].orderId;
-                distributionContext.setLastOrderId(lastOrderId);
-
-                var newOrdersCount = 0;
-                var newOrdersItems = [];
-                for (var index = 0; index < orders.length; index++) {
-
-                    var order = orders[index];
-
-                    var isExcist = lodash.findIndex(allOrderItems, function (o) {
-                        var a = o;
-                        return o.order._id === order._id;
+                var max_orderid = null;
+                var newOrders = r;
+                server.getDepartments().then(function (result) {
+                    var dept = result.data;            
+                    // build suppliers
+                    var supmap = {};
+                    for (var j=0; j < dept.length;j++){
+                        if (dept[j].suppliers.length > 0) {
+                             var id1=dept[j].id;
+                             if (id1 == 1) { 
+                                 id1=99; 
+                             }
+                            supmap[id1]=dept[j].suppliers;
+                            for (var p=0;p< dept[j].suppliers.length;p++){
+                                angular.extend(supmap[id1][p],{husman:null});
+                            }
+                        }
+                    }
+                    // build dist orders for grib & db
+                    var departmentsMap = {};
+                    for (var y=0;y<newOrders.length;y++) {
+                        if (max_orderid == null) { max_orderid = newOrders[y].orderId; }
+                        if (max_orderid < newOrders[y].orderId) { max_orderid = newOrders[y].orderId; }
+                        var arr1 = newOrders[y];
+                        for (var u=0;u < arr1.items.length;u++) {
+                            var item = arr1.items[u];
+                            if ((item.itemDepartmentId == 1) || (item.itemDepartmentId == 2)) {
+                                item.itemDepartmentId = 99;
+                            }
+                            angular.extend(item,{orderId:arr1.orderId,branchId:arr1.branchId,networkId:arr1.networkId,branchName:arr1.branchName,type:arr1.type,totorder:0,bikoret:null,excel:0});
+                            if (!departmentsMap.hasOwnProperty(item.itemDepartmentId)) {
+                                departmentsMap[item.itemDepartmentId] = [];
+                            }
+                            departmentsMap[item.itemDepartmentId].push(item);
+                        }
+                    };
+                    
+                    var newcat2 = {
+                        createDate : cre_date,
+                        maxOrderid :  max_orderid,
+                        cat : {},
+                        deps : vm.toolmenu
+                    };
+                    angular.forEach(departmentsMap, function(value, w){
+                        var addcol1=null;
+                        var orderLine=[];
+                        for(var i=0;i<departmentsMap[w].length;i++) {
+                            orderLine[i]=departmentsMap[w][i];
+                            for (var j=0;j<supmap[w].length;j++){
+                                if(supmap[w][j].hasOwnProperty('priority') ) {
+                                    if (supmap[w][j].priority !== null ){
+                                        var sup1="sup_name_"+supmap[w][j].supplierId;
+                                        var sup2="sup_husman_"+supmap[w][j].supplierId;
+                                        var item1='{ ';
+                                        item1 += '"' + sup1 + '" : "' +  supmap[w][j].name + '",' ;
+                                        item1 += '"' + sup2 + '" : ' +  supmap[w][j].husman  ;
+                                        item1 += '}';
+                                        var sapak1=angular.fromJson(item1);
+                                        angular.extend(orderLine[i],sapak1);
+                                    }
+                                } 
+                              
+                            }
+                        }
+                        newcat2.cat[w]= orderLine;  
                     });
-                    if (isExcist === -1) {
-                        isExcist = lodash.findIndex(allDistributedItems, function (o) {
-                            return o.order._id === order._id;
+                    var newcat99 = {
+                        createDate : cre_date,
+                        cat : newcat2.cat[99],
+                        maxOrderid :  max_orderid,
+                        deps : 99
+                    };
+                    var newcat6 = {
+                        createDate : cre_date,
+                        cat : newcat2.cat[6],
+                        maxOrderid :  max_orderid,
+                        deps : 6
+                    };
+                    var newcat3 = {
+                        createDate : cre_date,
+                        cat : newcat2.cat[3],
+                        maxOrderid :  max_orderid,
+                        deps : 3
+                    };
+                    //####################### 99
+                    vm.dist_order =newcat99;
+                    server.getSiryun(cre_date,99).then(function (result) {
+                        var r = result.data;    
+                        if (r.length != '') {            //not found -  build new date<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            vm.siryun_db = r;
+                            var catalog = vm.siryun_db.cat;
+                            var orders = newcat99.cat;
+                            var    tArr = {};
+                                for(var i = 0 ; i <  catalog.length ; i++){
+                                    var p =  catalog[i];
+                                    p.totorder=0;
+                                    p.totorder2=0;
+                                    p.tothaluka =0;
+                                    tArr[p.serialNumber] = p;   
+                                    angular.forEach(p, function(value, key){
+                                        if (key.indexOf('husman') > 0) {
+                                            p[key] = null;
+                                        }
+                                    });
+                                }
+                                for(var i = 0 ; i < orders.length ; i++){
+                                    var o = orders[i];
+                                    if (o.excel == 0) {
+                                        o.totorder=0;
+                                    }
+                                    var serialNumber = o.itemSerialNumber
+                                    var p = tArr[serialNumber];
+                                    if (p !== undefined) {
+                                        if (o.type == 'order') {
+                                            p.totorder += o.count;
+                                            angular.forEach(p, function(val1, key1){
+                                                if (key1.indexOf('_haluka_') > 0) { 
+                                                    var key2 = "sup_husman_"+key1.substring(11);
+                                                    if (val1 > 0 ) { // has percent to calc
+                                                        // update percent only for null
+                                                        if (o.excel == 0) {
+                                                            if (o[key2] == null) {
+                                                                var num1 = Math.round( o.count * (val1 * 0.01));
+                                                                o[key2] = num1;
+                                                            }
+                                                        }
+                                                    }
+                                                    if (o[key2] > 0) {
+                                                        if (o.excel == 0) {
+                                                            o.totorder += o[key2];
+                                                        }
+                                                        p[key2] += o[key2];
+                                                        p.tothaluka += o[key2];
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        else {
+                                             p.totorder2 += o.count;
+                                        } 
+                                    }
+                                    o.bikoret = o.count-o.totorder;
+                                }
+                            server.updateSiryun(vm.siryun_db,cre_date,99).then(function (response) {
+                                server.insertSiryunOrder(vm.dist_order).then(function (response) {
+                                    //############################# 6
+                                        vm.dist_order =newcat6;
+                                        server.getSiryun(cre_date,6).then(function (result) {
+                                            var r = result.data;    
+                                            if (r.length != '') {            //not found -  build new date<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                                                vm.siryun_db = r;
+                                                var catalog = vm.siryun_db.cat;
+                                                var orders = newcat99.cat;
+                                                var    tArr = {};
+                                                    for(var i = 0 ; i <  catalog.length ; i++){
+                                                        var p =  catalog[i];
+                                                            p.totorder=0;
+                                                            p.totorder2=0;
+                                                        p.tothaluka =0;
+                                                        tArr[p.serialNumber] = p;   
+                                                        angular.forEach(p, function(value, key){
+                                                            if (key.indexOf('husman') > 0) {
+                                                                p[key] = null;
+                                                            }
+                                                        });
+                                                    }
+                                                    for(var i = 0 ; i < orders.length ; i++){
+                                                        var o = orders[i];
+                                                        if (o.excel == 0) {
+                                                            o.totorder=0;
+                                                        }
+                                                        var serialNumber = o.itemSerialNumber
+                                                        var p = tArr[serialNumber];
+                                                        if (p !== undefined) {
+                                                            if (o.type == 'order') {
+                                                                p.totorder += o.count;
+                                                                angular.forEach(p, function(val1, key1){
+                                                                    if (key1.indexOf('_haluka_') > 0) { 
+                                                                        var key2 = "sup_husman_"+key1.substring(11);
+                                                                        if (val1 > 0 ) { // has percent to calc
+                                                                            // update percent only for null
+                                                                            if (o.excel == 0) {
+                                                                                if (o[key2] == null) {
+                                                                                    var num1 = Math.round( o.count * (val1 * 0.01));
+                                                                                    o[key2] = num1;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        if (o[key2] > 0) {
+                                                                            if (o.excel == 0) {
+                                                                                o.totorder += o[key2];
+                                                                            }
+                                                                            p[key2] += o[key2];
+                                                                            p.tothaluka += o[key2];
+                                                                        }
+                                                                    }
+                                                                });
+                                                            }
+                                                            else {
+                                                                p.totorder2 += o.count;
+                                                            } 
+                                                        }
+                                                        o.bikoret = o.count-o.totorder;
+                                                    }
+                                                server.updateSiryun(vm.siryun_db,cre_date,6).then(function (response) {
+                                                    server.insertSiryunOrder(vm.dist_order).then(function (response) {
+                                                            //################################# 3
+                                                            vm.dist_order =newcat3;
+                                                            server.getSiryun(cre_date,3).then(function (result) {
+                                                                var r = result.data;    
+                                                                if (r.length != '') {            //not found -  build new date<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                                                                    vm.siryun_db = r;
+                                                                    var catalog = vm.siryun_db.cat;
+                                                                    var orders = newcat99.cat;
+                                                                    var    tArr = {};
+                                                                        for(var i = 0 ; i <  catalog.length ; i++){
+                                                                            var p =  catalog[i];
+                                                                                p.totorder=0;
+                                                                                p.totorder2=0;
+                                                                            p.tothaluka =0;
+                                                                            tArr[p.serialNumber] = p;   
+                                                                            angular.forEach(p, function(value, key){
+                                                                                if (key.indexOf('husman') > 0) {
+                                                                                    p[key] = null;
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                        for(var i = 0 ; i < orders.length ; i++){
+                                                                            var o = orders[i];
+                                                                            if (o.excel == 0) {
+                                                                                o.totorder=0;
+                                                                            }
+                                                                            var serialNumber = o.itemSerialNumber
+                                                                            var p = tArr[serialNumber];
+                                                                            if (p !== undefined) {
+                                                                                if (o.type == 'order') {
+                                                                                    p.totorder += o.count;
+                                                                                    angular.forEach(p, function(val1, key1){
+                                                                                        if (key1.indexOf('_haluka_') > 0) { 
+                                                                                            var key2 = "sup_husman_"+key1.substring(11);
+                                                                                            if (val1 > 0 ) { // has percent to calc
+                                                                                                // update percent only for null
+                                                                                                if (o.excel == 0) {
+                                                                                                    if (o[key2] == null) {
+                                                                                                        var num1 = Math.round( o.count * (val1 * 0.01));
+                                                                                                        o[key2] = num1;
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                            if (o[key2] > 0) {
+                                                                                                if (o.excel == 0) {
+                                                                                                    o.totorder += o[key2];
+                                                                                                }
+                                                                                                p[key2] += o[key2];
+                                                                                                p.tothaluka += o[key2];
+                                                                                            }
+                                                                                        }
+                                                                                    });
+                                                                                }
+                                                                                else {
+                                                                                 //   if (isNew) {
+                                                                                        p.totorder2 += o.count;
+                                                                                   // }
+                                                                                } 
+                                                                            }
+                                                                            o.bikoret = o.count-o.totorder;
+                                                                        }
+                                                                    server.updateSiryun(vm.siryun_db,cre_date,3).then(function (response) {
+                                                                        server.insertSiryunOrder(vm.dist_order).then(function (response) {
+                                                                            vm.select_dept = 99;
+                                                                            vm.dist_order =newcat99;
+                                                                            josdb(vm.select_dept);
+                                                                            josgrid();
+                                                                            vm.dataLoading = false;
+                                                                        });
+                                                                    });
+                                                                }
+                                                            });        
+                                                    });
+                                                });
+                                            }
+                                        });
+                                });
+                            });
+                        }
+
+                    });
+                });
+            });
+        }
+        
+
+        // ############################  Add new orders to grid
+        var addNewOrders = function(){
+            var cre_date =  vm.dist_order.createDate;
+            var lastOrder = vm.dist_order.maxOrderid;
+            var date_arr = cre_date.split("/")
+            var date11 = date_arr[2] + '-' + date_arr[1] + '-' + date_arr[0]+"T00:00:00.000Z";
+            // get all new orders
+            server.getJosOrders(date11,lastOrder).then(function (result) {
+                var r = result.data; 
+                if (r.length == 0 ){ // no orders
+                    cre_columns();
+                    josgrid();
+                    vm.grid1.deleteColumn(8);
+                    vm.dataLoading = false;
+                    return;
+                }
+                var max_orderid = null;
+                var newOrders = r;
+                server.getDepartments().then(function (result) {
+                    var dept = result.data;            
+                    var supmap = {};
+                    for (var j=0; j < dept.length;j++){
+                        if (dept[j].suppliers.length > 0) {
+                             var id1=dept[j].id;
+                             if (id1 == 1) { 
+                                 id1=99; 
+                             }
+                            supmap[id1]=dept[j].suppliers;
+                            for (var p=0;p< dept[j].suppliers.length;p++){
+                                angular.extend(supmap[id1][p],{husman:null});
+                            }
+                        }
+                    }
+                    var departmentsMap = {};
+                    for (var y=0;y<newOrders.length;y++) {
+                        if (max_orderid == null) { max_orderid = newOrders[y].orderId; }
+                        if (max_orderid < newOrders[y].orderId) { max_orderid = newOrders[y].orderId; }
+                        var arr1 = newOrders[y];
+                        for (var u=0;u < arr1.items.length;u++) {
+                            var item = arr1.items[u];
+                            if ((item.itemDepartmentId == 1) || (item.itemDepartmentId == 2)) {
+                                item.itemDepartmentId = 99;
+                            }
+                            angular.extend(item,{orderId:arr1.orderId,branchId:arr1.branchId,networkId:arr1.networkId,branchName:arr1.branchName,type:arr1.type,totorder:0,bikoret:null,excel:0});
+                            if (!departmentsMap.hasOwnProperty(item.itemDepartmentId)) {
+                                departmentsMap[item.itemDepartmentId] = [];
+                            }
+                            departmentsMap[item.itemDepartmentId].push(item);
+                        }
+                    };
+                    
+                    var newcat2 = {
+                        createDate : cre_date,
+                        maxOrderid :  max_orderid,
+                        cat : {},
+                        deps : vm.toolmenu
+                    };
+                    angular.forEach(departmentsMap, function(value, w){
+                        var addcol1=null;
+                        var orderLine=[];
+                        for(var i=0;i<departmentsMap[w].length;i++) {
+                            orderLine[i]=departmentsMap[w][i];
+                            for (var j=0;j<supmap[w].length;j++){
+                                if(supmap[w][j].hasOwnProperty('priority') ) {
+                                    if (supmap[w][j].priority !== null ){
+                                        var sup1="sup_name_"+supmap[w][j].supplierId;
+                                        var sup2="sup_husman_"+supmap[w][j].supplierId;
+                                        var item1='{ ';
+                                        item1 += '"' + sup1 + '" : "' +  supmap[w][j].name + '",' ;
+                                        item1 += '"' + sup2 + '" : ' +  supmap[w][j].husman  ;
+                                        item1 += '}';
+                                        var sapak1=angular.fromJson(item1);
+                                        angular.extend(orderLine[i],sapak1);
+                                    }
+                                } 
+                              
+                            }
+                        }
+                        newcat2.cat[w]= orderLine;  
+                    });
+                    var newcat99 = {
+                        createDate : cre_date,
+                        cat : newcat2.cat[99],
+                        maxOrderid :  max_orderid,
+                        deps : 99
+                    };
+                    var newcat6 = {
+                        createDate : cre_date,
+                        cat : newcat2.cat[6],
+                        maxOrderid :  max_orderid,
+                        deps : 6
+                    };
+                    var newcat3 = {
+                        createDate : cre_date,
+                        cat : newcat2.cat[3],
+                        maxOrderid :  max_orderid,
+                        deps : 3
+                    };
+                    //####################### 99
+                    vm.dist_order =newcat99;
+                    server.getSiryun(cre_date,99).then(function (result) {
+                        var r = result.data;    
+                        if (r.length != '') {            //not found -  build new date<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            vm.siryun_db = r;
+                            var catalog = vm.siryun_db.cat;
+                            var orders = newcat99.cat;
+                            var    tArr = {};
+                                for(var i = 0 ; i <  catalog.length ; i++){
+                                    var p =  catalog[i];
+                                    p.totorder=0;
+                                    p.totorder2=0;
+                                    p.tothaluka =0;
+                                    tArr[p.serialNumber] = p;   
+                                    angular.forEach(p, function(value, key){
+                                        if (key.indexOf('husman') > 0) {
+                                            p[key] = null;
+                                        }
+                                    });
+                                }
+                                for(var i = 0 ; i < orders.length ; i++){
+                                    var o = orders[i];
+                                    if (o.excel == 0) {
+                                        o.totorder=0;
+                                    }
+                                    var serialNumber = o.itemSerialNumber
+                                    var p = tArr[serialNumber];
+                                    if (p !== undefined) {
+                                        if (o.type == 'order') {
+                                            p.totorder += o.count;
+                                            angular.forEach(p, function(val1, key1){
+                                                if (key1.indexOf('_haluka_') > 0) { 
+                                                    var key2 = "sup_husman_"+key1.substring(11);
+                                                    if (val1 > 0 ) { // has percent to calc
+                                                        // update percent only for null
+                                                        if (o.excel == 0) {
+                                                            if (o[key2] == null) {
+                                                                var num1 = Math.round( o.count * (val1 * 0.01));
+                                                                o[key2] = num1;
+                                                            }
+                                                        }
+                                                    }
+                                                    if (o[key2] > 0) {
+                                                        if (o.excel == 0) {
+                                                            o.totorder += o[key2];
+                                                        }
+                                                        p[key2] += o[key2];
+                                                        p.tothaluka += o[key2];
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        else {
+                                             p.totorder2 += o.count;
+                                        } 
+                                    }
+                                    o.bikoret = o.count-o.totorder;
+                                }
+                            server.updateSiryun(vm.siryun_db,cre_date,99).then(function (response) {
+                                server.updateSiryunOrder(vm.dist_order,cre_date,99).then(function (response) {
+                                    //############################# 6
+                                        vm.dist_order =newcat6;
+                                        server.getSiryun(cre_date,6).then(function (result) {
+                                            var r = result.data;    
+                                            if (r.length != '') {            //not found -  build new date<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                                                vm.siryun_db = r;
+                                                var catalog = vm.siryun_db.cat;
+                                                var orders = newcat99.cat;
+                                                var    tArr = {};
+                                                    for(var i = 0 ; i <  catalog.length ; i++){
+                                                        var p =  catalog[i];
+                                                            p.totorder=0;
+                                                            p.totorder2=0;
+                                                        p.tothaluka =0;
+                                                        tArr[p.serialNumber] = p;   
+                                                        angular.forEach(p, function(value, key){
+                                                            if (key.indexOf('husman') > 0) {
+                                                                p[key] = null;
+                                                            }
+                                                        });
+                                                    }
+                                                    for(var i = 0 ; i < orders.length ; i++){
+                                                        var o = orders[i];
+                                                        if (o.excel == 0) {
+                                                            o.totorder=0;
+                                                        }
+                                                        var serialNumber = o.itemSerialNumber
+                                                        var p = tArr[serialNumber];
+                                                        if (p !== undefined) {
+                                                            if (o.type == 'order') {
+                                                                p.totorder += o.count;
+                                                                angular.forEach(p, function(val1, key1){
+                                                                    if (key1.indexOf('_haluka_') > 0) { 
+                                                                        var key2 = "sup_husman_"+key1.substring(11);
+                                                                        if (val1 > 0 ) { // has percent to calc
+                                                                            // update percent only for null
+                                                                            if (o.excel == 0) {
+                                                                                if (o[key2] == null) {
+                                                                                    var num1 = Math.round( o.count * (val1 * 0.01));
+                                                                                    o[key2] = num1;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        if (o[key2] > 0) {
+                                                                            if (o.excel == 0) {
+                                                                                o.totorder += o[key2];
+                                                                            }
+                                                                            p[key2] += o[key2];
+                                                                            p.tothaluka += o[key2];
+                                                                        }
+                                                                    }
+                                                                });
+                                                            }
+                                                            else {
+                                                                p.totorder2 += o.count;
+                                                            } 
+                                                        }
+                                                        o.bikoret = o.count-o.totorder;
+                                                    }
+                                                server.updateSiryun(vm.siryun_db,cre_date,6).then(function (response) {
+                                                    server.updateSiryunOrder(vm.dist_order,cre_date,6).then(function (response) {
+                                                            //################################# 3
+                                                            vm.dist_order =newcat3;
+                                                            server.getSiryun(cre_date,3).then(function (result) {
+                                                                var r = result.data;    
+                                                                if (r.length != '') {            //not found -  build new date<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                                                                    vm.siryun_db = r;
+                                                                    var catalog = vm.siryun_db.cat;
+                                                                    var orders = newcat99.cat;
+                                                                    var    tArr = {};
+                                                                        for(var i = 0 ; i <  catalog.length ; i++){
+                                                                            var p =  catalog[i];
+                                                                                p.totorder=0;
+                                                                                p.totorder2=0;
+                                                                            p.tothaluka =0;
+                                                                            tArr[p.serialNumber] = p;   
+                                                                            angular.forEach(p, function(value, key){
+                                                                                if (key.indexOf('husman') > 0) {
+                                                                                    p[key] = null;
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                        for(var i = 0 ; i < orders.length ; i++){
+                                                                            var o = orders[i];
+                                                                            if (o.excel == 0) {
+                                                                                o.totorder=0;
+                                                                            }
+                                                                            var serialNumber = o.itemSerialNumber
+                                                                            var p = tArr[serialNumber];
+                                                                            if (p !== undefined) {
+                                                                                if (o.type == 'order') {
+                                                                                    p.totorder += o.count;
+                                                                                    angular.forEach(p, function(val1, key1){
+                                                                                        if (key1.indexOf('_haluka_') > 0) { 
+                                                                                            var key2 = "sup_husman_"+key1.substring(11);
+                                                                                            if (val1 > 0 ) { // has percent to calc
+                                                                                                // update percent only for null
+                                                                                                if (o.excel == 0) {
+                                                                                                    if (o[key2] == null) {
+                                                                                                        var num1 = Math.round( o.count * (val1 * 0.01));
+                                                                                                        o[key2] = num1;
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                            if (o[key2] > 0) {
+                                                                                                if (o.excel == 0) {
+                                                                                                    o.totorder += o[key2];
+                                                                                                }
+                                                                                                p[key2] += o[key2];
+                                                                                                p.tothaluka += o[key2];
+                                                                                            }
+                                                                                        }
+                                                                                    });
+                                                                                }
+                                                                                else {
+                                                                                 //   if (isNew) {
+                                                                                        p.totorder2 += o.count;
+                                                                                   // }
+                                                                                } 
+                                                                            }
+                                                                            o.bikoret = o.count-o.totorder;
+                                                                        }
+                                                                    server.updateSiryun(vm.siryun_db,cre_date,3).then(function (response) {
+                                                                        server.updateSiryunOrder(vm.dist_order,cre_date,3).then(function (response) {
+                                                                            vm.select_dept = 99;
+                                                                            vm.dist_order =newcat99;
+                                                                            josdb(vm.select_dept);
+                                                                            josgrid();
+                                                                            vm.dataLoading = false;
+                                                                        });
+                                                                    });
+                                                                }
+                                                            });        
+                                                    });
+                                                });
+                                            }
+                                        });
+                                });
+                            });
+                        }
+
+                    });
+                });
+            });
+        }
+        
+        
+        // ############################ update siryun husman
+        var updatesiryun_husman2 = function(isNew){
+            var cre_date =vm.dist_order.createDate;
+            var deps1 =vm.dist_order.deps;
+            server.getSiryun(cre_date,deps1).then(function (result) {
+                var r = result.data;    
+                
+                if (r.length != '') {            //not found -  build new date<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                    vm.siryun_db = r;
+                    var catalog = vm.siryun_db.cat;
+                    var orders = vm.dist_order.cat;
+                    var    tArr = {};
+                   
+                        for(var i = 0 ; i <  catalog.length ; i++){
+                            var p =  catalog[i];
+                           // if (isNew) {
+                                p.totorder=0;
+                                p.totorder2=0;
+                           // }
+                            p.tothaluka =0;
+                            tArr[p.serialNumber] = p;   
+                            angular.forEach(p, function(value, key){
+                                if (key.indexOf('husman') > 0) {
+                                    p[key] = null;
+                                }
+                            });
+                        }
+                   
+                        for(var i = 0 ; i < orders.length ; i++){
+                            var o = orders[i];
+                            if (o.excel == 0) {
+                                o.totorder=0;
+                            }
+                            var serialNumber = o.itemSerialNumber
+                            var p = tArr[serialNumber];
+                            if (p !== undefined) {
+                                if (o.type == 'order') {
+                                    p.totorder += o.count;
+                                    angular.forEach(p, function(val1, key1){
+                                        if (key1.indexOf('_haluka_') > 0) { 
+                                            var key2 = "sup_husman_"+key1.substring(11);
+                                            if (val1 > 0 ) { // has percent to calc
+                                                // update percent only for null
+                                                if (o.excel == 0) {
+                                                    if (o[key2] == null) {
+                                                        var num1 = Math.round( o.count * (val1 * 0.01));
+                                                        o[key2] = num1;
+                                                    }
+                                                }
+                                            }
+                                            if (o[key2] > 0) {
+                                                if (o.excel == 0) {
+                                                    o.totorder += o[key2];
+                                                }
+                                                p[key2] += o[key2];
+                                                p.tothaluka += o[key2];
+                                            }
+                                        }
+                                    });
+                                }
+                                else {
+                                    p.totorder2 += o.count;
+                                } 
+                            }
+                            o.bikoret = o.count-o.totorder;
+                        }
+                    
+                    server.updateSiryun(vm.siryun_db,cre_date,deps1).then(function (response) {
+                            server.updateSiryunOrder(vm.dist_order,vm.dist_order.createDate,deps1).then(function (response) {
+                                josdb(vm.select_dept);
+                                josgrid();
+                                vm.dataLoading = false;
+                            });
+                       
+                    });
+                }
+            });  
+        }   
+        // ############################ export orders to excel
+        var export2Excel = function(){
+            var orderFields = {
+                createdDate: 'ת. הזמנה',
+                deliveryDate: 'ת. אספקה',
+                branchId: 'מחסן',
+                itemSerialNumber: 'פריט/ברקוד',
+                count: 'מארזים'
+            };
+    
+            var gridData = new DevExpress.data.DataSource({
+                store: vm.work_table,
+                paginate : false
+            });
+            var filterExpr =vm.grid1.getCombinedFilter();
+            gridData.filter(filterExpr);
+            var tArr = {};
+            var supname = {};
+            gridData.load().done(function (result) {
+                    for(var i = 0 ; i <  result.length ; i++){
+                        var p = result[i];
+                        angular.forEach(p, function(value, key){
+                            if (key.indexOf('husman') > 0) {
+                                if (value > 0) {
+                                    var sup_num = key.substring(11);
+                                    var key2 = "sup_name_" + sup_num;
+                                    if (!tArr.hasOwnProperty(sup_num)) {
+                                        tArr[sup_num] = [];
+                                    }
+                                    tArr[sup_num].push({
+                                        createdDate:getDeliveryDate1(vm.dist_order.createDate),
+                                        deliveryDate: p.type === 'secondOrder' ?
+                                        getDeliveryDate1(vm.dist_order.createDate) : getDeliveryDate(vm.dist_order.createDate),
+                                                branchId: p.branchId,
+                                                itemSerialNumber: p.itemSerialNumber,
+                                                count: value
+                                    });
+                                    p.excel = 1;
+                                    supname[sup_num] = p[key2];
+                                }
+                            }
                         });
                     }
-                    if (isExcist === -1) {
-                        newOrdersCount++;
-                        var orderWithOutItems = angular.copy(order);
-                        delete orderWithOutItems.items;
-
-                        var ordersDepartments = [];
-                        for (var j = 0; j < order.items.length; j++) {
-                            var item = order.items[j];
-                            ordersDepartments.push(item.itemDepartmentId);
-                            newOrdersItems.push({
-                                order: orderWithOutItems,
-                                item: item,
-                                sum: 0,
-                                id: order._id + (item.serialNumber || item.itemSerialNumber) + Math.floor(Math.random() * 100)
-                            });
-                        }
-
-                        for (var department in ordersDepartments) {
-                            if (catalog.hasOwnProperty(department)) {
-                                var departmentItems = catalog[department];
-                                departmentItems.forEach(function (item) {
-                                    var itm = _.find(newOrdersItems, function (o) {
-                                        return o.item.serialNumber === item.serialNumber;
-                                    });
-                                    if (!itm) {
-                                        newOrdersItems.push({
-                                            order: orderWithOutItems,
-                                            item: {count: 0, itemDepartmentId: item.departmentId, itemName: item.name, itemSerialNumber: item.serialNumber, unit: item.unit},
-                                            sum: 0,
-                                            id: order._id + (item.serialNumber || item.itemSerialNumber) + Math.floor(Math.random() * 100)
-                                        });
-                                    }
-                                }, this);
-                            }
-                        }
-                    }
-                }
-
-                if (newOrdersCount > 0) {
-                    var toastMessage = newOrdersCount > 1 ?
-                        newOrdersCount + ' הזמנות חדשות התווספו בהצלחה' :
-                        'הזמנה אחת התווספה בהצלחה'
-                    $mdToast.show(
-                        $mdToast.simple()
-                        .textContent(toastMessage)
-                        .hideDelay(3000)
-                    );
-
-                    allOrderItems = allOrderItems.concat(newOrdersItems);
-
-                    distributionContext.saveDistributionState(allOrderItems);
-                    vm.allOrderItemsCount = allOrderItems.length;
-                   
-                    vm.ordersItems = allOrderItems;
-                }
-
-                vm.filterTable(vm.filter, vm.initialFilter);
-                deferred.resolve();
+            });
+            angular.forEach(supname, function(value, key){
+                var fileName = value + '_' + $filter('date')(new Date(), 'dd/MM/yyyy');
+                filesHandler.downloadOrderAsCSV(tArr[key], orderFields, fileName);
+            });
+            server.updateSiryunOrder(vm.dist_order,vm.dist_order.createDate,vm.dist_order.deps).then(function (response) {
+                josdb(vm.select_dept);
+                josgrid();
+                vm.dataLoading = false;
             });
         }
-
-        vm.refreshDataFromServer = function (ev) {
-            console.log('ordersDistribution 4');
-            initiateDistributionData();
-            distributionContext.cleanOldDistributedData();
-        }
-
-        vm.showDistributedItems = function () {
-            console.log('ordersDistribution 5');
-            // var filter = {};
-
-            // var deferred = $q.defer();
-            // vm.promise = deferred.promise;
-            // server.getDistributedItems(filter).then(function (response) {
-            //     vm.ordersItems = response.data;
-            //     vm.allOrderItemsCount = vm.ordersItems.length;
-            //     deferred.resolve();
-            // });
-            vm.ordersItems = allDistributedItems;
-            vm.allOrderItemsCount = vm.ordersItems.length;
-            vm.filterTable(vm.filter, {});
-        }
-
-        vm.showDistributionItems = function () {
-            console.log('ordersDistribution 6');
-            vm.ordersItems = allOrderItems;
-            vm.allOrderItemsCount = vm.ordersItems.length;
-            vm.filterTable(vm.filter, {});
-        }
-
-        if (angular.isUndefined(allOrderItems)) {
-            console.log('ordersDistribution 777777777777777777777777777777777 0');
-            allOrderItems = [];
-            initiateDistributionData();
-        } else {
+         // ############################ export orders to excel
+         var export2ExcelOld = function(){
+            var orderFields = {
+                createdDate: 'ת. הזמנה',
+                deliveryDate: 'ת. אספקה',
+                branchId: 'מחסן',
+                itemSerialNumber: 'פריט/ברקוד',
+                count: 'מארזים'
+            };
             
-            vm.ordersItems = allOrderItems;
-            console.log('ordersDistribution 777777777777777777777777777777777 1');
-            vm.allOrderItemsCount = allOrderItems.length;
-        }
-
-        /* ---- download order ---- */
-        vm.downloadFilterdTable = function () {
-            console.log('ordersDistribution 8');
-            if (!vm.checkAllTableSum) {
-                vm.checkAllTableSum = true;
-                $timeout(function () {
-                    var result = document.getElementsByClassName("text-red");
-                    if (result !== null && result.length > 0) {
-                        $mdToast.show(
-                            $mdToast.simple()
-                            .textContent('קיימים פריטים לא תקינים, נא לבדוק תקינות החלוקה')
-                            .hideDelay(3000)
-                        );
-                    } else {
-                        downloadExcel();
-                    }
-                }, 0);
-                return;
-            }
-
-            downloadExcel();
-        }
-
-        var downloadExcel = function () {
-            console.log('ordersDistribution 9');
-            vm.downloading = true;
-            var query = {
-                order: vm.query.order
-            }
-
-            // map all items by suppliers
-            var suppliersItemsMap = vm.mapAllItemsBySuppliers();
-
-            // for each supplier download file
-            for (var index = 0; index < vm.suppliers.length; index++) {
-
-                var supplier = vm.suppliers[index];
-
-                if (suppliersItemsMap.hasOwnProperty(supplier.supplierId)) {
-                    var fileName = supplier.name + '_' + $filter('date')(new Date(), 'dd/MM/yyyy');
-                    filesHandler.downloadOrderAsCSV(suppliersItemsMap[supplier.supplierId], orderFields, fileName);
-                }
-            }
-
-            if (currDistributedItems && currDistributedItems.length > 0) {
-
-                currDistributedItems.forEach(function (element) {
-                    element["createdDate"] = new Date();
-                }, this);
-
-                // save the items in DB##################################################################DB write
-                server.saveDistribution(currDistributedItems).then(function (response) {
-                    $mdToast.show(
-                        $mdToast.simple()
-                        .textContent('הנתונים נשמרו בהצלחה!')
-                        .hideDelay(3000)
-                    );
-                });
-
-                // remove the distributed itms from the page
-                currDistributedItems.forEach(function (element) {
-                    lodash.remove(vm.ordersItems, function (n) {
-                        return n.id === element.id;
-                    });
-
-                    lodash.remove(allOrderItems, function (n) {
-                        return n.id === element.id;
-                    });
-                    vm.allOrderItemsCount = allOrderItems.length;
-                }, this);
-
-                allDistributedItems = allDistributedItems.concat(currDistributedItems);
-                distributionContext.saveDistributedState(allDistributedItems);
-                currDistributedItems = [];
-            }
-
-            vm.downloading = false;
-            vm.checkAllTableSum = false;
-        }
-
-        vm.mapAllItemsBySuppliers = function () {
-            console.log('ordersDistribution 10');
-            var suppliersItemsMap = {};
-            for (var index = 0; index < vm.ordersItems.length; index++) {
-                var item = vm.ordersItems[index];
-                if (item.suppliers && item.sum > 0) {
-                    for (var supplierId in item.suppliers) {
-                        if (item.suppliers.hasOwnProperty(supplierId)) {
-                            var element = item.suppliers[supplierId];
-                            if (!suppliersItemsMap.hasOwnProperty(supplierId)) {
-                                suppliersItemsMap[supplierId] = [];
-                            }
-                            suppliersItemsMap[supplierId].push({
-                                createdDate: $filter('date')(item.order.createdDate, 'dd/MM/yyyy'),
-                                deliveryDate: item.order.type === 'secondOrder' ?
-                                    $filter('date')(item.order.createdDate, 'dd/MM/yyyy') : getDeliveryDate(item.order.createdDate),
-                                branchId: item.order.branchId,
-                                itemSerialNumber: item.item.itemSerialNumber,
-                                count: element
-                            });
-                        }
-                    }
-                    currDistributedItems.push(item);
-                }
-            }
-            markItemsAsDistrebuted();
-
-            return suppliersItemsMap;
-        }
-
-        var markItemsAsDistrebuted = function () {
-            console.log('ordersDistribution 11');
-            server.markItemsAsDistrebuted(currDistributedItems).then(function (result) {
-                //vm.allDistributedItems = [];
+            var gridData = new DevExpress.data.DataSource({
+                store: vm.dist_order.cat[vm.select_dept],
+                paginate : false
             });
+            gridData.filter(['excel','=',1]);
+            var tArr = {};
+            var supname = {};
+            gridData.load().done(function (result) {
+                    for(var i = 0 ; i <  result.length ; i++){
+                        var p = result[i];
+                        angular.forEach(p, function(value, key){
+                            if (key.indexOf('husman') > 0) {
+                                if (value > 0) {
+                                    var sup_num = key.substring(11);
+                                    var key2 = "sup_name_" + sup_num;
+                                    if (!tArr.hasOwnProperty(sup_num)) {
+                                        tArr[sup_num] = [];
+                                    }
+                                    
+                                    tArr[sup_num].push({
+                                        createdDate: getDeliveryDate1(vm.dist_order.createDate),
+                                        deliveryDate: p.type === 'secondOrder' ?
+                                        getDeliveryDate1(vm.dist_order.createDate) :  getDeliveryDate(vm.dist_order.createDate),
+                                                branchId: p.branchId,
+                                                itemSerialNumber: p.itemSerialNumber,
+                                                count: value
+                                    });
+                                    p.excel = 1;
+                                    supname[sup_num] = p[key2];
+                                }
+                            }
+                        });
+                    }
+            });
+            angular.forEach(supname, function(value, key){
+                var fileName = value + '_' + $filter('date')(new Date(), 'dd/MM/yyyy');
+                filesHandler.downloadOrderAsCSV(tArr[key], orderFields, fileName);
+            });
+            vm.dataLoading = false;
         }
-
+        // ############################  calc deliver date
+        var getDeliveryDate1 = function (orderDate) {
+            var date_arr = orderDate.split("/")
+            var date11 = date_arr[2] + '-' + date_arr[1] + '-' + date_arr[0]+"T00:00:00.000Z";
+            var date12 = new Date(date11);
+            var day = date12.getDay();
+            var deliveryDate = new Date(date12);
+            
+            return $filter('date')(deliveryDate, 'dd/MM/yyyy');
+        }
+        // ############################  calc deliver date
         var getDeliveryDate = function (orderDate) {
-            console.log('ordersDistribution 12');
-            orderDate = new Date(orderDate);
-            var day = orderDate.getDay();
-            var deliveryDate = new Date(orderDate);
+            var date_arr = orderDate.split("/")
+            var date11 = date_arr[2] + '-' + date_arr[1] + '-' + date_arr[0]+"T00:00:00.000Z";
+            var date12 = new Date(date11);
+            var day = date12.getDay();
+            var deliveryDate = new Date(date12);
             if (day === 5) {
-                deliveryDate.setDate(orderDate.getDate() + 2);
+                deliveryDate.setDate(date12.getDate() + 2);
             } else {
-                deliveryDate.setDate(orderDate.getDate() + 1);
+                deliveryDate.setDate(date12.getDate() + 1);
             }
             return $filter('date')(deliveryDate, 'dd/MM/yyyy');
         }
 
-        vm.updateSum = function (item) {
-            console.log('ordersDistribution 13 sup=',vm.suppliers);
-            console.log('ordersDistribution 13 itemm=',item);
-            item.sum = 0;
-            for (var index = 0; index < vm.suppliers.length; index++) {
-                var element = vm.suppliers[index];
-                item.sum += parseInt((item.suppliers[element.supplierId.toString()] || 0));
+       // ############################ select table for grid from db
+        var josdb = function(depid){
+            cre_columns();
+            if (depid == 0 ){
+                depid=99;
             }
-            item.sum = item.item.count - item.sum;
+            vm.select_dept = depid;
+            vm.summ = [];
+          //  vm.summ.push({column:'count',summaryType:'sum'})
+            if (vm.dist_order.cat.length > 0) {
+                var arr1 = vm.dist_order.cat; // take table form db
+                angular.forEach(arr1[0], function(value, key){
+                    var pl=key.indexOf('sup_name_');
+                    if (pl >= 0 ){
+                        // var sup1="sup_name_"+key.substring(9);
+                        var col2=[];
+                        var sup1="sup_husman_"+key.substring(9);
+                        var item1={
+                            caption: value,
+                            dataField : sup1,
+                            alignment: "center",
+                            allowEditing: true,
+                            allowFiltering : false,
+                            allowSorting : false,
+                           // width: 130,
+                            headerCellTemplate: 'headerCellTemplate',
+                            dataType: 'number'
+                        }
+                        vm.summ.push({column:sup1,summaryType:'sum',displayFormat: "סהכ {0}"})
+                        vm.columns.push(item1); 
+                    }
+                })
+                var gridData = new DevExpress.data.DataSource({
+                    store: vm.dist_order.cat,
+                    filter: ['excel','=',0],
+                    paginate : false
+                });
+                var excelfilter=['excel','=',0];
+                gridData.load().done(function (result) {
+                    vm.work_table=result;
+                    if (vm.grid1 !== null) {
+                        vm.grid1.option("summary.totalItems", vm.summ);
+                    }
+                });
+            }
+        }
         
+        // ############################ Build columns for grid
+        var cre_columns = function() {  
+            vm.columns = [
+                {
+                    caption: "רשת",
+                    dataField: "networkId",
+                    alignment: 'center',
+                    allowEditing: false,
+                    dataType:  'number',
+                    width: 80,
+                    fixed: true,
+                    fixedPosition: "right",
+                    headerFilter: {
+                        dataSource: [ {
+                            text: "ח.י.ע.מ",
+                            value: 0
+                        }, {
+                            
+                            text: "יוחננוף",
+                            value: 1
+                        }, {
+                            
+                            text: "מחסני השוק",
+                            value: 2
+                        }, {
+                            
+                            text: "מרכולית",
+                            value: 5
+                        },{
+                            
+                            text: "סופר סופר",
+                            value: 6
+                        }]
+                    }
+
+                },{
+                    caption: "סניף",
+                    dataField: "branchName",
+                    allowEditing: false,
+                    dataType:  'string',
+                     width: 110,
+                    fixed: true,
+                    fixedPosition: "right",
+                },{
+                    caption: "פריט",
+                    dataField: "itemName",
+                    allowEditing: false,
+                    dataType:  'string',
+                     width: 190,
+                    fixed: true,
+                    fixedPosition: "right",
+                },{
+                    caption: "מס הזמנה",
+                    dataField: "orderId",
+                    allowEditing: false,
+                    dataType:  'string',
+                    width: 100,
+                    fixed: true,
+                    fixedPosition: "right",
+                },{
+                    caption: "סוג",
+                    dataField: "type",
+                    allowEditing: false,
+                    dataType:  'string',
+                    width: 60,
+                    fixed: true,
+                    fixedPosition: "right",
+                },{
+                    caption: "הוזמן",
+                    dataField: "count",
+                    allowFiltering : false,
+                    allowEditing: false,
+                    dataType:  'number',
+                    fixed: true,
+                    width: 80,
+                    fixedPosition: "right",
+                },{
+                    caption: "ביקורת",
+                    dataField: "bikoret",
+                    allowEditing: false,
+                    dataType:  'number',
+                    width:50,
+                    fixed: true,
+                    fixedPosition: "right",
+                }
+            ];
         }
+        // ############################ Build Main Grid
+        var josgrid = function () {
+            vm.load1 = false;
+            vm.dg = {
+                bindingOptions: {
+                   dataSource: 'vm.work_table',
+                    columns: 'vm.columns',
+                    deep : false,
+                },
+                paging : {
+                    enabled : false,
+                },
+                summary : {
+                    totalItems : vm.summ
+                },
 
-
-
-        /* ---- Filters----- */
-
-
-        // initial with defult department
-        vm.initialFilter = {
-            departmentId: [1],
-            orderItems: true
-        };
-
-        vm.filteringTable = true;
-        vm.departments = null;
-        vm.filter = {};
-        vm.totalOrderCount = 0;
-        vm.query = {
-            order: '-order.orderId'
-        };
-
-        vm.filterTable = function (filter, originalFilter) {
-            console.log('ordersDistribution 14',filter,originalFilter);
-            vm.resetSuppliersPresentValue();
-
-            //vm.filteringTable = true;
-            var deferred = $q.defer();
-            vm.promise = deferred.promise;
-            $timeout(function () {
-                console.log('ordersDistribution 15');
-                if (filter) {
-                    vm.filter = filter;
-                }
-
-                if (originalFilter.hasOwnProperty("departmentId")) {
-                    vm.selectedDepartments = originalFilter.departmentId;
-                }
-
-                var localFilter = {};
-
-                if (filter.hasOwnProperty("unhandledItems") && filter.unhandledItems) {
-                    localFilter["sum"] = 0;
-                }
-
-                if (filter.hasOwnProperty("type") && filter.type === "secondOrder") {
-                    localFilter["order"] = {
-                        type: "secondOrder"
-                    };
-                } else {
-                    localFilter["order"] = {
-                        type: "order"
-                    };
-                }
-                
-                // filter unhendeled items & second orders
-                if (vm.pageMode === 'distribution') {
-                    vm.ordersItems = $filter('filter')(allOrderItems, localFilter, true);
-                } else {
-                    vm.ordersItems = $filter('filter')(allDistributedItems, localFilter, true);
-                }
-                
-                // filter by date
-                if (filter.hasOwnProperty("createdDate")) {
-                    vm.f14=1;
-                    var filterdDate = filter.createdDate;
-                    var startDate = new Date(filterdDate.getFullYear(), filterdDate.getMonth(), filterdDate.getDate());
-                    var endDate = new Date(filterdDate.getFullYear(), filterdDate.getMonth(), filterdDate.getDate() + 1);
-                    vm.ordersItems = $filter('dateFilter')(vm.ordersItems, startDate, endDate);
-                    
-                }
-
-                if (Object.keys(originalFilter).length !== 0) {
-                   // here filter problem
-                   console.log('PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP',originalFilter,vm.filter)
-                    vm.ordersItems = $filter('distributionDataFilter')(vm.ordersItems, originalFilter);
+                editing: {
+                    mode: "batch",
+                    allowUpdating: true
+                },
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                headerFilter: {
+                    visible: true,
+                },
+                loadPanel: {
+                    enabled: true
+                },
+                height: "800px",
+                scrolling: {
+                    mode: "virtual",
+                },          
+                rtlEnabled : true,
+                showColumnLines: true,
+                showRowLines: true,
+                showBorders: true,
+                allowColumnResizing: true,
+                columnAutoWidth: true,
+                rowAlternationEnabled: true,
+                columnChooser: {
+                    enabled: true
+                },
+                onContentReady: function(e) {
+                    e.component.option("loadPanel.enabled", false);
+                },
+                onInitialized: function(e) {
+                    vm.grid1 = e.component;
+                },
+                onToolbarPreparing: function (e) {
+                    var dg1=e.component;
+                    var toolbarItems = e.toolbarOptions.items;
                    
-                }
-
-                //vm.ordersItems = $filter('orderBy')(vm.ordersItems, '-oreder.orderId');
-                vm.filteringTable = false;
-                deferred.resolve();
-            }, 0);
-            return vm.promise;
-        };
-
-        /* ---- Suplier ----- */
-        vm.selectedDepartments = vm.initialFilter.departmentId;
-        vm.suppliers = []
-        vm.departments = dataContext.getDepartments();
-       
-        $scope.$watch('vm.selectedDepartments', function (selectedDepartments) {
-            console.log('ordersDistribution 16',selectedDepartments);
-            vm.suppliers = [];
-            selectedDepartments.forEach(function (element) {
-                var department = _.find(vm.departments, function (o) {
-                    return o.id === parseInt(element);
-                });
-                if (department) {
-                    vm.suppliers = vm.suppliers.concat(department.suppliers);
-                    vm.suppliers = lodash.uniqBy(vm.suppliers, 'supplierId');
-                }
-            }, this);
-
-        });
-       
-        // currently not suported
-        vm.removeSupplierFromView = function (supplier) {
-            console.log('ordersDistribution 17');
-            lodash.remove(vm.suppliers, function (n) {
-                return n.supplierId === supplier.supplierId;
-            });
-        }
-
-        // currently not suported
-        vm.addSupplier = function (ev) {
-            console.log('ordersDistribution 18');
-            $mdDialog.show({
-                    controller: 'selectSuppliersController',
-                    controllerAs: 'ctrl',
-                    templateUrl: './components/suppliers/selectSuppliersDialog-template.html',
-                    parent: angular.element(document.body),
-                    targetEvent: ev,
-                    clickOutsideToClose: true
-                })
-                .then(function (newSuppliers) {
-                    newSuppliers.forEach(function (element) {
-                        element["show"] = true;
-                    }, this);
-                    vm.suppliers = vm.suppliers.concat(newSuppliers);
-                }, function () {
-                    //$scope.status = 'You cancelled the dialog.';
-                });
-        }
-
-        vm.resetSuppliersPresentValue = function () {
-            console.log('ordersDistribution 19');
-            for (var key in vm.suppliers) {
-                if (vm.suppliers.hasOwnProperty(key)) {
-                    var element = vm.suppliers[key];
-                    element.percent = '';
-                }
-            }
-        }
-
-        var timer;
-        vm.updateAllItems = function (persent, supplierId) {
-            console.log('ordersDistribution 20',persent);
-            $timeout.cancel(timer);
-            timer = $timeout(function () {
-                console.log('ordersDistribution 21');
-                for (var index = 0; index < vm.ordersItems.length; index++) {
-                    var orderItem = vm.ordersItems[index];
-                    if (!orderItem.hasOwnProperty("suppliers")) {
-                        orderItem["suppliers"] = {};
-                    }
-
-                    orderItem.suppliers[supplierId] = Math.round(orderItem.item.count * (persent * 0.01));
-
-                    if (orderItem.suppliers[supplierId] === 0) {
-                       // delete orderItem.suppliers[supplierId];
-                       orderItem.suppliers[supplierId] = 0;
-                    }
-                    if (angular.isUndefined(persent) || persent === null) {
-                        delete orderItem.suppliers[supplierId];
-                     //   orderItem.suppliers[supplierId] = 0;
-                     }
-                  
-                    vm.updateSum(orderItem);
-                }
-            }, 500);
-        }
-
-        $scope.$watch('vm.ordersItems', function (orders) {
-            console.log('#####################ordersDistribution 22',orders);
-
-
-
-            
-            //orders[0].suppliers['30004'] = 12;
-            if (angular.isUndefined(orders)) {
-                return;
-            }
-            if (vm.f14 == 1) {
-                vm.f14 =0;
-                //console.log('reserve component 22  in  f14=');
-                //######################################### orders update
-                var filterdDate = vm.filter.createdDate;
-                var allsiryunItems = distributionContext.getReserveState();
-                var startDate = new Date(filterdDate.getFullYear(), filterdDate.getMonth(), filterdDate.getDate());
-                var endDate = new Date(filterdDate.getFullYear(), filterdDate.getMonth(), filterdDate.getDate() + 1);
-                var orders1 = $filter('JosdateFilter')(allsiryunItems, startDate, endDate);
-                //console.log('reserve component 19  in  f14=',orders1);
-                
-
-                console.log('reserve component 22  in after  f14=',orders[3]);
-
-
-
-                for (var i = 0;i < orders.length;i++){
-                    var item1 = orders[i].item;
-                    if (parseInt(item1.count) > 0) {
-                        //console.log('###############################   in if here 15',orders[i]);
-                        var tot1=0;
-                        for (var j=0;j < orders1.length;j++) {
-                            if (orders1[j].item.itemSerialNumber == item1.itemSerialNumber) {
-                             
-                             //  tot1 += orders1[j].item.count ;
-                             //  if (tot1 == 15) {
-                             //      orders1[j].suppliers['30004'] = 14;
-                              //console.log('############################### here 15',orders1[j].item);
-                              
-                                var sum1=0;
-                                for (var sup1 in orders1[j].supp) {
-                                    if (parseInt(orders1[j].supp[sup1][0].haluka) > 0) {
-                                        if (!orders[i].hasOwnProperty("suppliers")) {
-                                            orders[i]["suppliers"] = {};
-                                        } 
-                                        if (angular.isUndefined(orders[i].suppliers[sup1])){
-                                            //console.log('############################### here 22 undefined ',sup1,orders[i].order.orderId,orders[i]);
-                                            orders[i].suppliers[sup1] =  Math.round(parseInt(orders1[j].supp[sup1][0].haluka) / 100 * parseInt(item1.count)); 
-                                        } else {
-                                            var t=orders[i].suppliers[sup1];
-                                            if (t.length === 0) {
-                                               // console.log('############################### here 22 empty ',t.length,t,orders[i].order.orderId);
-                                                orders[i].suppliers[sup1] = Math.round(parseInt(orders1[j].supp[sup1][0].haluka) / 100 * parseInt(item1.count));
-                                                
-                                            }
-                                            // console.log('############innnnnnnnnnnnnnnnnnnnn here 15',orders1[j].supp[sup1],orders[i].suppliers[sup1]);
-                                        }
-                                        if ( angular.isNumber(orders[i].suppliers[sup1]) && (orders[i].suppliers[sup1].toString().length > 0 )) {
-                                            sum1 += parseInt(orders[i].suppliers[sup1]);
-                                        }
+                    $.each(toolbarItems, function (_, item) {
+                        if (item.name === "saveButton") {
+                            item.options.onClick = function (e) {
+                                vm.dataLoading = true;
+                                dg1.saveEditData();
+                                updatesiryun_husman2(false);
+                            }
+                        }
+                    }); 
+                    toolbarItems.push({
+                        widget: 'dxButton', 
+                        location: 'after',
+                        options: {  icon: 'refresh', 
+                            onClick: function() { 
+                                vm.f_rules1 = {};
+                                vm.f_rules2 = {};
+                                var date3= vm.dist_order.createDate;
+                                vm.dataLoading = true;
+                                server.getSiryunOrder(date3,vm.select_dept).then(function (result) {
+                                    var r = result.data;   
+                                    if (r == ''){ // no orders
+                                        cre_new_date(date3);
                                     }
+                                    else {
+                                      vm.dist_order = r;
+                                      josdb(vm.select_dept);
+                                    dg1.clearFilter();
+                                     dg1.refresh();
                                    
+                                        vm.dataLoading = false;
+                                    }
+                                });  
+                            } 
+                        },
+                    });
+                    toolbarItems.push({
+                        widget: 'dxButton', 
+                        location: 'after',
+                        options: {  icon: 'plus', 
+                                    hint : 'הזמנות חדשות',
+                            onClick: function() { 
+                                vm.dataLoading = true;
+                                dg1.saveEditData();
+                                addNewOrders();
+                            } 
+                        },
+                    });
+                    toolbarItems.push({
+                        widget: 'dxButton', 
+                        location: 'after',
+                        options: {  icon: 'email', 
+                                    hint : 'ייצוא הזמנות',
+                            onClick: function() { 
+                                vm.dataLoading = true;
+                                dg1.saveEditData();
+                                export2Excel();
+                            } 
+                        },
+                    });
+                    toolbarItems.push({
+                        widget: 'dxButton', 
+                        location: 'after',
+                        options: {  icon: 'folder', 
+                                    hint : 'אקסל מסכם',
+                            onClick: function() { 
+                                vm.dataLoading = true;
+                                dg1.saveEditData();
+                                export2ExcelOld();
+                            } 
+                        },
+                    });
+                    toolbarItems.push({
+                        widget: 'dxButton', 
+                        location: 'after',
+                        options: {  icon: 'cart', 
+                                    hint : 'שמור שינויים',
+                            onClick: function() { 
+                                for (var i = 0; i <4; i ++) {
+                                    vm.f_rules1[i] = vm.grid1.columnOption(i, "filterValue")
+                                    vm.f_rules2[i] = vm.grid1.columnOption(i, "filterValues")
                                 }
-                                orders[i].sum = orders[i].item.count -  sum1;
-                            }
+                                vm.dataLoading = true;
+                                dg1.saveEditData();
+                                updatesiryun_husman2(false);
+                            } 
+                        },
+                    });
+                    toolbarItems.push({
+                        widget: "dxSelectBox",
+                        location: 'after',
+                       
+                            options: {
+                                width: 200,
+                                bindingOptions: {
+                                    dataSource: 'vm.toolmenu'
+                                },
+                                rtlEnabled: true,
+                                displayExpr: "text",
+                                valueExpr: "value",   
+                                value: 99 ,
+                                onValueChanged: function(e) {
+                                    var date3= vm.dist_order.createDate;
+                                    vm.dataLoading = true;
+                                    server.getSiryunOrder(date3, e.value).then(function (result) {
+                                        var r = result.data;   
+                                        if (r == ''){ // no orders
+                                            cre_new_date(date3);
+                                        }
+                                        else {
+                                            vm.dist_order = r;
+                                            vm.dataLoading = false;
+                                            josdb(e.value)
+                                            josgrid()
+                                        }
+                                    });    
+                                },
+                                onInitialized: function(e) {
+                                    vm.jossel = e.component;
+                               }
+                            },
+                    });
+                    toolbarItems.push({
+                        widget: 'dxDateBox', 
+                        location: 'after',
+                        options: {  
+                            value: new Date(),
+                            rtlEnabled: true,
+                            placeholder: "בחר תאריך...",
+                            displayFormat: "dd/MM/yyyy",
+                            acceptCustomValue : false,
+                            editEnabled: false,
+                            width: "120px",
+                            onValueChanged: function(e) {
+                                var date3= $filter('date')(e.value, 'dd/MM/yyyy');
+                                vm.dataLoading = true;
+                                server.getSiryunOrder(date3, 99).then(function (result) {
+                                    var r = result.data;   
+                                    if (r == ''){ // no orders
+                                        cre_new_date(date3);
+                                    }
+                                    else {
+                                        new_date(r);
+                                        vm.dataLoading = false;
+                                    }
+                                });        
+                            },
+                            onOpened: function (e) {
+                                  if (!e.component.option('isValid'))
+                                      e.component.reset();
+                            },
+                        },
+                       
+                    });
+                },
+                onCellPrepared: function (e) {
+                    if (e.rowType == 'data' && e.column.dataField == 'serialNumber')
+                    {
+                        if (e.displayValue == '1001') {
+                            e.cellElement.css("color", "green");
                         }
-                        // orders[i].totorder = tot1 ;
+                        else {
+                            e.cellElement.css("color", "orange"); // pending
+                        }
+                    }               
+                },
+                onEditorPreparing: function (e) {
+                    var component = e.component,
+                    rowIndex = e.row && e.row.rowIndex;
+                    var e1 = e;
+                    if (e.dataField.indexOf('husman') > 0)  {
+                        var onValueChanged = e.editorOptions.onValueChanged;
+                        e.editorOptions.onValueChanged = function(e) {
+                            var oldvalue=e1.value;
+                            onValueChanged.call(this, e);
+                            var newval=  component.cellValue(rowIndex, "totorder") - oldvalue + e.value;
+                            component.cellValue(rowIndex, "totorder", newval);
+                        }
                     }
-                }
-            }
-            
-
-            vm.tableSummary = {
-                count: 0,
-                sum: 0
+                },
+                onEditingStart: function (e) {
+                    e.component.selectRows(e.key, false)                },
+                onRowUpdated: function (e) {
+                },
+                onRowUpdating: function (e) {
+                },
+                onOptionChanged: function (e) {
+                },
+                onSelectionChanged: function (e) {
+                },
+                onContentReady: function (e) {
+                    if ( !(angular.equals({}, vm.f_rules1))  ) {
+                        for (var i = 0; i <4; i ++) {
+                            vm.grid1.columnOption(i, "filterValue",vm.f_rules1[i]); 
+                        }
+                       
+                    }
+                    if ( !(angular.equals({}, vm.f_rules2))  ) {
+                        for (var i = 0; i <4; i ++) {
+                            vm.grid1.columnOption(i, "filterValues",vm.f_rules2[i]); 
+                        }
+                    }
+                 },
             };
-
-            orders.forEach(function (order) {
-                console.log('ordersDistribution 23 order');
-                vm.tableSummary.count += order.item.count;
-                vm.tableSummary.sum += order.sum || 0;
-                if (order.suppliers) {
-                    for (var key in order.suppliers) {
-                        if (order.suppliers.hasOwnProperty(key)) {
-                            var val = order.suppliers[key];
-                            if (!vm.tableSummary.hasOwnProperty(key)) {
-                                vm.tableSummary[key] = 0;
-                            }
-                            vm.tableSummary[key] += parseInt(val !== "" ? val : 0);
-                        }
-                    }
-                }
-            }, this);
-        }, true);
-
-        $scope.$watch('vm.isDistributedMode', function (mode) {
-            console.log('ordersDistribution 24');
-            if (angular.isUndefined(mode)) {
-                vm.pageMode = 'distribution';
-                return;
-            }
-            if (mode) {
-                vm.pageMode = 'distributed';
-                vm.showDistributedItems();
-            } else {
-                vm.pageMode = 'distribution';
-                vm.filteringTable = true;
-                $timeout(function () {
-                    vm.showDistributionItems();
-                }, 0)
-
-            }
-        });
-
-        $scope.$watch('vm.refreshData', function (num) {
-            console.log('ordersDistribution 25');
-            if (num !== 0) {
-                vm.refreshDataFromServer();
-            }
-        });
-
-        vm.keyPressed = function (TB, e, row, col) {
-            console.log('ordersDistribution 26');
-            var idToFind;
-            // go down
-            if (e.keyCode == 40 || e.keyCode == 13) {
-                idToFind = (row + 1) + 'c' + col;
-            }
-            // go up
-            if (e.keyCode == 38) {
-                idToFind = (row - 1) + 'c' + col;
-            }
-            // go left
-            // if (e.keyCode == 37) {
-            //     idToFind = row + 'c' + (col + 1);
-            // }
-            // go right
-            // if (e.keyCode == 39) {
-            //     idToFind = row + 'c' + (col - 1);
-            // }
-
-            var elementToFocus = document.getElementById(idToFind);
-            if (elementToFocus) {
-                elementToFocus.focus();
-            }
-
-            e.preventDefault();
-        }
-
-        vm.openOrderDialog = function (order, ev) {
-            console.log('ordersDistribution 27');
-            // need to get all orders items....
-
-            /*$mdDialog.show({
-                    controller: 'ViewOrderDialogController',
-                    templateUrl: './components/order/viewOrderDialog-template.html',
-                    controllerAs: vm,
-                    parent: angular.element(document.body),
-                    targetEvent: ev,
-                    clickOutsideToClose: true,
-                    locals: {
-                        order: order,
-                        showEditBtn: true,
-                        mode: 'order'
-                    }
-                })
-                .then(function (answer) {
-                    //$scope.status = 'You said the information was "' + answer + '".';
-                }, function () {
-                    //$scope.status = 'You cancelled the dialog.';
-                });*/
-        }
-
+        };
+     
     }
 
 }());
