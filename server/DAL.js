@@ -352,14 +352,12 @@ function insertSiryunOrder(siryun) {
     return d.promise;
 }
 
-function getSiryun(cre_date,deps1) {
+function getSiryun(cre_date) {
     var d = deferred();
 
     getCollection('gorme-siryun').then(function (mongo) {
         mongo.collection.findOne({
-            deps : parseInt(deps1), 
             createDate : cre_date,
-            
         }, function (err, result) {
             if (err) {
                 var errorObj = {
@@ -377,12 +375,11 @@ function getSiryun(cre_date,deps1) {
 
     return d.promise;
 }
-function getSiryunOrder(cre_date,deps1) {
+function getSiryunOrder(cre_date) {
     var d = deferred();
 
     getCollection('gorme-siryun_order').then(function (mongo) {
         mongo.collection.findOne({
-            deps : parseInt(deps1), 
             createDate : cre_date,
         }, function (err, result) {
             if (err) {
@@ -456,7 +453,7 @@ function getJorders(cre_date) {
 }
 
 
-function updateSiryun(siryun,cre_date,deps1) {
+function updateSiryun(siryun,cre_date) {
     var d = deferred();
 
     var siryunId = siryun._id;
@@ -465,8 +462,9 @@ function updateSiryun(siryun,cre_date,deps1) {
 
     getCollection('gorme-siryun').then(function (mongo) {
 
+
         mongo.collection.findAndModify(
-            {  createDate: cre_date, deps : parseInt(deps1)  },
+            { createDate: cre_date },
             [],
             { $set: siryun }, 
             { new: true},
@@ -487,7 +485,7 @@ function updateSiryun(siryun,cre_date,deps1) {
 
     return d.promise;
 }
-function updateSiryunOrder(siryun,cre_date,deps1) {
+function updateSiryunOrder(siryun,cre_date) {
     var d = deferred();
 
     var siryunId = siryun._id;
@@ -495,9 +493,8 @@ function updateSiryunOrder(siryun,cre_date,deps1) {
     delete siryun._id;
 
     getCollection('gorme-siryun_order').then(function (mongo) {
-
         mongo.collection.findAndModify(
-            {  createDate: cre_date, deps : parseInt(deps1)  },
+            { createDate: cre_date },
             [],
             { $set: siryun }, 
             { new: true},

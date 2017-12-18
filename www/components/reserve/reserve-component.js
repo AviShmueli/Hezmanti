@@ -14,7 +14,7 @@
 
     function reserveController($rootScope, $scope, server, $q, filesHandler, $filter, $timeout, dataContext,
         $mdToast, $mdDialog, $window, reserveContext, lodash) {
-
+            
         var vm = this;
         var pageMode = 'reserve';
         vm.dataLoading = false;
@@ -27,7 +27,11 @@
         vm.dg = null; // grid setting
         vm.toolmenu=[]; // toolbar menu
         vm.columns =null; // grid columns
+       
         vm.load1 = true;
+        
+
+
         // build tool menu
         vm.toolmenu.push({
             value : 99,
@@ -44,18 +48,60 @@
 
         // ############################ jos get from db today
         var cre_date1= $filter('date')(new Date(), 'dd/MM/yyyy'); // working default date
-        server.getSiryun(cre_date1, 99 ).then(function (result) {
+        server.getSiryun(cre_date1).then(function (result) {
             var r = result.data;    
             if (r == '') {          //not found -  build new date
                 cre_new_date(cre_date1);
             }
             else {
-                new_date(r);
+                var ecat = angular.copy(r);
+                angular.forEach(ecat.cat, function(value, key){
+                    var arr1 = ecat.cat[key]
+                    for (var i=0;i< arr1.length;i++) {
+                        angular.forEach(arr1[i], function(value, key){
+                            var pl=key.indexOf('sup_name_');
+                            if (pl >= 0 ){
+                                var col2=[];
+                                var sup2="sup_siryun_"+key.substring(9);
+                                var sup3="sup_husman_"+key.substring(9);
+                                var sup4= "sup_haluka_"+key.substring(9);
+                                var num=0;
+                                var item1='{ ';
+                                if (!arr1[i].hasOwnProperty(sup2)) {
+                                    num++;
+                                    item1 += '"' + sup2 + '" : null' ;
+                                }
+                                if (!arr1[i].hasOwnProperty(sup3)) {
+                                    if (num > 0 ) { item1 += ','}
+                                    item1 += '"' + sup3 + '" : null' ;
+                                    num++
+                                }
+                                if (!arr1[i].hasOwnProperty(sup4)) {
+                                    if (num > 0 ) { item1 += ','}
+                                    item1 += '"' +sup4 + '" : null' ;
+                                }
+                                item1 += '}';
+                                var sapak1=angular.fromJson(item1);
+                                angular.extend(arr1[i],sapak1);
+                            }
+                        })
+                    }
+                });
+                new_date(ecat);
             }
         });        
         // ############################ jos replace new date db       
         var  new_date = function(db1){
             vm.work_db = db1;
+            vm.toolmenu =[];
+            for (var j=0; j < vm.work_db.deps.length;j++){
+                var item1={
+                    value : vm.work_db.deps[j].value,
+                    text: vm.work_db.deps[j].text
+                }
+                vm.toolmenu.push(item1);
+            }
+
             josdb(vm.select_dept);
             josgrid();
         }
@@ -63,6 +109,7 @@
         var cre_new_date = function(cre_date) {
             vm.work_db=null;
             vm.work_table=null; 
+            vm.toolmenu=[];
             server.getDepartments().then(function (result) {
                 var dept = result.data;            
                 server.getCatalog().then(function (response) {
@@ -71,11 +118,23 @@
                     var supmap = {};
                     for (var j=0; j < dept.length;j++){
                         if (dept[j].suppliers.length > 0) {
-                            // dept hodu
+
+                            //toolmenu begin
                             var id1=dept[j].id;
+                            var name1 = dept[j].name;
                             if (id1 == 1) { 
                                 id1=99; 
+                                name1= 'עוף + הודו';
                             }
+                            if (id1 != 2)  {
+                                var item1={
+                                    value: id1,
+                                    text: name1
+                                }
+                                vm.toolmenu.push(item1);
+                            }
+                            //toolmenu end
+
                             //supmap[dept[j].id]=dept[j].suppliers;
                             supmap[id1]=dept[j].suppliers;
                             for (var p=0;p< dept[j].suppliers.length;p++){
@@ -101,8 +160,9 @@
                         cat : {},
                         deps : vm.toolmenu
                     };
+                    
                     angular.forEach(departmentsMap, function(value, w){
-                        
+                       
                         var addcol1=null;
                         var itemLine=[];
                         for(var i=0;i<departmentsMap[w].length;i++) {
@@ -130,33 +190,26 @@
                             }
                         }
                     
-                    
                         newcat2.cat[w]= itemLine;  
                     });
-                    var newcat99 = {
-                        createDate : cre_date,
-                        cat : newcat2.cat[99],
-                        deps : 99
-                    };
-                    var newcat6 = {
-                        createDate : cre_date,
-                        cat : newcat2.cat[6],
-                        deps : 6
-                    };
-                    var newcat3 = {
-                        createDate : cre_date,
-                        cat : newcat2.cat[3],
-                        deps : 3
-                    };
                     vm.work_db = newcat2;
-                    server.insertSiryun(newcat99).then(function (response) {
-                        server.insertSiryun(newcat6).then(function (response) {
-                            server.insertSiryun(newcat3).then(function (response) {
-                                    josdb(99);
-                                    josgrid();
-                                    vm.dataLoading = false;
-                            });
-                        });
+                    var ecat = angular.copy(newcat2);
+                    angular.forEach(ecat.cat, function(value, key){
+                        var arr1 = ecat.cat[key]
+                        for (var i=0;i< arr1.length;i++) {
+                            angular.forEach(arr1[i], function(value, key){
+                                var pl=key.indexOf('sup_');
+                                if (pl >= 0 && value == null ){
+                                    delete arr1[i][key];
+                                }
+                            })
+                        }
+                    });
+
+                    server.insertSiryun(ecat).then(function (response) {
+                        josdb(99);
+                        josgrid();
+                        vm.dataLoading = false;
                     });
                 });
             });
@@ -165,11 +218,22 @@
        // ############################ update haluka order with new percent
        var updateOrder_percent = function(){
             var cre_date=vm.work_db.createDate;
-            var deps1=vm.work_db.deps
             server.getSiryunOrder(cre_date).then(function (result) {
                 var r = result.data;    
                 if (r.length == 0 ){  
-                    server.updateSiryun(vm.work_db,vm.work_db.createDate,deps1).then(function (response) {
+                    var ecat = angular.copy(vm.work_db);
+                    angular.forEach(ecat.cat, function(value, key){
+                        var arr1 = ecat.cat[key]
+                        for (var i=0;i< arr1.length;i++) {
+                            angular.forEach(arr1[i], function(value, key){
+                                var pl=key.indexOf('sup_');
+                                if (pl >= 0 && value == null ){
+                                    delete arr1[i][key];
+                                }
+                            })
+                        }
+                    });
+                    server.updateSiryun(ecat,vm.work_db.createDate).then(function (response) {
                         vm.dataLoading = false;
                     });
                 }
@@ -224,7 +288,21 @@
                             o.bikoret = o.count-o.totorder;
                         }
                     }); 
-                    server.updateSiryun(vm.work_db,cre_date,deps1).then(function (response) {
+
+                    var ecat = angular.copy(vm.work_db);
+                    angular.forEach(ecat.cat, function(value, key){
+                        var arr1 = ecat.cat[key]
+                        for (var i=0;i< arr1.length;i++) {
+                            angular.forEach(arr1[i], function(value, key){
+                                var pl=key.indexOf('sup_');
+                                if (pl >= 0 && value == null ){
+                                    delete arr1[i][key];
+                                }
+                            })
+                        }
+                    });
+
+                    server.updateSiryun(ecat,cre_date).then(function (response) {
                             server.updateSiryunOrder(allorders,cre_date).then(function (response) {
                                 josdb(vm.select_dept);
                                 josgrid();
@@ -240,9 +318,9 @@
             cre_columns();
             if (depid == 0 ){
                 depid=99;
+                vm.select_dept =99;
             }
-            vm.select_dept =depid;
-            var arr1 = vm.work_db.cat; // take table form db
+            var arr1 = vm.work_db.cat[depid]; // take table form db
             angular.forEach(arr1[0], function(value, key){
                 var pl=key.indexOf('sup_name_');
                 if (pl >= 0 ){
@@ -278,7 +356,7 @@
                     vm.columns.push(t); 
                 }
             })
-            vm.work_table = vm.work_db.cat;
+            vm.work_table = vm.work_db.cat[depid];
         }
         
         // ############################ Build columns for grid
@@ -405,18 +483,50 @@
                         options: {  icon: 'refresh', 
                             onClick: function() { 
                                 var date3= vm.work_db.createDate;
-                                var deps1= vm.work_db.deps
                                 vm.dataLoading = true;
-                                server.getSiryun(date3,deps1).then(function (result) {
+                                server.getSiryun(date3).then(function (result) {
                                     var r = result.data;    
                                     if (r == '') { 
                                         vm.dataLoading = true;
                                         cre_new_date(date3);
                                     }
                                     else {
-                                        vm.work_db =r;
+                                        var ecat = angular.copy(r);
+                                        angular.forEach(ecat.cat, function(value, key){
+                                            var arr1 = ecat.cat[key]
+                                            for (var i=0;i< arr1.length;i++) {
+                                                angular.forEach(arr1[i], function(value, key){
+                                                    var pl=key.indexOf('sup_name_');
+                                                    if (pl >= 0 ){
+                                                        var col2=[];
+                                                        var sup2="sup_siryun_"+key.substring(9);
+                                                        var sup3="sup_husman_"+key.substring(9);
+                                                        var sup4= "sup_haluka_"+key.substring(9);
+                                                        var num=0;
+                                                        var item1='{ ';
+                                                        if (!arr1[i].hasOwnProperty(sup2)) {
+                                                            num++;
+                                                            item1 += '"' + sup2 + '" : null' ;
+                                                        }
+                                                        if (!arr1[i].hasOwnProperty(sup3)) {
+                                                            if (num > 0 ) { item1 += ','}
+                                                            item1 += '"' + sup3 + '" : null' ;
+                                                            num++
+                                                        }
+                                                        if (!arr1[i].hasOwnProperty(sup4)) {
+                                                            if (num > 0 ) { item1 += ','}
+                                                            item1 += '"' +sup4 + '" : null' ;
+                                                        }
+                                                        item1 += '}';
+                                                        var sapak1=angular.fromJson(item1);
+                                                        angular.extend(arr1[i],sapak1);
+                                                    }
+                                                })
+                                            }
+                                        });
+                                        vm.work_db =ecat;
                                         vm.dataLoading = false;
-                                        josdb(deps1);
+                                        josdb(99);
                                     }
                                 });    
                             } 
@@ -434,19 +544,7 @@
                                 valueExpr: "value",   
                                 value: 99 ,
                                 onValueChanged: function(e) {
-                                    var date3= vm.work_db.createDate
-                                    server.getSiryun(date3, e.value).then(function (result) {
-                                        var r = result.data;    
-                                        if (r == '') { 
-                                            vm.dataLoading = true;
-                                            cre_new_date(date3);
-                                        }
-                                        else {
-                                            vm.work_db =r;
-                                            vm.dataLoading = false;
-                                            josdb(e.value);
-                                        }
-                                    });       
+                                      josdb(e.value);
                                 },
                             },
                     });
@@ -464,16 +562,49 @@
                             onValueChanged: function(e) {
                                 var date3= $filter('date')(e.value, 'dd/MM/yyyy');
                                 vm.dataLoading = true;
-                                server.getSiryun(date3, 99).then(function (result) {
+                                server.getSiryun(date3).then(function (result) {
                                     var r = result.data;    
                                     if (r == '') { 
                                         vm.dataLoading = true;
                                         cre_new_date(date3);
                                     }
                                     else {
-                                        vm.work_db =r;
+                                        var ecat = angular.copy(r);
+                                        angular.forEach(ecat.cat, function(value, key){
+                                            var arr1 = ecat.cat[key]
+                                            for (var i=0;i< arr1.length;i++) {
+                                                angular.forEach(arr1[i], function(value, key){
+                                                    var pl=key.indexOf('sup_name_');
+                                                    if (pl >= 0 ){
+                                                        var col2=[];
+                                                        var sup2="sup_siryun_"+key.substring(9);
+                                                        var sup3="sup_husman_"+key.substring(9);
+                                                        var sup4= "sup_haluka_"+key.substring(9);
+                                                        var num=0;
+                                                        var item1='{ ';
+                                                        if (!arr1[i].hasOwnProperty(sup2)) {
+                                                            num++;
+                                                            item1 += '"' + sup2 + '" : null' ;
+                                                        }
+                                                        if (!arr1[i].hasOwnProperty(sup3)) {
+                                                            if (num > 0 ) { item1 += ','}
+                                                            item1 += '"' + sup3 + '" : null' ;
+                                                            num++
+                                                        }
+                                                        if (!arr1[i].hasOwnProperty(sup4)) {
+                                                            if (num > 0 ) { item1 += ','}
+                                                            item1 += '"' +sup4 + '" : null' ;
+                                                        }
+                                                        item1 += '}';
+                                                        var sapak1=angular.fromJson(item1);
+                                                        angular.extend(arr1[i],sapak1);
+                                                    }
+                                                })
+                                            }
+                                        });
+                                        vm.work_db =ecat;
                                         vm.dataLoading = false;
-                                        josdb(99);
+                                        josdb(1);
                                     }
                                 });        
                             },
@@ -498,11 +629,13 @@
                     }               
                 },
                 onEditorPrepared: function (e) {
-                    if (e.dataField == "name") {
-                    }                 
                 },
             };
         };
+
+
+        
+       
 
     }
 

@@ -72,25 +72,23 @@
             return $http(req);
         }
 
-        var getSiryun = function (cre_date, deps1) {
+        var getSiryun = function (cre_date) {
             var req = {
                 method: 'GET',
                 url: '/api/getSiryun',
                 params: {
-                    cre_date: cre_date,
-                    deps1: deps1
+                    cre_date: cre_date
                 }
             };
 
             return $http(req);
         }
-        var getSiryunOrder = function (cre_date, deps1) {
+        var getSiryunOrder = function (cre_date) {
             var req = {
                 method: 'GET',
                 url: '/api/getSiryunOrder',
                 params: {
-                    cre_date: cre_date,
-                    deps1: deps1
+                    cre_date: cre_date
                 }
             };
 
@@ -108,27 +106,25 @@
 
             return $http(req);
         }
-        var updateSiryun = function (siryun, cre_date, deps1) {
+        var updateSiryun = function (siryun, cre_date) {
             var req = {
                 method: 'POST',
                 url: '/api/updateSiryun',
                 data: {
                     siryun: siryun,
-                    cre_date: cre_date,
-                    deps1: deps1
+                    cre_date: cre_date
                 }
             };
 
             return $http(req);
         }
-        var updateSiryunOrder = function (siryun, cre_date,deps1) {
+        var updateSiryunOrder = function (siryun, cre_date) {
             var req = {
                 method: 'POST',
                 url: '/api/updateSiryunOrder',
                 data: {
                     siryun: siryun,
-                    cre_date: cre_date,
-                    deps1: deps1
+                    cre_date: cre_date
                 }
             };
 

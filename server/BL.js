@@ -133,11 +133,11 @@
                 
                         return d.promise;
                     }        
-    function getSiryun(cre_date,deps1) {
+    function getSiryun(cre_date) {
         
                 var d = deferred();
         
-                DAL.getSiryun(cre_date,deps1).then(function (result) {
+                DAL.getSiryun(cre_date).then(function (result) {
                     d.resolve(result);
                 }, function (error) {
                     d.deferred(error);
@@ -145,11 +145,11 @@
         
                 return d.promise;
             }
-    function getSiryunOrder(cre_date,deps1) {
+    function getSiryunOrder(cre_date) {
                 
                         var d = deferred();
                 
-                        DAL.getSiryunOrder(cre_date,deps1).then(function (result) {
+                        DAL.getSiryunOrder(cre_date).then(function (result) {
                             d.resolve(result);
                         }, function (error) {
                             d.deferred(error);
@@ -170,10 +170,10 @@
                         return d.promise;
                     }
         
-    function updateSiryun(siryun,cre_date,deps1) {
+    function updateSiryun(siryun,cre_date) {
                 var d = deferred();
         
-                DAL.updateSiryun(siryun,cre_date,deps1).then(function (result) {
+                DAL.updateSiryun(siryun,cre_date).then(function (result) {
                     d.resolve(result);
                 }, function (error) {
                     d.deferred(error);
@@ -181,10 +181,10 @@
         
                 return d.promise;
             }
-    function updateSiryunOrder(siryun,cre_date,deps1) {
+    function updateSiryunOrder(siryun,cre_date) {
                         var d = deferred();
                 
-                        DAL.updateSiryunOrder(siryun,cre_date,deps1).then(function (result) {
+                        DAL.updateSiryunOrder(siryun,cre_date).then(function (result) {
                             d.resolve(result);
                         }, function (error) {
                             d.deferred(error);
@@ -193,6 +193,7 @@
                         return d.promise;
                     }
     function getJorders(cre_date) {
+                
                         var d = deferred();
                 
                         DAL.getJorders(cre_date).then(function (result) {

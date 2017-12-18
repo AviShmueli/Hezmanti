@@ -21,8 +21,8 @@ var port = process.env.PORT || 5007;
 // jos move before for test
 app.use(bodyParser.json());
 
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.json({limit: '150mb'}));
+app.use(bodyParser.urlencoded({limit: '150mb', extended: true}));
 
 
 //jos app.use(bodyParser.urlencoded({
@@ -123,7 +123,7 @@ app.post('/api/insertSiryunOrder', function (req, res) {
     });
 });
 app.get('/api/getSiryun', function (req, res) {
-    BL.getSiryun(req.query.cre_date,req.query.deps1).then(function(result){
+    BL.getSiryun(req.query.cre_date).then(function(result){
         res.send(result);
     }, function(error){
         logger.log('error', error.message , error.error);
@@ -131,7 +131,7 @@ app.get('/api/getSiryun', function (req, res) {
     });
 });
 app.get('/api/getSiryunOrder', function (req, res) {
-    BL.getSiryunOrder(req.query.cre_date,req.query.deps1).then(function(result){
+    BL.getSiryunOrder(req.query.cre_date).then(function(result){
         res.send(result);
     }, function(error){
         logger.log('error', error.message , error.error);
@@ -148,7 +148,7 @@ app.get('/api/getJosOrders', function (req, res) {
 });
 
 app.post('/api/updateSiryun', function (req, res) {
-    BL.updateSiryun(req.body.siryun, req.body.cre_date,req.body.deps1).then(function (result) {
+    BL.updateSiryun(req.body.siryun, req.body.cre_date).then(function (result) {
         res.send(result);
     }, function (error) {
         logger.log('error', error.message, error.error);
@@ -156,7 +156,7 @@ app.post('/api/updateSiryun', function (req, res) {
     });
 });
 app.post('/api/updateSiryunOrder', function (req, res) {
-    BL.updateSiryunOrder(req.body.siryun, req.body.cre_date,req.body.deps1).then(function (result) {
+    BL.updateSiryunOrder(req.body.siryun, req.body.cre_date).then(function (result) {
         res.send(result);
     }, function (error) {
         logger.log('error', error.message, error.error);

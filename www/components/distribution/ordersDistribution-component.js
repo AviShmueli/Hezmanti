@@ -38,31 +38,37 @@
         vm.summ = null;
         vm.load1 = true;
         //vm.work_r = [];
-        // build tool menu
-        vm.toolmenu.push({
-            value : 99,
-            text: 'עוף + הודו'
-        });
-        vm.toolmenu.push({
-            value : 6,
-            text: 'דגים'
-        });
-        vm.toolmenu.push({
-            value : 3,
-            text: 'עוף והודו ארוז מהדרין'
-        });
+
         // ############################ Main Program begin here  get from db today
         var cre_date1= $filter('date')(new Date(), 'dd/MM/yyyy'); // working default date
-        server.getSiryunOrder(cre_date1, 99 ).then(function (result) {
-            
-           
+        server.getSiryunOrder(cre_date1).then(function (result) {
+
             var r = result.data;   
             if (r == '') {            //not found -  build new date
                 cre_new_date(cre_date1);
             }
             else {
-                
-                new_date(r);
+                var edist = angular.copy(r);
+                angular.forEach(edist.cat, function(value, key){
+                    var arr1 = edist.cat[key]
+                    for (var i=0;i< arr1.length;i++) {
+                        angular.forEach(arr1[i], function(value, key){
+                            var pl=key.indexOf('sup_name_');
+                            if (pl >= 0 ){
+                                var sup3="sup_husman_"+key.substring(9);
+                                if (!arr1[i].hasOwnProperty(sup3)) {
+                                    var item1='{ ';
+                                    item1 += '"' + sup3 + '" : null' ;
+                                    item1 += '}';
+                                    var sapak1=angular.fromJson(item1);
+                                    angular.extend(arr1[i],sapak1);
+                                }
+                                
+                            }
+                        })
+                    }
+                });
+                new_date(edist);
             }
         }); 
         // ############################ update header percent
@@ -95,17 +101,21 @@
                         }
                     }
                 });
-                // updatedb
-               // vm.dataLoading = true;
                vm.toolb[4].options.disabled = false;
-              //  updatesiryun_husman2(false);
             }
         }
         // ############################ jos replace new date db       
         var  new_date = function(db1){
             vm.dist_order = db1;
-            //josdb(vm.select_dept);
-            josdb(99)
+            vm.toolmenu =[];
+            for (var j=0; j < vm.dist_order.deps.length;j++){
+                var item1={
+                    value : vm.dist_order.deps[j].value,
+                    text: vm.dist_order.deps[j].text
+                }
+                vm.toolmenu.push(item1);
+            }
+            josdb(vm.select_dept);
             josgrid();
             
         }
@@ -114,7 +124,7 @@
         var cre_new_date = function(cre_date) {
             vm.dist_order=null;
             vm.work_table=null; 
-           
+            vm.toolmenu=[];
 
             var date_arr = cre_date.split("/")
             var date11 = date_arr[2] + '-' + date_arr[1] + '-' + date_arr[0]+"T00:00:00.000Z";
@@ -134,12 +144,25 @@
                     var dept = result.data;            
                     // build suppliers
                     var supmap = {};
+                    vm.toolmenu= [];
                     for (var j=0; j < dept.length;j++){
                         if (dept[j].suppliers.length > 0) {
+                             //toolmenu begin
                              var id1=dept[j].id;
+                             var name1 = dept[j].name;
                              if (id1 == 1) { 
                                  id1=99; 
+                                 name1= 'עוף + הודו';
                              }
+                             if (id1 != 2)  {
+                                 var item1={
+                                     value: id1,
+                                     text: name1
+                                 }
+                                 vm.toolmenu.push(item1);
+                             }
+                             //toolmenu end
+                            
                             supmap[id1]=dept[j].suppliers;
                             for (var p=0;p< dept[j].suppliers.length;p++){
                                 angular.extend(supmap[id1][p],{husman:null});
@@ -194,229 +217,12 @@
                         }
                         newcat2.cat[w]= orderLine;  
                     });
-                    var newcat99 = {
-                        createDate : cre_date,
-                        cat : newcat2.cat[99],
-                        maxOrderid :  max_orderid,
-                        deps : 99
-                    };
-                    var newcat6 = {
-                        createDate : cre_date,
-                        cat : newcat2.cat[6],
-                        maxOrderid :  max_orderid,
-                        deps : 6
-                    };
-                    var newcat3 = {
-                        createDate : cre_date,
-                        cat : newcat2.cat[3],
-                        maxOrderid :  max_orderid,
-                        deps : 3
-                    };
-                    //####################### 99
-                    vm.dist_order =newcat99;
-                    server.getSiryun(cre_date,99).then(function (result) {
-                        var r = result.data;    
-                        if (r.length != '') {            //not found -  build new date<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                            vm.siryun_db = r;
-                            var catalog = vm.siryun_db.cat;
-                            var orders = newcat99.cat;
-                            var    tArr = {};
-                                for(var i = 0 ; i <  catalog.length ; i++){
-                                    var p =  catalog[i];
-                                    p.totorder=0;
-                                    p.totorder2=0;
-                                    p.tothaluka =0;
-                                    tArr[p.serialNumber] = p;   
-                                    angular.forEach(p, function(value, key){
-                                        if (key.indexOf('husman') > 0) {
-                                            p[key] = null;
-                                        }
-                                    });
-                                }
-                                for(var i = 0 ; i < orders.length ; i++){
-                                    var o = orders[i];
-                                    if (o.excel == 0) {
-                                        o.totorder=0;
-                                    }
-                                    var serialNumber = o.itemSerialNumber
-                                    var p = tArr[serialNumber];
-                                    if (p !== undefined) {
-                                        if (o.type == 'order') {
-                                            p.totorder += o.count;
-                                            angular.forEach(p, function(val1, key1){
-                                                if (key1.indexOf('_haluka_') > 0) { 
-                                                    var key2 = "sup_husman_"+key1.substring(11);
-                                                    if (val1 > 0 ) { // has percent to calc
-                                                        // update percent only for null
-                                                        if (o.excel == 0) {
-                                                            if (o[key2] == null) {
-                                                                var num1 = Math.round( o.count * (val1 * 0.01));
-                                                                o[key2] = num1;
-                                                            }
-                                                        }
-                                                    }
-                                                    if (o[key2] > 0) {
-                                                        if (o.excel == 0) {
-                                                            o.totorder += o[key2];
-                                                        }
-                                                        p[key2] += o[key2];
-                                                        p.tothaluka += o[key2];
-                                                    }
-                                                }
-                                            });
-                                        }
-                                        else {
-                                             p.totorder2 += o.count;
-                                        } 
-                                    }
-                                    o.bikoret = o.count-o.totorder;
-                                }
-                            server.updateSiryun(vm.siryun_db,cre_date,99).then(function (response) {
-                                server.insertSiryunOrder(vm.dist_order).then(function (response) {
-                                    //############################# 6
-                                        vm.dist_order =newcat6;
-                                        server.getSiryun(cre_date,6).then(function (result) {
-                                            var r = result.data;    
-                                            if (r.length != '') {            //not found -  build new date<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                                                vm.siryun_db = r;
-                                                var catalog = vm.siryun_db.cat;
-                                                var orders = newcat99.cat;
-                                                var    tArr = {};
-                                                    for(var i = 0 ; i <  catalog.length ; i++){
-                                                        var p =  catalog[i];
-                                                            p.totorder=0;
-                                                            p.totorder2=0;
-                                                        p.tothaluka =0;
-                                                        tArr[p.serialNumber] = p;   
-                                                        angular.forEach(p, function(value, key){
-                                                            if (key.indexOf('husman') > 0) {
-                                                                p[key] = null;
-                                                            }
-                                                        });
-                                                    }
-                                                    for(var i = 0 ; i < orders.length ; i++){
-                                                        var o = orders[i];
-                                                        if (o.excel == 0) {
-                                                            o.totorder=0;
-                                                        }
-                                                        var serialNumber = o.itemSerialNumber
-                                                        var p = tArr[serialNumber];
-                                                        if (p !== undefined) {
-                                                            if (o.type == 'order') {
-                                                                p.totorder += o.count;
-                                                                angular.forEach(p, function(val1, key1){
-                                                                    if (key1.indexOf('_haluka_') > 0) { 
-                                                                        var key2 = "sup_husman_"+key1.substring(11);
-                                                                        if (val1 > 0 ) { // has percent to calc
-                                                                            // update percent only for null
-                                                                            if (o.excel == 0) {
-                                                                                if (o[key2] == null) {
-                                                                                    var num1 = Math.round( o.count * (val1 * 0.01));
-                                                                                    o[key2] = num1;
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                        if (o[key2] > 0) {
-                                                                            if (o.excel == 0) {
-                                                                                o.totorder += o[key2];
-                                                                            }
-                                                                            p[key2] += o[key2];
-                                                                            p.tothaluka += o[key2];
-                                                                        }
-                                                                    }
-                                                                });
-                                                            }
-                                                            else {
-                                                                p.totorder2 += o.count;
-                                                            } 
-                                                        }
-                                                        o.bikoret = o.count-o.totorder;
-                                                    }
-                                                server.updateSiryun(vm.siryun_db,cre_date,6).then(function (response) {
-                                                    server.insertSiryunOrder(vm.dist_order).then(function (response) {
-                                                            //################################# 3
-                                                            vm.dist_order =newcat3;
-                                                            server.getSiryun(cre_date,3).then(function (result) {
-                                                                var r = result.data;    
-                                                                if (r.length != '') {            //not found -  build new date<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                                                                    vm.siryun_db = r;
-                                                                    var catalog = vm.siryun_db.cat;
-                                                                    var orders = newcat99.cat;
-                                                                    var    tArr = {};
-                                                                        for(var i = 0 ; i <  catalog.length ; i++){
-                                                                            var p =  catalog[i];
-                                                                                p.totorder=0;
-                                                                                p.totorder2=0;
-                                                                            p.tothaluka =0;
-                                                                            tArr[p.serialNumber] = p;   
-                                                                            angular.forEach(p, function(value, key){
-                                                                                if (key.indexOf('husman') > 0) {
-                                                                                    p[key] = null;
-                                                                                }
-                                                                            });
-                                                                        }
-                                                                        for(var i = 0 ; i < orders.length ; i++){
-                                                                            var o = orders[i];
-                                                                            if (o.excel == 0) {
-                                                                                o.totorder=0;
-                                                                            }
-                                                                            var serialNumber = o.itemSerialNumber
-                                                                            var p = tArr[serialNumber];
-                                                                            if (p !== undefined) {
-                                                                                if (o.type == 'order') {
-                                                                                    p.totorder += o.count;
-                                                                                    angular.forEach(p, function(val1, key1){
-                                                                                        if (key1.indexOf('_haluka_') > 0) { 
-                                                                                            var key2 = "sup_husman_"+key1.substring(11);
-                                                                                            if (val1 > 0 ) { // has percent to calc
-                                                                                                // update percent only for null
-                                                                                                if (o.excel == 0) {
-                                                                                                    if (o[key2] == null) {
-                                                                                                        var num1 = Math.round( o.count * (val1 * 0.01));
-                                                                                                        o[key2] = num1;
-                                                                                                    }
-                                                                                                }
-                                                                                            }
-                                                                                            if (o[key2] > 0) {
-                                                                                                if (o.excel == 0) {
-                                                                                                    o.totorder += o[key2];
-                                                                                                }
-                                                                                                p[key2] += o[key2];
-                                                                                                p.tothaluka += o[key2];
-                                                                                            }
-                                                                                        }
-                                                                                    });
-                                                                                }
-                                                                                else {
-                                                                                 //   if (isNew) {
-                                                                                        p.totorder2 += o.count;
-                                                                                   // }
-                                                                                } 
-                                                                            }
-                                                                            o.bikoret = o.count-o.totorder;
-                                                                        }
-                                                                    server.updateSiryun(vm.siryun_db,cre_date,3).then(function (response) {
-                                                                        server.insertSiryunOrder(vm.dist_order).then(function (response) {
-                                                                            vm.select_dept = 99;
-                                                                            vm.dist_order =newcat99;
-                                                                            josdb(vm.select_dept);
-                                                                            josgrid();
-                                                                            vm.dataLoading = false;
-                                                                        });
-                                                                    });
-                                                                }
-                                                            });        
-                                                    });
-                                                });
-                                            }
-                                        });
-                                });
-                            });
-                        }
-
-                    });
-                });
+                    vm.dist_order = newcat2;
+                    //updatesiryun(cre_date,true);
+                    updatesiryun_husman2(true);
+                    
             });
+        });
         }
         
 
@@ -429,30 +235,34 @@
             // get all new orders
             server.getJosOrders(date11,lastOrder).then(function (result) {
                 var r = result.data; 
-                if (r.length == 0 ){ // no orders
-                    cre_columns();
-                    josgrid();
-                    vm.grid1.deleteColumn(8);
+                if (r.length == 0 ){ // no new orders
                     vm.dataLoading = false;
                     return;
                 }
                 var max_orderid = null;
                 var newOrders = r;
+
                 server.getDepartments().then(function (result) {
                     var dept = result.data;            
+                    // build suppliers
                     var supmap = {};
                     for (var j=0; j < dept.length;j++){
+
+
+                        var id1=dept[j].id;
+                        if (id1 == 1) { 
+                            id1=99; 
+                        }
+                        supmap[id1]=dept[j].suppliers;
+
                         if (dept[j].suppliers.length > 0) {
-                             var id1=dept[j].id;
-                             if (id1 == 1) { 
-                                 id1=99; 
-                             }
                             supmap[id1]=dept[j].suppliers;
                             for (var p=0;p< dept[j].suppliers.length;p++){
                                 angular.extend(supmap[id1][p],{husman:null});
                             }
                         }
                     }
+                    // build dist orders for grib & db
                     var departmentsMap = {};
                     for (var y=0;y<newOrders.length;y++) {
                         if (max_orderid == null) { max_orderid = newOrders[y].orderId; }
@@ -463,6 +273,8 @@
                             if ((item.itemDepartmentId == 1) || (item.itemDepartmentId == 2)) {
                                 item.itemDepartmentId = 99;
                             }
+
+
                             angular.extend(item,{orderId:arr1.orderId,branchId:arr1.branchId,networkId:arr1.networkId,branchName:arr1.branchName,type:arr1.type,totorder:0,bikoret:null,excel:0});
                             if (!departmentsMap.hasOwnProperty(item.itemDepartmentId)) {
                                 departmentsMap[item.itemDepartmentId] = [];
@@ -470,19 +282,18 @@
                             departmentsMap[item.itemDepartmentId].push(item);
                         }
                     };
-                    
-                    var newcat2 = {
-                        createDate : cre_date,
-                        maxOrderid :  max_orderid,
-                        cat : {},
-                        deps : vm.toolmenu
-                    };
+                    var newcat = vm.dist_order.cat;
+                    var cat3 = {};
                     angular.forEach(departmentsMap, function(value, w){
                         var addcol1=null;
                         var orderLine=[];
+                        if (newcat[w] == null){
+                           newcat[w] = [];
+                        }
                         for(var i=0;i<departmentsMap[w].length;i++) {
                             orderLine[i]=departmentsMap[w][i];
                             for (var j=0;j<supmap[w].length;j++){
+                                
                                 if(supmap[w][j].hasOwnProperty('priority') ) {
                                     if (supmap[w][j].priority !== null ){
                                         var sup1="sup_name_"+supmap[w][j].supplierId;
@@ -495,232 +306,15 @@
                                         angular.extend(orderLine[i],sapak1);
                                     }
                                 } 
-                              
                             }
+                            newcat[w].push(orderLine[i]);
                         }
-                        newcat2.cat[w]= orderLine;  
                     });
-                    var newcat99 = {
-                        createDate : cre_date,
-                        cat : newcat2.cat[99],
-                        maxOrderid :  max_orderid,
-                        deps : 99
-                    };
-                    var newcat6 = {
-                        createDate : cre_date,
-                        cat : newcat2.cat[6],
-                        maxOrderid :  max_orderid,
-                        deps : 6
-                    };
-                    var newcat3 = {
-                        createDate : cre_date,
-                        cat : newcat2.cat[3],
-                        maxOrderid :  max_orderid,
-                        deps : 3
-                    };
-                    //####################### 99
-                    vm.dist_order =newcat99;
-                    server.getSiryun(cre_date,99).then(function (result) {
-                        var r = result.data;    
-                        if (r.length != '') {            //not found -  build new date<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                            vm.siryun_db = r;
-                            var catalog = vm.siryun_db.cat;
-                            var orders = newcat99.cat;
-                            var    tArr = {};
-                                for(var i = 0 ; i <  catalog.length ; i++){
-                                    var p =  catalog[i];
-                                    p.totorder=0;
-                                    p.totorder2=0;
-                                    p.tothaluka =0;
-                                    tArr[p.serialNumber] = p;   
-                                    angular.forEach(p, function(value, key){
-                                        if (key.indexOf('husman') > 0) {
-                                            p[key] = null;
-                                        }
-                                    });
-                                }
-                                for(var i = 0 ; i < orders.length ; i++){
-                                    var o = orders[i];
-                                    if (o.excel == 0) {
-                                        o.totorder=0;
-                                    }
-                                    var serialNumber = o.itemSerialNumber
-                                    var p = tArr[serialNumber];
-                                    if (p !== undefined) {
-                                        if (o.type == 'order') {
-                                            p.totorder += o.count;
-                                            angular.forEach(p, function(val1, key1){
-                                                if (key1.indexOf('_haluka_') > 0) { 
-                                                    var key2 = "sup_husman_"+key1.substring(11);
-                                                    if (val1 > 0 ) { // has percent to calc
-                                                        // update percent only for null
-                                                        if (o.excel == 0) {
-                                                            if (o[key2] == null) {
-                                                                var num1 = Math.round( o.count * (val1 * 0.01));
-                                                                o[key2] = num1;
-                                                            }
-                                                        }
-                                                    }
-                                                    if (o[key2] > 0) {
-                                                        if (o.excel == 0) {
-                                                            o.totorder += o[key2];
-                                                        }
-                                                        p[key2] += o[key2];
-                                                        p.tothaluka += o[key2];
-                                                    }
-                                                }
-                                            });
-                                        }
-                                        else {
-                                             p.totorder2 += o.count;
-                                        } 
-                                    }
-                                    o.bikoret = o.count-o.totorder;
-                                }
-                            server.updateSiryun(vm.siryun_db,cre_date,99).then(function (response) {
-                                server.updateSiryunOrder(vm.dist_order,cre_date,99).then(function (response) {
-                                    //############################# 6
-                                        vm.dist_order =newcat6;
-                                        server.getSiryun(cre_date,6).then(function (result) {
-                                            var r = result.data;    
-                                            if (r.length != '') {            //not found -  build new date<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                                                vm.siryun_db = r;
-                                                var catalog = vm.siryun_db.cat;
-                                                var orders = newcat99.cat;
-                                                var    tArr = {};
-                                                    for(var i = 0 ; i <  catalog.length ; i++){
-                                                        var p =  catalog[i];
-                                                            p.totorder=0;
-                                                            p.totorder2=0;
-                                                        p.tothaluka =0;
-                                                        tArr[p.serialNumber] = p;   
-                                                        angular.forEach(p, function(value, key){
-                                                            if (key.indexOf('husman') > 0) {
-                                                                p[key] = null;
-                                                            }
-                                                        });
-                                                    }
-                                                    for(var i = 0 ; i < orders.length ; i++){
-                                                        var o = orders[i];
-                                                        if (o.excel == 0) {
-                                                            o.totorder=0;
-                                                        }
-                                                        var serialNumber = o.itemSerialNumber
-                                                        var p = tArr[serialNumber];
-                                                        if (p !== undefined) {
-                                                            if (o.type == 'order') {
-                                                                p.totorder += o.count;
-                                                                angular.forEach(p, function(val1, key1){
-                                                                    if (key1.indexOf('_haluka_') > 0) { 
-                                                                        var key2 = "sup_husman_"+key1.substring(11);
-                                                                        if (val1 > 0 ) { // has percent to calc
-                                                                            // update percent only for null
-                                                                            if (o.excel == 0) {
-                                                                                if (o[key2] == null) {
-                                                                                    var num1 = Math.round( o.count * (val1 * 0.01));
-                                                                                    o[key2] = num1;
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                        if (o[key2] > 0) {
-                                                                            if (o.excel == 0) {
-                                                                                o.totorder += o[key2];
-                                                                            }
-                                                                            p[key2] += o[key2];
-                                                                            p.tothaluka += o[key2];
-                                                                        }
-                                                                    }
-                                                                });
-                                                            }
-                                                            else {
-                                                                p.totorder2 += o.count;
-                                                            } 
-                                                        }
-                                                        o.bikoret = o.count-o.totorder;
-                                                    }
-                                                server.updateSiryun(vm.siryun_db,cre_date,6).then(function (response) {
-                                                    server.updateSiryunOrder(vm.dist_order,cre_date,6).then(function (response) {
-                                                            //################################# 3
-                                                            vm.dist_order =newcat3;
-                                                            server.getSiryun(cre_date,3).then(function (result) {
-                                                                var r = result.data;    
-                                                                if (r.length != '') {            //not found -  build new date<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                                                                    vm.siryun_db = r;
-                                                                    var catalog = vm.siryun_db.cat;
-                                                                    var orders = newcat99.cat;
-                                                                    var    tArr = {};
-                                                                        for(var i = 0 ; i <  catalog.length ; i++){
-                                                                            var p =  catalog[i];
-                                                                                p.totorder=0;
-                                                                                p.totorder2=0;
-                                                                            p.tothaluka =0;
-                                                                            tArr[p.serialNumber] = p;   
-                                                                            angular.forEach(p, function(value, key){
-                                                                                if (key.indexOf('husman') > 0) {
-                                                                                    p[key] = null;
-                                                                                }
-                                                                            });
-                                                                        }
-                                                                        for(var i = 0 ; i < orders.length ; i++){
-                                                                            var o = orders[i];
-                                                                            if (o.excel == 0) {
-                                                                                o.totorder=0;
-                                                                            }
-                                                                            var serialNumber = o.itemSerialNumber
-                                                                            var p = tArr[serialNumber];
-                                                                            if (p !== undefined) {
-                                                                                if (o.type == 'order') {
-                                                                                    p.totorder += o.count;
-                                                                                    angular.forEach(p, function(val1, key1){
-                                                                                        if (key1.indexOf('_haluka_') > 0) { 
-                                                                                            var key2 = "sup_husman_"+key1.substring(11);
-                                                                                            if (val1 > 0 ) { // has percent to calc
-                                                                                                // update percent only for null
-                                                                                                if (o.excel == 0) {
-                                                                                                    if (o[key2] == null) {
-                                                                                                        var num1 = Math.round( o.count * (val1 * 0.01));
-                                                                                                        o[key2] = num1;
-                                                                                                    }
-                                                                                                }
-                                                                                            }
-                                                                                            if (o[key2] > 0) {
-                                                                                                if (o.excel == 0) {
-                                                                                                    o.totorder += o[key2];
-                                                                                                }
-                                                                                                p[key2] += o[key2];
-                                                                                                p.tothaluka += o[key2];
-                                                                                            }
-                                                                                        }
-                                                                                    });
-                                                                                }
-                                                                                else {
-                                                                                 //   if (isNew) {
-                                                                                        p.totorder2 += o.count;
-                                                                                   // }
-                                                                                } 
-                                                                            }
-                                                                            o.bikoret = o.count-o.totorder;
-                                                                        }
-                                                                    server.updateSiryun(vm.siryun_db,cre_date,3).then(function (response) {
-                                                                        server.updateSiryunOrder(vm.dist_order,cre_date,3).then(function (response) {
-                                                                            vm.select_dept = 99;
-                                                                            vm.dist_order =newcat99;
-                                                                            josdb(vm.select_dept);
-                                                                            josgrid();
-                                                                            vm.dataLoading = false;
-                                                                        });
-                                                                    });
-                                                                }
-                                                            });        
-                                                    });
-                                                });
-                                            }
-                                        });
-                                });
-                            });
-                        }
 
-                    });
+                    vm.dist_order.maxOrderid  = max_orderid;
+                    //updatesiryun(cre_date,false);
+                    updatesiryun_husman2(false);
+                    
                 });
             });
         }
@@ -729,22 +323,52 @@
         // ############################ update siryun husman
         var updatesiryun_husman2 = function(isNew){
             var cre_date =vm.dist_order.createDate;
-            var deps1 =vm.dist_order.deps;
-            server.getSiryun(cre_date,deps1).then(function (result) {
+            server.getSiryun(cre_date).then(function (result) {
                 var r = result.data;    
-                
-                if (r.length != '') {            //not found -  build new date<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                    vm.siryun_db = r;
+                if (r.length != '') {    
+                            var ecat = angular.copy(r);
+                            angular.forEach(ecat.cat, function(value, key){
+                                var arr1 = ecat.cat[key]
+                                for (var i=0;i< arr1.length;i++) {
+                                    angular.forEach(arr1[i], function(value, key){
+                                        var pl=key.indexOf('sup_name_');
+                                        if (pl >= 0 ){
+                                            var col2=[];
+                                            var sup2="sup_siryun_"+key.substring(9);
+                                            var sup3="sup_husman_"+key.substring(9);
+                                            var sup4= "sup_haluka_"+key.substring(9);
+                                            var num=0;
+                                            var item1='{ ';
+                                            if (!arr1[i].hasOwnProperty(sup2)) {
+                                                num++;
+                                                item1 += '"' + sup2 + '" : null' ;
+                                            }
+                                            if (!arr1[i].hasOwnProperty(sup3)) {
+                                                if (num > 0 ) { item1 += ','}
+                                                item1 += '"' + sup3 + '" : null' ;
+                                                num++
+                                            }
+                                            if (!arr1[i].hasOwnProperty(sup4)) {
+                                                if (num > 0 ) { item1 += ','}
+                                                item1 += '"' +sup4 + '" : null' ;
+                                            }
+                                            item1 += '}';
+                                            var sapak1=angular.fromJson(item1);
+                                            angular.extend(arr1[i],sapak1);
+                                        }
+                                    })
+                                }
+                              
+                            });
+                    vm.siryun_db = ecat;
                     var catalog = vm.siryun_db.cat;
                     var orders = vm.dist_order.cat;
                     var    tArr = {};
-                   
-                        for(var i = 0 ; i <  catalog.length ; i++){
-                            var p =  catalog[i];
-                           // if (isNew) {
+                    angular.forEach(catalog, function(value, key){
+                        for(var i = 0 ; i <  catalog[key].length ; i++){
+                            var p =  catalog[key][i];
                                 p.totorder=0;
                                 p.totorder2=0;
-                           // }
                             p.tothaluka =0;
                             tArr[p.serialNumber] = p;   
                             angular.forEach(p, function(value, key){
@@ -752,10 +376,13 @@
                                     p[key] = null;
                                 }
                             });
+
+
                         }
-                   
-                        for(var i = 0 ; i < orders.length ; i++){
-                            var o = orders[i];
+                    });
+                    angular.forEach(orders, function(value, key){
+                        for(var i = 0 ; i < orders[key].length ; i++){
+                            var o = orders[key][i];
                             if (o.excel == 0) {
                                 o.totorder=0;
                             }
@@ -763,7 +390,7 @@
                             var p = tArr[serialNumber];
                             if (p !== undefined) {
                                 if (o.type == 'order') {
-                                    p.totorder += o.count;
+                                        p.totorder += o.count;
                                     angular.forEach(p, function(val1, key1){
                                         if (key1.indexOf('_haluka_') > 0) { 
                                             var key2 = "sup_husman_"+key1.substring(11);
@@ -787,19 +414,65 @@
                                     });
                                 }
                                 else {
-                                    p.totorder2 += o.count;
+                                        p.totorder2 += o.count;
                                 } 
                             }
                             o.bikoret = o.count-o.totorder;
                         }
-                    
-                    server.updateSiryun(vm.siryun_db,cre_date,deps1).then(function (response) {
-                            server.updateSiryunOrder(vm.dist_order,vm.dist_order.createDate,deps1).then(function (response) {
+                    });  
+                   
+                    var ecat = angular.copy(vm.siryun_db);
+                    angular.forEach(ecat.cat, function(value, key){
+                        var arr1 = ecat.cat[key]
+                        for (var i=0;i< arr1.length;i++) {
+                            angular.forEach(arr1[i], function(value, key){
+                                var pl=key.indexOf('sup_');
+                                if (pl >= 0 && value == null ){
+                                    delete arr1[i][key];
+                                }
+                            })
+                        }
+                    });
+
+                    server.updateSiryun(ecat,cre_date).then(function (response) {
+                        if (isNew){
+                            var edist = angular.copy(vm.dist_order);
+                            angular.forEach(edist.cat, function(value, key){
+                                var arr1 = edist.cat[key]
+                                for (var i=0;i< arr1.length;i++) {
+                                    angular.forEach(arr1[i], function(value, key){
+                                        var pl=key.indexOf('sup_');
+                                        if (pl >= 0 && value == null ){
+                                            delete arr1[i][key];
+                                        }
+                                    })
+                                }
+                            }); 
+                            server.insertSiryunOrder(edist).then(function (response) {
                                 josdb(vm.select_dept);
                                 josgrid();
                                 vm.dataLoading = false;
                             });
-                       
+                        }
+                        else {
+                            var edist = angular.copy(vm.dist_order);
+                            angular.forEach(edist.cat, function(value, key){
+                                var arr1 = edist.cat[key]
+                                for (var i=0;i< arr1.length;i++) {
+                                    angular.forEach(arr1[i], function(value, key){
+                                        var pl=key.indexOf('sup_');
+                                        if (pl >= 0 && value == null ){
+                                            delete arr1[i][key];
+                                        }
+                                    })
+                                }
+                            }); 
+                            server.updateSiryunOrder(edist,vm.dist_order.createDate).then(function (response) {
+                                josdb(vm.select_dept);
+                                josgrid();
+                                vm.dataLoading = false;
+                            });
+                        }
                     });
                 }
             });  
@@ -852,7 +525,19 @@
                 var fileName = value + '_' + $filter('date')(new Date(), 'dd/MM/yyyy');
                 filesHandler.downloadOrderAsCSV(tArr[key], orderFields, fileName);
             });
-            server.updateSiryunOrder(vm.dist_order,vm.dist_order.createDate,vm.dist_order.deps).then(function (response) {
+            var edist = angular.copy(vm.dist_order);
+            angular.forEach(edist.cat, function(value, key){
+                var arr1 = edist.cat[key]
+                for (var i=0;i< arr1.length;i++) {
+                    angular.forEach(arr1[i], function(value, key){
+                        var pl=key.indexOf('sup_');
+                        if (pl >= 0 && value == null ){
+                            delete arr1[i][key];
+                        }
+                    })
+                }
+            }); 
+            server.updateSiryunOrder(edist,vm.dist_order.createDate).then(function (response) {
                 josdb(vm.select_dept);
                 josgrid();
                 vm.dataLoading = false;
@@ -938,16 +623,14 @@
             cre_columns();
             if (depid == 0 ){
                 depid=99;
+                vm.select_dept = 99;
             }
-            vm.select_dept = depid;
             vm.summ = [];
-          //  vm.summ.push({column:'count',summaryType:'sum'})
-            if (vm.dist_order.cat.length > 0) {
-                var arr1 = vm.dist_order.cat; // take table form db
+            if (!angular.equals({},vm.dist_order.cat) ){
+                var arr1 = vm.dist_order.cat[depid]; // take table form db
                 angular.forEach(arr1[0], function(value, key){
                     var pl=key.indexOf('sup_name_');
                     if (pl >= 0 ){
-                        // var sup1="sup_name_"+key.substring(9);
                         var col2=[];
                         var sup1="sup_husman_"+key.substring(9);
                         var item1={
@@ -957,7 +640,6 @@
                             allowEditing: true,
                             allowFiltering : false,
                             allowSorting : false,
-                           // width: 130,
                             headerCellTemplate: 'headerCellTemplate',
                             dataType: 'number'
                         }
@@ -966,7 +648,7 @@
                     }
                 })
                 var gridData = new DevExpress.data.DataSource({
-                    store: vm.dist_order.cat,
+                    store: vm.dist_order.cat[depid],
                     filter: ['excel','=',0],
                     paginate : false
                 });
@@ -1139,18 +821,37 @@
                                 vm.f_rules2 = {};
                                 var date3= vm.dist_order.createDate;
                                 vm.dataLoading = true;
-                                server.getSiryunOrder(date3,vm.select_dept).then(function (result) {
+                                server.getSiryunOrder(date3).then(function (result) {
                                     var r = result.data;   
                                     if (r == ''){ // no orders
                                         cre_new_date(date3);
                                     }
                                     else {
-                                      vm.dist_order = r;
+                                      var edist = angular.copy(r);
+                                      angular.forEach(edist.cat, function(value, key){
+                                          var arr1 = edist.cat[key]
+                                          for (var i=0;i< arr1.length;i++) {
+                                              angular.forEach(arr1[i], function(value, key){
+                                                  var pl=key.indexOf('sup_name_');
+                                                  if (pl >= 0 ){
+                                                      var sup3="sup_husman_"+key.substring(9);
+                                                      if (!arr1[i].hasOwnProperty(sup3)) {
+                                                          var item1='{ ';
+                                                          item1 += '"' + sup3 + '" : null' ;
+                                                          item1 += '}';
+                                                          var sapak1=angular.fromJson(item1);
+                                                          angular.extend(arr1[i],sapak1);
+                                                      }
+                                                      
+                                                  }
+                                              })
+                                          }
+                                      });
+                                      vm.dist_order = edist;
                                       josdb(vm.select_dept);
-                                    dg1.clearFilter();
-                                     dg1.refresh();
-                                   
-                                        vm.dataLoading = false;
+                                      dg1.clearFilter();
+                                      dg1.refresh();
+                                      vm.dataLoading = false;
                                     }
                                 });  
                             } 
@@ -1217,25 +918,16 @@
                                 bindingOptions: {
                                     dataSource: 'vm.toolmenu'
                                 },
+                                //items: vm.toolmenu,
                                 rtlEnabled: true,
                                 displayExpr: "text",
                                 valueExpr: "value",   
                                 value: 99 ,
                                 onValueChanged: function(e) {
-                                    var date3= vm.dist_order.createDate;
-                                    vm.dataLoading = true;
-                                    server.getSiryunOrder(date3, e.value).then(function (result) {
-                                        var r = result.data;   
-                                        if (r == ''){ // no orders
-                                            cre_new_date(date3);
-                                        }
-                                        else {
-                                            vm.dist_order = r;
-                                            vm.dataLoading = false;
-                                            josdb(e.value)
-                                            josgrid()
-                                        }
-                                    });    
+                                    vm.select_dept = e.value;
+                                    josdb(e.value);
+                                    josgrid();
+                                   // dg1.refresh();
                                 },
                                 onInitialized: function(e) {
                                     vm.jossel = e.component;
@@ -1256,13 +948,33 @@
                             onValueChanged: function(e) {
                                 var date3= $filter('date')(e.value, 'dd/MM/yyyy');
                                 vm.dataLoading = true;
-                                server.getSiryunOrder(date3, 99).then(function (result) {
+                                server.getSiryunOrder(date3).then(function (result) {
                                     var r = result.data;   
                                     if (r == ''){ // no orders
                                         cre_new_date(date3);
                                     }
                                     else {
-                                        new_date(r);
+                                        var edist = angular.copy(r);
+                                        angular.forEach(edist.cat, function(value, key){
+                                            var arr1 = edist.cat[key]
+                                            for (var i=0;i< arr1.length;i++) {
+                                                angular.forEach(arr1[i], function(value, key){
+                                                    var pl=key.indexOf('sup_name_');
+                                                    if (pl >= 0 ){
+                                                        var sup3="sup_husman_"+key.substring(9);
+                                                        if (!arr1[i].hasOwnProperty(sup3)) {
+                                                            var item1='{ ';
+                                                            item1 += '"' + sup3 + '" : null' ;
+                                                            item1 += '}';
+                                                            var sapak1=angular.fromJson(item1);
+                                                            angular.extend(arr1[i],sapak1);
+                                                        }
+                                                        
+                                                    }
+                                                })
+                                            }
+                                        });
+                                        new_date(edist);
                                         vm.dataLoading = false;
                                     }
                                 });        
@@ -1274,6 +986,7 @@
                         },
                        
                     });
+                    
                 },
                 onCellPrepared: function (e) {
                     if (e.rowType == 'data' && e.column.dataField == 'serialNumber')
@@ -1285,6 +998,8 @@
                             e.cellElement.css("color", "orange"); // pending
                         }
                     }               
+                },
+                onEditorPrepared: function (e) {
                 },
                 onEditorPreparing: function (e) {
                     var component = e.component,
@@ -1325,6 +1040,9 @@
                  },
             };
         };
+
+
+        
      
     }
 
