@@ -26,6 +26,10 @@ app.use(express.static('./www'));
 app.use(express.static('./bower_components'));
 app.use(express.static('./node_modules'));
 
+var bodyParser = require('body-parser');
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+
 /* ---- Start the server ------ */
 server.listen(process.env.PORT || 5007, function (err) {
     console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
