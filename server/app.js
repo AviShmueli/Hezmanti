@@ -28,7 +28,7 @@ app.use(express.static('./node_modules'));
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit: 5000}));
 
 /* ---- Start the server ------ */
 server.listen(process.env.PORT || 5007, function (err) {
