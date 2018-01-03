@@ -19,9 +19,9 @@ var bodyParser = require('body-parser');
 var port = process.env.PORT || 5007;
 
 // jos move before for test
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 
-app.use(bodyParser.json({limit: '150mb'}));
+//app.use(bodyParser.json({limit: '150mb'}));
 app.use(bodyParser.urlencoded({limit: '150mb', extended: true, parameterLimit: 5000}));
 
 
