@@ -2,7 +2,7 @@
   "name": "Hezmanti",
   "version": "1.0.0",
   "scripts": {
-    "start": "gulp server"
+    "start": "nodemon server/app.js"
   },
   "private": true,
   "dependencies": {
