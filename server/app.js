@@ -22,7 +22,7 @@ var port = process.env.PORT || 5007;
 app.use(bodyParser.json());
 
 app.use(bodyParser.json({limit: '150mb'}));
-app.use(bodyParser.urlencoded({limit: '150mb', extended: true}));
+app.use(bodyParser.urlencoded({limit: '150mb', extended: true, parameterLimit: 5000}));
 
 
 //jos app.use(bodyParser.urlencoded({
