@@ -15,6 +15,7 @@
     function ordersManagerController(server, $q, filesHandler, $filter, $mdDialog, $timeout, dataContext) {
 
         var vm = this;
+
         vm.expand_icon = vm.showTasksFilter ? 'expand_less' : 'expand_more';
         vm.toggleFilterSection = function () {
             if (vm.showTasksFilter === true) {
@@ -121,6 +122,7 @@
         }
 
         vm.getOrders = function (filter, originalFilter) {
+            
             if (filter && typeof(filter) !== 'number') {
                 vm.filter = filter;
                 vm.query.page = 1;
