@@ -9,15 +9,6 @@
     BL.getAllOrders = getAllOrders;
     BL.getOrder = getOrder;
     BL.updateOrder = updateOrder;
-
-    BL.getJorders = getJorders;
-    BL.insertSiryun =insertSiryun ;
-    BL.insertSiryunOrder =insertSiryunOrder ;
-    BL.getSiryun = getSiryun;
-    BL.getSiryunOrder = getSiryunOrder;
-    BL.getJosOrders = getJosOrders;
-    BL.updateSiryun = updateSiryun;
-    BL.updateSiryunOrder = updateSiryunOrder;
     BL.getAllOrdersCount = getAllOrdersCount;
     BL.checkBranchCode = checkBranchCode;
     BL.updateUserLastSeenTime = updateUserLastSeenTime;
@@ -36,6 +27,7 @@
     var DAL = require('./DAL');
 
     function getAllBranches() {
+
         var d = deferred();
 
         DAL.getAllBranches().then(function (result) {
@@ -103,109 +95,7 @@
 
         return d.promise;
     }
-    //############################# jos add
-    function insertSiryun(siryun) {
-        
-                var d = deferred();
-        
-                //order.createdDate = new Date(order.createdDate);
-                //var seq = (order.type === 'order' || order.type === 'secondOrder') ? 'orderId' : 'stockId';
-                //DAL.getNextSequence(seq).then(function (result) {
-                  //  order['orderId'] = result;
-                    DAL.insertSiryun(siryun).then(function (result) {
-                        d.resolve(result);
-                    }, function (error) {
-                        d.deferred(error);
-                    });
-                //});
-        
-                return d.promise;
-            }
-    function insertSiryunOrder(siryun) {
-                
-                        var d = deferred();
-                        DAL.insertSiryunOrder(siryun).then(function (result) {
-                                d.resolve(result);
-                            }, function (error) {
-                                d.deferred(error);
-                            });
-                        //});
-                
-                        return d.promise;
-                    }        
-    function getSiryun(cre_date) {
-        
-                var d = deferred();
-        
-                DAL.getSiryun(cre_date).then(function (result) {
-                    d.resolve(result);
-                }, function (error) {
-                    d.deferred(error);
-                });
-        
-                return d.promise;
-            }
-    function getSiryunOrder(cre_date) {
-                
-                        var d = deferred();
-                
-                        DAL.getSiryunOrder(cre_date).then(function (result) {
-                            d.resolve(result);
-                        }, function (error) {
-                            d.deferred(error);
-                        });
-                
-                        return d.promise;
-                    }        
-    function getJosOrders(cre_date,fromOrder) {
-                
-                        var d = deferred();
-                
-                        DAL.getJosOrders(cre_date,fromOrder).then(function (result) {
-                            d.resolve(result);
-                        }, function (error) {
-                            d.deferred(error);
-                        });
-                
-                        return d.promise;
-                    }
-        
-    function updateSiryun(siryun,cre_date) {
-                var d = deferred();
-        
-                DAL.updateSiryun(siryun,cre_date).then(function (result) {
-                    d.resolve(result);
-                }, function (error) {
-                    d.deferred(error);
-                });
-        
-                return d.promise;
-            }
-    function updateSiryunOrder(siryun,cre_date) {
-                        var d = deferred();
-                
-                        DAL.updateSiryunOrder(siryun,cre_date).then(function (result) {
-                            d.resolve(result);
-                        }, function (error) {
-                            d.deferred(error);
-                        });
-                
-                        return d.promise;
-                    }
-    function getJorders(cre_date) {
-                
-                        var d = deferred();
-                
-                        DAL.getJorders(cre_date).then(function (result) {
-                            d.resolve(result);
-                        }, function (error) {
-                            d.deferred(error);
-                        });
-                
-                        return d.promise;
-                    }
 
-    //############################# jos add
     function getAllOrders(query) {
 
         var d = deferred();
