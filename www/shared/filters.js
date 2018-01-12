@@ -16,11 +16,9 @@
             };
         })
         .filter('distributionDataFilter', function ($filter) {
-            
             return function (orderItems, filter) {
                 var filtered = [];
                 var itemsToWorkOn = orderItems;
-               
                 for (var property in filter) {
                     
                     if (property === 'orderItems' && filter[property]) {
@@ -33,7 +31,6 @@
                         itemsToWorkOn = filtered;
                         filtered = [];
                     }
-                   
 
                     if (property === 'networkId') {
                         filter[property].forEach(function (element) {
@@ -46,7 +43,7 @@
                         itemsToWorkOn = filtered;
                         filtered = [];
                     }
-                   
+
                     if (property === 'branchId') {
                         filter[property].forEach(function (element) {
                             angular.forEach(itemsToWorkOn, function (order) {
@@ -58,7 +55,7 @@
                         itemsToWorkOn = filtered;
                         filtered = [];
                     }
-                   
+
                     if (property === 'departmentId') {
                         filter[property].forEach(function (element) {
                             angular.forEach(itemsToWorkOn, function (order) {
@@ -70,7 +67,7 @@
                         itemsToWorkOn = filtered;
                         filtered = [];
                     }
-                   
+
                     if (property === 'orderId') {
                         // remove this when handeling multi order Ids filtering
                         filter.orderId = [filter.orderId];
@@ -85,8 +82,9 @@
                         itemsToWorkOn = filtered;
                         filtered = [];
                     }
-                   
+
                     if (property === 'items') {
+
                         filter[property].forEach(function (element) {
                             angular.forEach(itemsToWorkOn, function (order) {
                                 if (order.item.itemName && order.item.itemName === element) {
@@ -109,18 +107,6 @@
 
                     var orderDate = new Date(order.order.createdDate);
 
-                    if (orderDate >= startDate && orderDate < endDate) {
-                        filtered.push(order);
-                    }
-                });
-                return filtered;
-            };
-        })
-        .filter('JosdateFilter', function ($filter) {
-            return function (orderItems, startDate, endDate) {
-                var filtered = [];
-                angular.forEach(orderItems, function (order) {
-                    var orderDate = new Date(order.createdDate);
                     if (orderDate >= startDate && orderDate < endDate) {
                         filtered.push(order);
                     }

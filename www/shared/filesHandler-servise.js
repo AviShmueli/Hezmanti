@@ -10,6 +10,7 @@
     function filesHandler(FileSaver, Blob) {
 
         var scope = this;
+        
 
         var downloadOrderAsCSV = function (orderList, fileds, fileName) {
             scope.reportFields = fileds;
@@ -40,6 +41,7 @@
         }
 
         var downloadFile = function (strData) {
+
             var blob = new Blob([strData], {
                 type: "text/plain;charset=utf-8"
             });

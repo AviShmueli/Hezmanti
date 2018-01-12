@@ -24,8 +24,6 @@
             self.$storage.branches = null;
         }
 
-        
-
         if (self.$storage.networks === undefined) {
             self.$storage.networks = null;
         }
@@ -51,7 +49,6 @@
         }
 
         var updateCart = function (item) {
-            
             var card = getCart();
             if (card.hasOwnProperty(item._id)) {
                 card[item._id].count = item.count;
@@ -63,31 +60,19 @@
         }
 
         var removeItemFromCart = function (item) {
-           
             var card = self.$storage.cart;
             if (card.hasOwnProperty(item._id)) {
                 delete card[item._id];
             }
         }
-//https://hezmanti.loggly.com/search#terms=&from=2017-07-04T05%3A03%3A26.992Z&until=2017-07-04T06%3A03%3A26.992Z&source_group=
-// avi
-// Avi3011algo
+
         var getCartCount = function () {
             return Object.keys(self.$storage.cart).length;
         }
 
         var getCartItemsList = function () {
             // TODO: replace Object.values !!!!
-            // return Object.values(self.$storage.cart);
-            var allValues = [];
-            var cart = self.$storage.cart;
-            for (var key in cart) {
-                if (cart.hasOwnProperty(key)) {
-                    var val = cart[key];
-                    allValues.push(val);
-                }
-            }
-            return allValues;
+            return Object.values(self.$storage.cart);
         }
 
         var cleanCart = function () {
@@ -104,7 +89,7 @@
         }
 
         var setCatalog = function (ctalog) {
-
+            self.$storage.catalog = ctalog;
             setLastCatalogRefresh(new Date().toISOString());
         }
 
@@ -127,7 +112,7 @@
         var setNetworks = function (networks) {
             self.$storage.networks = networks;
         }
-        
+
         var getNetworksBranchesMap = function () {
             return self.$storage.networksBranchesMap;
         }
@@ -211,7 +196,6 @@
             setLastCatalogRefresh: setLastCatalogRefresh,
             getSuppliers: getSuppliers,
             setSuppliers: setSuppliers,
-           
         };
 
         return service;

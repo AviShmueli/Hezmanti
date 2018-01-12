@@ -10,6 +10,7 @@
     function server($http, dataContext) {
 
         var self = this;
+
         var getOrder = function (orderId) {
             var req = {
                 method: 'GET',
@@ -46,95 +47,6 @@
 
             return $http(req);
         }
-
-
-        // #############jos add######################################
-        var insertSiryun = function (siryun) {
-            var req = {
-                method: 'POST',
-                url: '/api/insertSiryun',
-                data: {
-                    siryun: siryun
-                }
-            };
-
-            return $http(req);
-        }
-        var insertSiryunOrder = function (siryun) {
-            var req = {
-                method: 'POST',
-                url: '/api/insertSiryunOrder',
-                data: {
-                    siryun: siryun
-                }
-            };
-
-            return $http(req);
-        }
-
-        var getSiryun = function (cre_date) {
-            var req = {
-                method: 'GET',
-                url: '/api/getSiryun',
-                params: {
-                    cre_date: cre_date
-                }
-            };
-
-            return $http(req);
-        }
-        var getSiryunOrder = function (cre_date) {
-            var req = {
-                method: 'GET',
-                url: '/api/getSiryunOrder',
-                params: {
-                    cre_date: cre_date
-                }
-            };
-
-            return $http(req);
-        }
-        var getJosOrders = function (cre_date,fromOrder) {
-            var req = {
-                method: 'GET',
-                url: '/api/getJosOrders',
-                params: {
-                    cre_date: cre_date,
-                    fromOrder: fromOrder
-                }
-            };
-
-            return $http(req);
-        }
-        var updateSiryun = function (siryun, cre_date) {
-            var req = {
-                method: 'POST',
-                url: '/api/updateSiryun',
-                data: {
-                    siryun: siryun,
-                    cre_date: cre_date
-                }
-            };
-
-            return $http(req);
-        }
-        var updateSiryunOrder = function (siryun, cre_date) {
-            var req = {
-                method: 'POST',
-                url: '/api/updateSiryunOrder',
-                data: {
-                    siryun: siryun,
-                    cre_date: cre_date
-                }
-            };
-
-            return $http(req);
-        }
-
-        
-
-        // #############jos add######################################
-
 
         var updateUserLastSeenTime = function (id, date) {
             var req = {
@@ -223,6 +135,7 @@
                     code: code
                 }
             };
+
             return $http(req);
         }
 
@@ -324,15 +237,6 @@
             getAllOrders: getAllOrders,
             getOrder: getOrder,
             updateOrder: updateOrder,
-
-            
-            insertSiryun: insertSiryun,
-            insertSiryunOrder: insertSiryunOrder,
-            getSiryun: getSiryun,
-            getSiryunOrder: getSiryunOrder,
-            getJosOrders: getJosOrders,
-            updateSiryun: updateSiryun,
-            updateSiryunOrder: updateSiryunOrder,
             getAllOrdersCount: getAllOrdersCount,
             checkBranchCode: checkBranchCode,
             getDepartments: getDepartments,

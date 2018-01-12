@@ -10,6 +10,7 @@
     function socket($rootScope, dataContext) {
         var domain = window.location.origin;
         var socket = io.connect(domain); 
+
         function on(eventName, callback) {
             socket.on(eventName, function() {
                 var args = arguments;
