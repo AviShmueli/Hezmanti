@@ -13,6 +13,7 @@
         });
 
     function dashboardController($rootScope, server, $q, $interval, $location, dataContext, device, $timeout) {
+        console.log('dashboard component');
         var vm = this;
         vm.allBranches = [];
         vm.showLaunchBtn = $location.search().s !== undefined ? false : true;

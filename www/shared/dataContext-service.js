@@ -10,29 +10,39 @@
     function dataContext($rootScope, $localStorage) {
 
         var self = this;
+        console.log('datacontext-services');
         self.$storage = $localStorage;
+      //  console.log('sto=',$localStorage);
 
         if (self.$storage.cart === undefined) {
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>datacontext-services 0 1 ');
             self.$storage.cart = {};
         }
 
         if (self.$storage.catalog === undefined) {
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>datacontext-services 0 2 ');
             self.$storage.catalog = null;
         }
 
         if (self.$storage.branches === undefined) {
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>datacontext-services 0 3 ');
             self.$storage.branches = null;
         }
 
+        
+
         if (self.$storage.networks === undefined) {
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>datacontext-services 0 4 ');
             self.$storage.networks = null;
         }
 
         if (self.$storage.networksBranchesMap === undefined) {
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>datacontext-services 0 5 ');
             self.$storage.networksBranchesMap = null;
         }
 
         if (self.$storage.user === undefined) {
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>datacontext-services 0 6 ');
             self.$storage.user = {};
         }
 
@@ -41,15 +51,19 @@
         }
 
         var cleanLocalstorage = function () {
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>datacontext-services 0 7 ');
             $localStorage.$reset();
         }
 
         var getCart = function () {
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>datacontext-services 0 8 ');
             return self.$storage.cart || {};
         }
 
         var updateCart = function (item) {
+            
             var card = getCart();
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>datacontext-services 1',item,card);
             if (card.hasOwnProperty(item._id)) {
                 card[item._id].count = item.count;
                 return false;
@@ -60,22 +74,39 @@
         }
 
         var removeItemFromCart = function (item) {
+           
             var card = self.$storage.cart;
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>datacontext-services 2',item,card);
             if (card.hasOwnProperty(item._id)) {
                 delete card[item._id];
             }
         }
-
+//https://hezmanti.loggly.com/search#terms=&from=2017-07-04T05%3A03%3A26.992Z&until=2017-07-04T06%3A03%3A26.992Z&source_group=
+// avi
+// Avi3011algo
         var getCartCount = function () {
+            console.log('datacontext-services 3',Object.keys(self.$storage.cart).length);
             return Object.keys(self.$storage.cart).length;
         }
 
         var getCartItemsList = function () {
+            console.log('datacontext-services 4',Object.values(self.$storage.cart));
             // TODO: replace Object.values !!!!
-            return Object.values(self.$storage.cart);
+            // return Object.values(self.$storage.cart);
+            var allValues = [];
+            var cart = self.$storage.cart;
+            for (var key in cart) {
+                if (cart.hasOwnProperty(key)) {
+                    var val = cart[key];
+                    allValues.push(val);
+                }
+            }
+            console.log('datacontext-services 444444444444444444444444444444444',allValues);
+            return allValues;
         }
 
         var cleanCart = function () {
+            console.log('datacontext-services 5');
             self.$storage.cart = {};
             var catalog = self.$storage.catalog;
             for (var department in catalog) {
@@ -89,51 +120,64 @@
         }
 
         var setCatalog = function (ctalog) {
-            self.$storage.catalog = ctalog;
+
+            //jos console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>datacontext-services 6',catalog);
+            //jos self.$storage.catalog = ctalog;
             setLastCatalogRefresh(new Date().toISOString());
         }
 
         var getCatalog = function () {
+            console.log('datacontext-services 77777777',self.$storage.catalog);
             return self.$storage.catalog;
         }
 
         var getBranches = function () {
+            console.log('datacontext-services 8',self.$storage.branches);
             return self.$storage.branches;
         }
 
         var setBranches = function (branches) {
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>.datacontext-services 9',branches);
             self.$storage.branches = branches;
         }
 
         var getNetworks = function () {
+            console.log('datacontext-services 10',self.$storage.networks);
             return self.$storage.networks;
         }
 
         var setNetworks = function (networks) {
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>..datacontext-services 11',networks);
             self.$storage.networks = networks;
         }
-
+        
         var getNetworksBranchesMap = function () {
+            console.log('datacontext-services 12',self.$storage.networksBranchesMap);
             return self.$storage.networksBranchesMap;
         }
 
         var setNetworksBranchesMap = function (networksBranchesMap) {
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>datacontext-services 13',networksBranchesMap);
             self.$storage.networksBranchesMap = networksBranchesMap;
         }
 
         var getUser = function () {
+            console.log('datacontext-services 14',self.$storage.user);
             return self.$storage.user;
         }
 
         var setUserName = function (userName) {
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>datacontext-services 15',userName);
             self.$storage.user.name = userName;
         }
 
         var setUserBranch = function (branch) {
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>datacontext-services 16',branch);
             self.$storage.user.branch = branch;
         }
 
         var getDepartments = function () {
+            console.log('datacontext-services 17',self.$storage.departments);
             // var departments = self.$storage.departments;
             // if (!departments) {
             //     var catalog = getCatalog();              
@@ -153,22 +197,27 @@
         }
 
         var setDepartments = function (departments) {
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>datacontext-services 18',departments);
             self.$storage.departments = departments;
         }
 
         var getLastCatalogRefresh = function () {
+            console.log('datacontext-services 19',self.$storage.lastCatalogRefresh);
             return self.$storage.lastCatalogRefresh || null;
         }
 
         var setLastCatalogRefresh = function (newVal) {
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>datacontext-services 20'.newVal);
             self.$storage.lastCatalogRefresh = newVal;
         }
 
         var getSuppliers = function () {
+            console.log('datacontext-services 21',self.$storage.suppliers );
             return self.$storage.suppliers || null;
         }
 
         var setSuppliers = function (newVal) {
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>datacontext-services 22',newVal);
             self.$storage.suppliers = newVal;
         }
 
@@ -196,6 +245,7 @@
             setLastCatalogRefresh: setLastCatalogRefresh,
             getSuppliers: getSuppliers,
             setSuppliers: setSuppliers,
+           
         };
 
         return service;

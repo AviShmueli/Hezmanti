@@ -22,6 +22,7 @@
     function itemsListController(server, $q, dataContext, device, $timeout) {
 
         var vm = this;
+        console.log('itemsList component');
         vm.showAvatar = vm.departmentId !== undefined ? true : false;
         vm.showArrow = vm.canShrink !== undefined ? vm.canShrink : true;
         vm.showList = vm.defultOpen || false;
@@ -43,6 +44,7 @@
 
         var timer;
         vm.itemCountInputBlur = function (item) {
+            console.log('itemsList component 1');
             $timeout.cancel(timer);
             timer = $timeout(function () {
                 if (vm.itemCountChanged) {

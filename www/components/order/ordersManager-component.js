@@ -15,7 +15,7 @@
     function ordersManagerController(server, $q, filesHandler, $filter, $mdDialog, $timeout, dataContext) {
 
         var vm = this;
-
+        console.log('ordersManager component');
         vm.expand_icon = vm.showTasksFilter ? 'expand_less' : 'expand_more';
         vm.toggleFilterSection = function () {
             if (vm.showTasksFilter === true) {
@@ -36,6 +36,7 @@
         };
 
         vm.downloadExel = function (orderId) {
+            console.log('ordersManager component 1');
             server.getOrder(orderId).then(function (response) {
                 var order = response.data;
 
@@ -48,6 +49,7 @@
 
         vm.downloading = false;
         vm.downloadFilterdTable = function () {
+            console.log('ordersManager component 2');
             vm.downloading = true;
             var query = {
                 order: vm.query.order
@@ -74,6 +76,7 @@
         }
 
         var createOrderItemsList = function (order) {
+            console.log('ordersManager component 3');
             var listToReturn = [];
             for (var index = 0; index < order.items.length; index++) {
                 var item = order.items[index];
@@ -88,6 +91,7 @@
         }
 
         vm.openOrderDialog = function (order, ev) {
+            console.log('ordersManager component 4');
             $mdDialog.show({
                     controller: 'ViewOrderDialogController',
                     templateUrl: './components/order/viewOrderDialog-template.html',
@@ -122,7 +126,7 @@
         }
 
         vm.getOrders = function (filter, originalFilter) {
-            
+            console.log('ordersManager component 5');
             if (filter && typeof(filter) !== 'number') {
                 vm.filter = filter;
                 vm.query.page = 1;

@@ -15,14 +15,17 @@
         $log, device, dataContext, $location, $mdDialog, stockContext) {
 
         var vm = this;
+        console.log('EntryScreenController');
         
         vm.imagesPath = device.getImagesPath();
        
         vm.user = dataContext.getUser();
+        console.log('user=',vm.user);
         vm.userAutorized = false;
         vm.processing =false;
 
         vm.navigateTo = function (to, param) {
+            console.log('navigateTo',to,'par=',param);
             if (param) {
                 $state.go(to, {
                     mode: param
@@ -38,6 +41,7 @@
         }, false);
 
         var openUserNameAlert = function () {
+            console.log('openUserNameAlert');
             // Appending dialog to document.body to cover sidenav in docs app
             var confirm = $mdDialog.prompt()
                 .parent(angular.element(document.querySelector('#dialogsWraper')))
@@ -51,6 +55,7 @@
         }
 
         vm.openBranchCodeAlert = function () {
+            console.log('openBranchCodeAlert');
             vm.user.branch = undefined;
             // Appending dialog to document.body to cover sidenav in docs app
             var confirm = $mdDialog.prompt()
@@ -62,8 +67,10 @@
                 .ok('אישור');
 
             $mdDialog.show(confirm).then(function (code) {
+                console.log('>>>>>>>>>>>>>>>>>>Code=',code);
                 vm.processing = true;
                 server.checkBranchCode(code).then(function (result) {
+                    console.log('>>>>>>>>>>>>>>>>>>result=',result);
                     if (result.data !== 'not-found') {
                         dataContext.setUserBranch(result.data);
                         vm.user.branch = result.data;
@@ -80,6 +87,7 @@
         }
 
         var showBranchNotFoundAlert = function () {
+            console.log('showBranchNotFoundAlert');
             $mdDialog.show(
                 $mdDialog.alert()
                 .parent(angular.element(document.querySelector('#dialogsWraper')))
@@ -95,6 +103,7 @@
         if (vm.user !== undefined) {
             
             if (vm.user.name === undefined) {
+                console.log('vm.user.name');
                 openUserNameAlert().then(function (result) {
                     if (result !== '') {
                         dataContext.setUserName(result);
@@ -104,6 +113,7 @@
                 });
             }
         } else {
+            console.log('vm.user.name11111');
             openUserNameAlert();
         }
 

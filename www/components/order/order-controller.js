@@ -16,8 +16,9 @@
         stockContext) {
 
         var vm = this;
-
+            console.log('OrderController');
         vm.navigateTo = function (to) {
+            console.log('OrderController 1',to);
             $location.path('/' + to);
         }
 
@@ -34,6 +35,7 @@
         vm.viewMode = 'newOrder';
 
         var initCartItems = function () {
+            console.log('OrderController 2');
             if (vm.pageMode === 'order') {
                 vm.cartItems = dataContext.getCartItemsList();
             }
@@ -45,6 +47,7 @@
         initCartItems();
 
         vm.cleanData = function () {
+            console.log('OrderController 3');
             if (vm.pageMode === 'order') {
                 dataContext.cleanCart();
             }
@@ -54,7 +57,9 @@
         }
 
         vm.cardCount = function () {
+            console.log('#################OrderController 4',vm.pageMode);
             if (vm.pageMode === 'order') {
+                console.log('#################OrderController 4444444444444',dataContext.getCartCount());
                 return dataContext.getCartCount();
             }
             if (vm.pageMode === 'stock') {
@@ -70,6 +75,7 @@
         }
 
         vm.switchMode = function (toMode) {
+            console.log('OrderController 5',toMode);
             if (toMode === 'new') {
                 vm.viewMode = 'newOrder';
                 vm.showSucseesMessage = false;
@@ -85,6 +91,7 @@
         }
 
         vm.itemCountChanged = function (item) {
+            console.log('OrderController 6');
             if (item.count !== undefined && item.count !== '' && item.count > 0) {
                 if (vm.pageMode === 'order') {
                     return dataContext.updateCart(item);
@@ -103,6 +110,7 @@
         }
 
         vm.sendOrder = function () {
+            console.log('OrderController 7');
             if (vm.cartItems.length > 0) {
                 vm.sendingOrder = true;
                 var itemsOrderList = [];
@@ -140,7 +148,7 @@
         }
 
         var getDeliveryDate = function () {
-
+            console.log('OrderController 8');
             var day = new Date().getDay();
             var deliveryDate = new Date();
             if (day === 5) {

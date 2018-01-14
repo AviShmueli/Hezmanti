@@ -15,6 +15,7 @@
     function searchItemController(server, $q, $timeout) {
 
         var vm = this;
+        console.log('searchItem component');
         vm.searchIcon = 'search';
         vm.showProgress = false;
         vm.searchString = '';
@@ -23,6 +24,7 @@
         
         var timer;
         vm.searchInputKeyUp = function () {
+            console.log('searchItem component 1');
             vm.searchIcon = 'close';
             $timeout.cancel(timer);
             timer = $timeout(function () {
@@ -41,6 +43,7 @@
         }
 
         var search = function (searchString) {
+            console.log('searchItem component 2');
             server.searchItems(searchString).then(function (result) {
                 vm.searchResults = result.data;
                 vm.showProgress = false;
@@ -50,6 +53,7 @@
         }
 
         vm.cleanSearch = function () {
+            console.log('searchItem component 3');
             vm.searchString = '';
             vm.searchResults = null;
             vm.searchIcon = 'search';
@@ -57,6 +61,7 @@
         }
 
         vm.countChanged = function(item){
+            console.log('searchItem component 4');
             if (vm.itemCountChanged) {
                 vm.itemCountChanged(item);                        
             }

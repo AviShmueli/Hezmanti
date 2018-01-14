@@ -17,8 +17,9 @@
     function newOrderController($scope, dataContext, $location, server) {
 
         var vm = this;
-
+        console.log('###################################newOrder component');
         vm.navigateTo = function (to) {
+            console.log('##################newOrder component ',to);
             $location.path('/' + to);
         }
 
